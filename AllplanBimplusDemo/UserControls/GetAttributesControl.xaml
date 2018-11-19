@@ -1,0 +1,96 @@
+﻿<local:BaseAttributesUserControl x:Class="AllplanBimplusDemo.UserControls.GetAttributesControl"
+
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             
+    xmlns:local="clr-namespace:AllplanBimplusDemo.UserControls"
+             
+    mc:Ignorable="d" 
+    d:DesignHeight="400" d:DesignWidth="400" Loaded="BaseAttributesUserControl_Loaded">
+
+    <UserControl.Resources>
+
+        <ResourceDictionary>
+
+            <ResourceDictionary.MergedDictionaries>
+                <ResourceDictionary Source="Styles.xaml" />
+            </ResourceDictionary.MergedDictionaries>
+
+            <Thickness x:Key="controlMargin">3,11,3,11</Thickness>
+            <Thickness x:Key="labelMargin">7,2,7,2</Thickness>
+            <Thickness x:Key="listBoxMargin">11,2,11,2</Thickness>
+
+            <ContextMenu x:Key="TreeViewContextMenu">
+                <MenuItem Header="Expand groups" IsEnabled="{Binding HasTreeViewItems}" Click="Expand_Click" />
+                <MenuItem Header="Collaps groups" IsEnabled="{Binding HasTreeViewItems}" Click="Collaps_Click" />
+            </ContextMenu>
+
+        </ResourceDictionary>
+
+    </UserControl.Resources>
+
+    <Grid>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="*" MinWidth="100" IsEnabled="False"/>
+            <ColumnDefinition Width="Auto"/>
+            <ColumnDefinition Width="*" MinWidth="100"/>
+        </Grid.ColumnDefinitions>
+
+        <Grid Grid.Column="0" Name="LeftColumn">
+            <StackPanel Orientation="Vertical">
+                <StackPanel Orientation="Horizontal">
+                    <Label Content="Models:" Margin="{StaticResource labelMargin}" Width="67"/>
+                    <TextBlock Name="ProjectModelsText" Text="{Binding ProjectModels}" Margin="10,7,7,7" TextWrapping="Wrap"/>
+                </StackPanel>
+
+                <ListBox Name="ObjectTypesList" Margin="{StaticResource listBoxMargin}" ItemsSource="{Binding ObjectTypes}" SelectedItem="{Binding SelectedItem}"
+                         Height="150" HorizontalAlignment="Stretch" IsEnabled="{Binding HasObjects}">
+                    <ListBox.ItemTemplate>
+                        <DataTemplate>
+                            <TextBlock Text="{Binding RelativeSource={RelativeSource Mode=Self}, Path=DataContext.Name}" FontSize="13"/>
+                        </DataTemplate>
+                    </ListBox.ItemTemplate>
+                </ListBox>
+
+                <StackPanel Orientation="Horizontal">
+                    <Label Content="Selection:" Margin="{StaticResource labelMargin}" Width="67"/>
+                    <Label Content="{Binding SelectedItem.Name}" Margin="{StaticResource labelMargin}"/>
+                </StackPanel>
+
+                <CheckBox Name="AttributeDefinitionCheckBox" Margin="{StaticResource listBoxMargin}" Content="Attribute definition"
+                          ToolTip="Get the attribute definition instead of the value."
+                          IsEnabled="{Binding HasObjects}" IsChecked="{Binding AttributeDefinitionIsChecked, Mode=TwoWay}"/>
+
+                <CheckBox Name="PsetCheckBox" Margin="{StaticResource listBoxMargin}" Content="Pset"
+                          ToolTip="Get all properties from the property set of the project."
+                          IsEnabled="{Binding HasObjects}" IsChecked="{Binding PsetCheckBoxIsChecked, Mode=TwoWay}"/>
+
+                <CheckBox Name="InternalValuesCheckBox" Margin="{StaticResource listBoxMargin}" Content="Internal values"
+                          IsEnabled="{Binding HasObjects}" IsChecked="{Binding InternalValuesCheckBoxIsChecked, Mode=TwoWay}">
+                    <CheckBox.ToolTip>
+                        <TextBlock>
+                            Get the internal attributes.
+                            <LineBreak/>
+                            This returns the object id and the attribute value.
+                        </TextBlock>
+                    </CheckBox.ToolTip>
+                </CheckBox>
+
+                <StackPanel Orientation="Horizontal" HorizontalAlignment="Right">
+                    <Button Name="GetObjects" Content="Get the first Object" IsEnabled="{Binding HasObjects}" Margin="{StaticResource listBoxMargin}" Width="120" Click="GetObjects_Click"/>
+                </StackPanel>
+            </StackPanel>
+        </Grid>
+
+        <GridSplitter Grid.Column="1" Name="GridSplitter" Width="5" VerticalAlignment="Stretch" HorizontalAlignment="Center" Background="{StaticResource VerticalSplitBrush}"/>
+
+        <Grid Grid.Column="2" Name="AttributeGrid" Margin="13">
+            <TreeView Name="AttributeTreeView" IsEnabled="{Binding HasObjects}" FontSize="13" ContextMenu="{StaticResource TreeViewContextMenu}"
+                    ScrollViewer.VerticalScrollBarVisibility="Auto" HorizontalContentAlignment="Center"/>
+        </Grid>
+
+    </Grid>
+
+</local:BaseAttributesUserControl>

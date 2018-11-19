@@ -1,0 +1,783 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Globalization;
+using System.Windows;
+using System.Windows.Input;
+using System.Windows.Controls;
+using System.Windows.Data;
+using System.Text.RegularExpressions;
+using System.ComponentModel;
+
+namespace AllplanBimplusDemo.Controls
+{
+    /// <summary>
+    /// Spezielle Nemetschek Ableitung von der NemTextBoxBase zu Darstellung von Nummern
+    /// </summary>
+    public class NemNumericTextBox : TextBox
+    {
+        #region Members
+        /// <summary>
+        /// Gibt den Dezimaltrenner an
+        /// </summary>
+        internal static string _numDecSep;
+
+        /// <summary>
+        /// Converter für Text und Value Properties Binding
+        /// </summary>
+        private DecimalToStringConverter _dsConverter = new DecimalToStringConverter();
+        #endregion
+
+        #region Konstruktor
+        /// <summary>
+        /// Konstruktor
+        /// </summary>
+        public NemNumericTextBox()
+        {
+            SetValueBinding(NachKommaStellen, ShowAllDecimalPlacesOfFormatValue);
+
+            //Maximale Standardlänge setzen
+            MaxLength = 15;
+
+            //Länderabhängigen Dezimaltrenner auslesen
+            NumberFormatInfo numberFormatInfo = new CultureInfo(CultureInfo.CurrentCulture.Name).NumberFormat;
+            _numDecSep = numberFormatInfo.NumberDecimalSeparator;
+
+            //Commandbinding - Paste (Einfügen aus Clipboard)
+            CommandBindings.Add(new CommandBinding(ApplicationCommands.Paste,
+                                                   PasteCmd_Executed,
+                                                   PasteCmd_CanExecute));
+
+        }
+
+        #endregion Konstruktor
+
+        /// <summary>
+        /// Legt fest ob bei einer Texteingabe das IsDirtyFlag gesetzt werden sollte oder nicht.
+        /// </summary>
+        /// <remarks>nur bei Verwendung in Datagrid ratsam</remarks>
+        public bool SetIsDirtyOnTextInput
+        {
+            get { return (bool)GetValue(SetIsDirtyOnTextInputProperty); }
+            set { SetValue(SetIsDirtyOnTextInputProperty, value); }
+        }
+
+        // Using a DependencyProperty as the backing store for SetIsDirtyOnTextInput.  This enables animation, styling, binding, etc...
+        public static readonly DependencyProperty SetIsDirtyOnTextInputProperty =
+            DependencyProperty.Register("SetIsDirtyOnTextInput", typeof(bool), typeof(NemNumericTextBox), new PropertyMetadata(false));
+
+
+        #region DependencyProperties
+
+        #region NachKommaStellen
+
+        /// <summary>
+        /// Konstante für die Property NachKommaStellen
+        /// </summary>
+        public const string NachKommaStellenPropertyName = "NachKommaStellen";
+
+        /// <summary>
+        /// Legt die Anzahl der NachKommaStellen fest
+        /// </summary>
+        public int NachKommaStellen
+        {
+            get { return (int)GetValue(NachKommaStellenProperty); }
+            set { SetValue(NachKommaStellenProperty, value); }
+        }
+
+        // Using a DependencyProperty as the backing store for NachKommaStellen.  This enables animation, styling, binding, etc...
+        public static readonly DependencyProperty NachKommaStellenProperty =
+            DependencyProperty.Register(NachKommaStellenPropertyName, typeof(int), typeof(NemNumericTextBox), 
+                new FrameworkPropertyMetadata(3, FrameworkPropertyMetadataOptions.BindsTwoWayByDefault,
+                (d, e) =>
+                {
+                    NemNumericTextBox control = d as NemNumericTextBox;
+
+                    if (e.NewValue is int && control != null)
+                    {
+                        control.SetValueBinding((int)e.NewValue, control.ShowAllDecimalPlacesOfFormatValue);
+                    }
+                }));
+
+        #endregion NachKommaStellen
+
+        #region Value
+
+        /// <summary>
+        /// Konstante für die Property Value
+        /// </summary>
+        public const string ValuePropertyName = "Value";
+
+        /// <summary>
+        /// Der anzuzueigende Wert
+        /// </summary>
+        public double? Value
+        {
+            get { return (double?)GetValue(ValueProperty); }
+            set { SetValue(ValueProperty, value); }
+        }
+
+        // Using a DependencyProperty as the backing store for Value.  This enables animation, styling, binding, etc...
+        public static readonly DependencyProperty ValueProperty =
+            DependencyProperty.Register(ValuePropertyName, typeof(double?), typeof(NemNumericTextBox), 
+                new FrameworkPropertyMetadata(null, FrameworkPropertyMetadataOptions.BindsTwoWayByDefault,
+                (s, a) =>
+                {
+                }));
+
+        #endregion Value
+
+        #region Format
+
+
+        /// <summary>
+        /// Das Anzeigeformat für die Zahlen
+        /// </summary>
+        public NemNumericTextBoxFormat Format
+        {
+            get { return (NemNumericTextBoxFormat)GetValue(FormatProperty); }
+            set { SetValue(FormatProperty, value); }
+        }
+
+        // Using a DependencyProperty as the backing store for Format.  This enables animation, styling, binding, etc...
+        public static readonly DependencyProperty FormatProperty =
+            DependencyProperty.Register("Format", typeof(NemNumericTextBoxFormat), typeof(NemNumericTextBox), new UIPropertyMetadata(NemNumericTextBoxFormat.F,
+                (d, e) =>
+                {
+                    NemNumericTextBox control = d as NemNumericTextBox;
+
+                    if (control != null && e.NewValue is NemNumericTextBoxFormat)
+                    {
+                        control.SetValueBinding(control.NachKommaStellen, control.ShowAllDecimalPlacesOfFormatValue);
+                    }
+                }));
+
+
+
+        #endregion Format
+
+        #region ShowAllDecimalPlacesOfFormatValue
+
+        /// <summary>
+        /// Konstante für die Property ShowAllDecimalPlacesOfFormatValue
+        /// </summary>
+        public const string ShowAllDecimalPlacesOfFormatValuePropertyName = "ShowAllDecimalPlacesOfFormatValue";
+
+        /// <summary>
+        /// Wenn false, soll die Standardeinstellung (2 Nachkommastellen) erfolgen 
+        /// (GAEB: 3-Nachkommastellen nur, wenn auch wirklich belegt)
+        /// </summary>
+        public bool ShowAllDecimalPlacesOfFormatValue
+        {
+            get { return (bool)GetValue(ShowAllDecimalPlacesOfFormatValueProperty); }
+            set { SetValue(ShowAllDecimalPlacesOfFormatValueProperty, value); }
+        }
+
+        // Using a DependencyProperty as the backing store for Value.  This enables animation, styling, binding, etc...
+        public static readonly DependencyProperty ShowAllDecimalPlacesOfFormatValueProperty =
+            DependencyProperty.Register(ShowAllDecimalPlacesOfFormatValuePropertyName, typeof(bool), typeof(NemNumericTextBox), new FrameworkPropertyMetadata(true,
+                (d, e) =>
+                {
+                    NemNumericTextBox control = d as NemNumericTextBox;
+
+                    if (control != null && e.NewValue is bool)
+                    {
+                        control.SetValueBinding(control.NachKommaStellen, (bool)e.NewValue);
+                    }
+                }));
+
+        #endregion ShowAllDecimalPlacesOfFormatValue
+
+        #region AllowNegative
+
+        /// <summary>
+        /// Legt fest ob negative Zahlenwerte erlaub sind
+        /// </summary>
+        public bool AllowNegative
+        {
+            get { return (bool)GetValue(AllowNegativeProperty); }
+            set { SetValue(AllowNegativeProperty, value); }
+        }
+
+        // Using a DependencyProperty as the backing store for AllowNegative.  This enables animation, styling, binding, etc...
+        public static readonly DependencyProperty AllowNegativeProperty =
+            DependencyProperty.Register("AllowNegative", typeof(bool), typeof(NemNumericTextBox), new PropertyMetadata(true));
+
+        #endregion AllowNegative
+
+
+        #region AllowReturn
+
+        /// <summary>
+        /// Legt fest ob Return Taste erlaubt ist
+        /// </summary>
+        public bool AllowReturn
+        {
+            get { return (bool)GetValue(AllowReturnProperty); }
+            set { SetValue(AllowReturnProperty, value); }
+        }
+
+        // Using a DependencyProperty as the backing store for AllowReturn.  This enables animation, styling, binding, etc...
+        public static readonly DependencyProperty AllowReturnProperty =
+            DependencyProperty.Register("AllowReturn", typeof(bool), typeof(NemNumericTextBox), new PropertyMetadata(false));
+
+        #endregion AllowReturn
+
+
+        #endregion DependencyProperties
+
+        #region Override´s
+
+        #region OnKeyDown überschreiben
+        /// <summary>
+        /// OnKeyDown überschreiben
+        /// </summary>
+        /// <param name="e"></param>
+        protected override void OnKeyDown(KeyEventArgs e)
+        {
+            NumKeyFilter(e, true);
+
+            base.OnKeyDown(e);
+        }
+
+        /// <summary>
+        /// Stellt sicher dass bestimmte Keys ignoriert werden
+        /// </summary>
+        /// <param name="e"></param>
+        protected override void OnPreviewKeyDown(KeyEventArgs e)
+        {
+            _dsConverter.SetValue(DecimalToStringConverter.DoBindingActionProperty, false);
+
+            if ((e.Key == Key.Return && !AllowReturn) || e.Key == Key.Space)
+            {
+                e.Handled = true;
+                return;
+            }
+        }
+        #endregion
+
+        #region OnKeyUp überschreiben
+        /// <summary>
+        /// OnKeyUp überschreiben
+        /// </summary>
+        /// <param name="e"></param>
+        protected override void OnKeyUp(KeyEventArgs e)
+        {
+            NumKeyFilter(e, false);
+        }
+        #endregion
+
+        #region OnTextChanged überschreiben
+        /// <summary>
+        /// OnTextChanged überschreiben
+        /// </summary>
+        /// <param name="e"></param>
+        protected override void OnTextChanged(TextChangedEventArgs e)
+        {
+            //Wird die Eingabe gelöscht, Text auf ´null´ setzen
+            if (String.IsNullOrEmpty(this.Text))
+            {
+                this.Text = null;           //wird diese Zeile auskommentiert, kann ein Validierungsfehler erzeugt werden --> siehe Tooltip
+            }
+
+            base.OnTextChanged(e);
+        }
+
+
+        #endregion
+
+        #region OnPreviewTextInput
+
+        /// <summary>
+        /// OnPreviewTextInput 
+        /// </summary>
+        /// <param name="e"></param>
+        protected override void OnPreviewTextInput(TextCompositionEventArgs e)
+        {
+            //ein Tab darf in den Text nicht eingefügt werden
+            //muss aber weiterhin in die nächste Zelle springen
+            if (e.Text == "\t")
+            {
+                e.Handled = true;
+            }
+            //  Nach einem "-" darf nicht anschließend ein Dezimaltrennzeichen eingefügt werden
+            else if ("-".Equals(Text) && _numDecSep.Equals(e.Text))
+            {
+                e.Handled = true;
+            }
+            else
+            {
+                //  Überprüfen ob es ein Dezimaltrennzeichen gibt und ob der ungleich NUllOrEmpty ist
+                if (_numDecSep.Contains(_numDecSep) && !string.IsNullOrEmpty(Text))
+                {
+
+                    //  Die derzeitige Position vom Cursor
+                    int currentCursorPosition = this.SelectionStart;
+
+                    //  Position vom Trennzeichen
+                    int currentDecimalSeparatorPos = this.Text.IndexOf(_numDecSep);
+
+                    //  Überprüfen ob es ein Trennzeichen gibt
+                    if (currentDecimalSeparatorPos > -1 && currentCursorPosition > currentDecimalSeparatorPos)
+                    {
+
+                        //  Anzahl der derzeit vorhandenen Nachkommastellen
+                        int countDigitsBehindSeparator = 0;
+
+                        //  Ermittlung der derzeit vorhanden Nachkommastellen
+                        if (currentCursorPosition > -1)
+                        {
+                            var subst = this.Text.Split(_numDecSep.ToCharArray());
+                            if (subst.Count() == 2)
+                            {
+                                countDigitsBehindSeparator = subst[1].Count();
+                            }
+                        }
+
+                        //  Der Cursor befindet sich am Ende der erlaubten Nachkommastellen
+                        if (countDigitsBehindSeparator == NachKommaStellen && currentCursorPosition == this.Text.Length)
+                        {
+                            e.Handled = true;
+                        }
+                        //  Der Cursor befinden sich im Bereich der Nachkommastellen
+                        else if (countDigitsBehindSeparator == NachKommaStellen)
+                        {
+                            this.Text = this.Text.Remove(currentCursorPosition, 1).Insert(currentCursorPosition, e.Text);
+                            this.SelectionStart = currentCursorPosition + 1;
+                            e.Handled = true;
+                        }
+                    }
+                }
+            }
+            base.OnPreviewTextInput(e);
+        }
+
+        #endregion OnPreviewTextInput
+
+        #endregion Override´s
+
+        #region Command-Handling
+        #region Paste-Command
+        /// <summary>
+        /// Paste-Command
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void PasteCmd_Executed(object sender, ExecutedRoutedEventArgs e)
+        {
+            string s = Clipboard.GetText();
+
+            Double dob;
+            Double.TryParse(s, out dob);
+            if (dob != 0)
+            {
+                //  Negative Zahlen sind nicht erlaubt so wird das Vorzeichen entfernt
+                if (!AllowNegative)
+                {
+                    dob = Math.Abs(dob);
+                }
+
+                //Hier muss sichergestellt werden, dass nicht mehr Nachkommastellen übernommen werden
+                //als tatsächlich erlaubt sind.
+                this.Text = dob.ToString(string.Format("N{0}", NachKommaStellen));
+            }
+        }
+
+        /// <summary>
+        /// CanExecute für das Einfügen Command.
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void PasteCmd_CanExecute(object sender, CanExecuteRoutedEventArgs e)
+        {
+            // Wenn das Control in seiner Verwendung die Eigenschaft "IsReadOnly" auf true gesetzt hat, darf über die Zwischenablage nichts eingefügt werden.
+            if (IsReadOnly)
+            {
+                e.CanExecute = false;
+            }
+            else
+            {
+                e.CanExecute = true;
+            }
+        }
+        #endregion
+        #endregion Command-Handling
+
+        #region Private Method´s
+
+
+        /// <summary>
+        /// Stellt sicher das die gewünschte Anzahl an Nachkommastellen angezeigt werden.
+        /// </summary>
+        private void SetAllowedNachkommastellen()
+        {
+            //Erhält das Control den Focus, wird die Zahl ohne Tausenderpunkt dargestellt
+            _dsConverter.SetValue(DecimalToStringConverter.DoBindingActionProperty, false);
+            Text = Value.Value.ToString(string.Format("F{0}", NachKommaStellen));
+        }
+
+        /// <summary>
+        /// Wenn der Keyboardfocus verloren geht muss der Wert zurück geschrieben werden
+        /// --> Der Focus wird von der NemNumericTextBox entfernt
+        /// </summary>
+        /// <param name="e"></param>
+        protected override void OnPreviewLostKeyboardFocus(KeyboardFocusChangedEventArgs e)
+        {
+            UpdateTextProperty();
+            base.OnPreviewLostKeyboardFocus(e);
+        }
+
+        /// <summary>
+        /// Aktualisiert den Text
+        /// </summary>
+        public void UpdateTextProperty()
+        {
+            _dsConverter.SetValue(DecimalToStringConverter.DoBindingActionProperty, true);
+
+            //Sicher stellen das der Wert upgedated wird!
+            var binding = BindingOperations.GetBindingExpression(this, TextBox.TextProperty);
+            if (binding != null)
+            {
+                binding.UpdateSource();
+                binding.UpdateTarget();
+            }
+        }
+
+        #region SetValueBinding
+
+
+
+        /// <summary>
+        /// Setzt das Binding für die TextProperty
+        /// </summary>
+        /// <param name="anzahlNachKommaStellen">Anzahl der NachKommaStellen</param>
+        /// <param name="showAllDecimalPlaces">Sollen alle Nachkommastellen angezeigt werden?
+        ///  Bsp: true:  1.230 bei 3 Nachkommastellen als 1.120
+        ///       false: 1.230 bei 3 Nachkommastellen als 1.12 </param>
+        private void SetValueBinding(int anzahlNachKommaStellen, bool showAllDecimalPlaces)
+        {
+            if (anzahlNachKommaStellen < 0) { throw new InvalidOperationException(); }
+
+            Binding bindingValue = new Binding();
+            bindingValue.Source = this;
+            bindingValue.Path = new PropertyPath(ValuePropertyName);
+            bindingValue.Mode = BindingMode.TwoWay;
+            bindingValue.UpdateSourceTrigger = UpdateSourceTrigger.PropertyChanged;
+            bindingValue.Converter = _dsConverter;
+
+            //  NachKommaStellenformat
+            StringBuilder sbFormat = new StringBuilder();
+
+            switch (Format)
+            {
+                case NemNumericTextBoxFormat.N:
+                    if (showAllDecimalPlaces || anzahlNachKommaStellen <= 2)
+                        sbFormat.Append("N");
+                    else
+                    {
+                        string fmt = "###,###,###,##0.";
+                        string dcm = "00";
+                        sbFormat.Append(string.Concat(fmt, dcm.PadRight(anzahlNachKommaStellen, '#')));
+                    }
+                    break;
+                case NemNumericTextBoxFormat.F:
+                default:
+                    if (showAllDecimalPlaces || anzahlNachKommaStellen <= 2)
+                        sbFormat.Append("F");
+                    else
+                    {
+                        string fmt = "###########0.";
+                        string dcm = "00";
+                        sbFormat.Append(string.Concat(fmt, dcm.PadRight(anzahlNachKommaStellen, '#')));
+                    }
+                    break;
+            }
+            if (showAllDecimalPlaces || anzahlNachKommaStellen <= 2)
+            {
+                sbFormat.Append(anzahlNachKommaStellen);
+            }
+
+            bindingValue.StringFormat = sbFormat.ToString();
+            bindingValue.ConverterCulture = CultureInfo.CurrentCulture;
+
+            SetBinding(TextBox.TextProperty, bindingValue);
+        }
+
+        #endregion SetValueBinding
+
+
+
+
+        protected override void OnTextInput(TextCompositionEventArgs e)
+        {
+            base.OnTextInput(e);
+
+            if (SetIsDirtyOnTextInput)
+            {
+                _dsConverter.SetValue(DecimalToStringConverter.IsDirtyProperty, true);
+            }
+        }
+
+        /// <summary>
+        /// Wenn die Numerictextbox den Fokus bekommt wird 
+        /// der Wert ohne Tausendertrennzeichen dargestellt
+        /// dies darf aber nur passieren, wenn die Zahl auch wirklich editiert werden soll
+        /// </summary>
+        /// <param name="e"></param>
+        protected override void OnGotFocus(RoutedEventArgs e)
+        {
+            if (Value != null && Format != NemNumericTextBoxFormat.F && !IsReadOnly)
+            {
+                //NachKommaStellen enthält die Anzahl der erlaubten Nullstellen
+                SetAllowedNachkommastellen();
+            }
+
+            base.OnGotFocus(e);
+        }
+
+        #region NumKeyFilter -- Nur Zahlenrelevante Key´s zulassen
+        /// <summary>
+        /// Nur Zahlenrelevante Key´s zulassen
+        /// </summary>
+        /// <param name="e"></param>
+        /// <param name="checkPlusMinus"></param>
+        private void NumKeyFilter(KeyEventArgs e, bool checkPlusMinus)
+        {
+            if (e.SystemKey != Key.None) return;     //Systemkombinationen durchlassen (z.B. Left+Alt damit die Menü-Shortcuts aktiv werden)
+
+            //Wenn Shift, Strg, etc. gedrückt ist, keine Eingabe zulassen
+            if (Keyboard.Modifiers != ModifierKeys.None)
+            {
+                if (!((e.Key == Key.Tab) ||
+                    (Keyboard.Modifiers == (ModifierKeys.Control | ModifierKeys.Shift) && e.Key == Key.N) ||
+                    (Keyboard.Modifiers == ModifierKeys.Control && e.Key == Key.N)))
+                {
+                    e.Handled = true;
+                    return;
+                }
+                else
+                {
+                    e.Handled = false;
+                    return;
+                }
+            }
+
+            //CapsLock (Hochstelltaste) ist aktiv
+            //raus wenn Zahlen auf der ´normalen´ Tastatur eingegeben werden
+            if (Keyboard.IsKeyToggled(Key.CapsLock) == true)
+            {
+                switch (e.Key)
+                {
+                    case Key.D0: case Key.D1: case Key.D2: case Key.D3: case Key.D4: 
+                    case Key.D5: case Key.D6: case Key.D7: case Key.D8: case Key.D9:
+                    e.Handled = true;
+                    return;
+                }
+            }
+
+            switch (e.Key)
+            {
+                //Zugelassene Nummerntasten
+                case Key.D0:
+                case Key.NumPad0:           //auf Nummernblock
+                case Key.D1:
+                case Key.NumPad1:
+                case Key.D2:
+                case Key.NumPad2:
+                case Key.D3:
+                case Key.NumPad3:
+                case Key.D4:
+                case Key.NumPad4:
+                case Key.D5:
+                case Key.NumPad5:
+                case Key.D6:
+                case Key.NumPad6:
+                case Key.D7:
+                case Key.NumPad7:
+                case Key.D8:
+                case Key.NumPad8:
+                case Key.D9:
+                case Key.NumPad9:
+                    if (IsReadOnly) { e.Handled = true; }
+
+                    break;
+
+                //Plus / Minus Tasten (nur am Beginn)
+                case Key.OemPlus:
+                case Key.Add:
+                case Key.OemMinus:
+                case Key.Subtract:
+
+                    //  Es sind nur positive Zahlen erlaubt
+                    if (!AllowNegative && e.Key == Key.Subtract)
+                    {
+                        e.Handled = true;
+                        break;
+                    }
+
+                    if (checkPlusMinus == true)
+                    {
+                        if (this.CaretIndex != 0)
+                        {
+                            e.Handled = true;
+                        }
+                    }
+                    break;
+
+                //Behandlung der Dezimaltrennertaste
+                case Key.OemComma:                          //Komma auf der normalen Tastatur
+                case Key.Decimal:                           //Komma auf der nummerischen Tastatur
+                case Key.OemPeriod:                         //Punkt auf der normalen Tastatur - Spezialbehandlung notwendig
+                    if (checkPlusMinus == true)
+                        HandleDecimalSeperator(e);
+                    break;
+
+                case Key.F4:
+                    break;
+
+                case Key.Delete:
+                    break;
+
+                case Key.Tab:
+                    break;
+
+
+                case Key.Back:
+                    break;
+
+                case Key.Return:
+                    if (!AllowReturn) e.Handled = true;
+                    break;
+
+                //alle anderen Tasten werden nicht weitergeleitet
+                default:
+                    e.Handled = true;
+                    break;
+            }
+        }
+        #endregion
+
+        #region Behandlung der Dezimaltrennereingabe
+        /// <summary>
+        /// Behandlung der Dezimaltrennereingabe
+        /// </summary>
+        /// <param name="e"></param>
+        private void HandleDecimalSeperator(KeyEventArgs e)
+        {
+            switch (e.Key)
+            {
+                case Key.OemComma:                          //Komma auf der normalen Tastatur
+                case Key.Decimal:                           //Komma auf der nummerischen Tastatur
+                case Key.OemPeriod:                         //Punkt auf der normalen Tastatur
+                    string t = this.Text;                   //Text sichern
+                    int kp = t.IndexOf(_numDecSep);         //Komaposition sichern
+                    if (kp >= 0)
+                    {
+                        this.CaretIndex = kp + 1;
+                        e.Handled = true;
+                    }
+                    // Auch wenn kein DecimalSeparator vorhanden ist, den Punkt als solchen verwenden.
+                    else if (e.Key == Key.OemPeriod)
+                    {
+                        int caretIndex = CaretIndex;
+                        if (!string.IsNullOrEmpty(SelectedText))
+                        {
+                            t = t.Remove(caretIndex, SelectedText.Length);
+                        }
+
+                        t = t.Insert(CaretIndex, _numDecSep);
+                        Text = t;
+                        caretIndex++;
+                        CaretIndex = caretIndex;
+                        e.Handled = true;
+                    }
+                    break;
+            }
+
+            return;
+        }
+        #endregion
+
+        #endregion Private Method´s
+    }
+
+    /// <summary>
+    /// Legt das Anzeigeformat fest
+    /// </summary>
+    public enum NemNumericTextBoxFormat
+    {
+        F = 0,  //  1000,22
+        N = 1   //  1.000,22
+    }
+
+    public class DecimalToStringConverter : FrameworkElement, IValueConverter
+    {
+        /// <summary>
+        /// Flag das angibt ob der Wert an der Oberfläche aktualisiert werden darf oder nicht
+        /// Während der Eingabe soll die ValueProperty bei propertyChanged aktualisiert werden
+        /// Der Text soll allerdings erst beim verlassen der NemNumericTextBox aktualisiert werden
+        /// --> siehe in der NemNumericTextBox
+        ///     * OnGotFocus
+        ///     * OnPreviousLostKeyboardFocus
+        /// </summary>
+        public bool DoBindingAction
+        {
+            get { return (bool)GetValue(DoBindingActionProperty); }
+            set { SetValue(DoBindingActionProperty, value); }
+        }
+
+        // Using a DependencyProperty as the backing store for Parameter.  This enables animation, styling, binding, etc...
+        public static readonly DependencyProperty DoBindingActionProperty =
+            DependencyProperty.Register("DoBindingAction", typeof(bool), typeof(DecimalToStringConverter), new UIPropertyMetadata(true));
+
+
+
+        public bool IsDirty
+        {
+            get { return (bool)GetValue(IsDirtyProperty); }
+            set { SetValue(IsDirtyProperty, value); }
+        }
+
+        // Using a DependencyProperty as the backing store for IsDirty.  This enables animation, styling, binding, etc...
+        public static readonly DependencyProperty IsDirtyProperty =
+            DependencyProperty.Register("IsDirty", typeof(bool), typeof(DecimalToStringConverter), new PropertyMetadata(false));
+
+        
+
+        #region IValueConverter Members
+
+       
+
+        public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
+        {
+            //Soll der Wert an der Oberfläche akutalisiert werden
+            if (this.DoBindingAction && !IsDirty)
+            {
+                return value;
+            }
+            DoBindingAction = true;
+            //Der Wert an der Oberfläche darf NICHT aktualisiert werden
+            return Binding.DoNothing;
+        }
+
+        public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
+        {
+            double result;
+
+            var style = NumberStyles.AllowDecimalPoint | NumberStyles.AllowThousands | NumberStyles.AllowLeadingSign;
+            if (double.TryParse(value as string, style, CultureInfo.CurrentCulture, out result))
+            {
+                return result;
+            }
+            else
+            {
+                return null;
+            }
+        }
+
+
+        #endregion
+    }
+
+}

@@ -1,0 +1,94 @@
+<?xml version="1.0"?>
+<Axis xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+  <HorizontalAlignments>
+    <HorizontalAlignment>
+      <Elements>
+        <HorizontalElement xsi:type="StraightHorizontalElement">
+          <Station>91644.7291</Station>
+          <Length>100000</Length>
+          <StartX>579911855.5371</StartX>
+          <StartY>246492852.9281</StartY>
+          <Bearing>0.5975665514</Bearing>
+        </HorizontalElement>
+        <HorizontalElement xsi:type="ClothoidElement">
+          <Station>191644.7291</Station>
+          <Length>160000</Length>
+          <StartX>579994526.2569</StartX>
+          <StartY>246549116.1672</StartY>
+          <Bearing>0.5975665514</Bearing>
+          <StartR>0</StartR>
+          <EndR>250000</EndR>
+          <A>200000</A>
+        </HorizontalElement>
+        <HorizontalElement xsi:type="CircularHorizontalElement">
+          <Station>351644.7291</Station>
+          <Length>94046.2826</Length>
+          <StartX>580134983.5919</StartX>
+          <StartY>246624213.6192</StartY>
+          <Bearing>0.2775665514</Bearing>
+          <R>250000</R>
+          <EndX>580228102.3309</EndX>
+          <EndY>246632567.6288</EndY>
+        </HorizontalElement>
+        <HorizontalElement xsi:type="ClothoidElement">
+          <Station>445691.0117</Station>
+          <Length>90000</Length>
+          <StartX>580228102.3309</StartX>
+          <StartY>246632567.6288</StartY>
+          <Bearing>-0.0986185791</Bearing>
+          <StartR>250000</StartR>
+          <EndR>0</EndR>
+          <A>-150000</A>
+        </HorizontalElement>
+        <HorizontalElement xsi:type="StraightHorizontalElement">
+          <Station>535691.0117</Station>
+          <Length>100000</Length>
+          <StartX>580315833.3783</StartX>
+          <StartY>246613074.9611</StartY>
+          <Bearing>-0.2786185791</Bearing>
+        </HorizontalElement>
+      </Elements>
+    </HorizontalAlignment>
+  </HorizontalAlignments>
+  <VerticalAlignments>
+    <VerticalAlignment>
+      <Elements>
+        <VerticalElement xsi:type="StraightVerticalElement">
+          <StartStation>231584.717</StartStation>
+          <StartElevation>542116.2907</StartElevation>
+          <Slope>-0.029959769</Slope>
+          <ProjectedLength>127826.494</ProjectedLength>
+          <Type>Line</Type>
+        </VerticalElement>
+        <VerticalElement xsi:type="CurvedVerticalElement">
+          <StartStation>359411.211</StartStation>
+          <StartElevation>538286.6384</StartElevation>
+          <Slope>-0.029959769</Slope>
+          <ProjectedLength>10502.3718</ProjectedLength>
+          <Type>Circle</Type>
+          <R>-150000</R>
+          <EndStation>369913.5828</EndStation>
+          <EndElevation>538339.8303</EndElevation>
+          <IPElevation>538129.2862</IPElevation>
+          <IPStation>364663.3286</IPStation>
+        </VerticalElement>
+        <VerticalElement xsi:type="StraightVerticalElement">
+          <StartStation>369913.5828</StartStation>
+          <StartElevation>538339.8303</StartElevation>
+          <Slope>0.0401016858</Slope>
+          <ProjectedLength>150792.9218</ProjectedLength>
+          <Type>Line</Type>
+        </VerticalElement>
+        <VerticalElement xsi:type="StraightVerticalElement">
+          <StartStation>520706.5047</StartStation>
+          <StartElevation>544386.8806</StartElevation>
+          <Slope>0.0401016858</Slope>
+          <ProjectedLength>10000</ProjectedLength>
+          <Type>Line</Type>
+        </VerticalElement>
+      </Elements>
+    </VerticalAlignment>
+  </VerticalAlignments>
+  <Name>AXA1</Name>
+  <Direction>true</Direction>
+</Axis>
