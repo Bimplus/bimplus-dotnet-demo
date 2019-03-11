@@ -6,7 +6,6 @@ using BimPlus.Sdk.Data.TenantDto;
 using BimPlus.Sdk.Data.Notification;
 using System;
 using System.Collections.Generic;
-using System.Collections.ObjectModel;
 using System.Diagnostics;
 using System.Linq;
 using System.Text;
@@ -218,8 +217,7 @@ namespace AllplanBimplusDemo.UserControls
                             {
                                 if (toDelete.Id == SelectedItem.Id)
                                 {
-                                    MessageBoxHelper.ShowInformation(string.Format("The project '{0}' has been deleted from the Bimplus.", SelectedItem.Name));
-                                    return;
+                                    MessageBoxHelper.ShowInformation(string.Format("The structure '{0}' has been deleted from the Bimplus.", SelectedItem.Name));
                                 }
                                 List<DtoStructure> structures = new List<DtoStructure>();
                                 structures.AddRange(Structures);
@@ -237,6 +235,29 @@ namespace AllplanBimplusDemo.UserControls
                                 else
                                     SelectedItem = null;
                             }
+                            else
+                            {
+                                if (SelectedItem != null)
+                                {
+                                    if (StructureTreeView.Items.Count > 0)
+                                    {
+                                        TreeViewItem tvi = StructureTreeView.Items[0] as TreeViewItem;
+                                        if (tvi != null)
+                                        {
+                                            TreeViewItem found = FindTreeViewItem(tvi, info.ObjectId);
+                                            if (found != null)
+                                            {
+                                                TreeViewItem parent = found.Parent as TreeViewItem;
+                                                parent.Items.Remove(found);
+                                                parent.IsSelected = true;
+
+                                                NotificationLabel.Foreground = Brushes.Red;
+                                                NotificationLabel.Content = string.Format("Structure '{0}' deleted.", (found.Header as DtoTopologyStructure).Name);
+                                            }
+                                        }
+                                    }
+                                }
+                            }
                         });
 
                         if (StructuresListBox.CheckAccess())
@@ -252,6 +273,36 @@ namespace AllplanBimplusDemo.UserControls
             }
         }
 
+        private TreeViewItem FindTreeViewItem(TreeViewItem treeViewItem, Guid structureId)
+        {
+            TreeViewItem found = null;
+            if (treeViewItem.Items.Count > 0)
+            {
+                for (int i = 0; i < treeViewItem.Items.Count; i++)
+                {
+                    TreeViewItem child = treeViewItem.Items[i] as TreeViewItem;
+                    if (child.Header is DtoTopologyStructure)
+                    {
+                        DtoTopologyStructure structure = child.Header as DtoTopologyStructure;
+                        if (structure.Id == structureId)
+                        {
+                            found = child;
+                            return found;
+                        }
+                    }
+
+                    if (child.Items.Count > 0)
+                    {
+                        found = FindTreeViewItem(child, structureId);
+                        if (found != null)
+                            return found;
+                    }
+                }
+            }
+
+            return found;
+        }
+
         private void StructureUpdated(ProjectHubItemChangedInfo info)
         {
             if (StructureTreeView != null && StructureTreeView.Items != null)
@@ -265,25 +316,13 @@ namespace AllplanBimplusDemo.UserControls
                     {
                         CancelEdit(treeViewItem, true);
 
-                        DtoTopologyStructure changedStructure = _integrationBase.ApiCore.Structures.GetTopology(info.ObjectId);
-
                         if (info.RelatedObjectId == null) // Properties changed.
                         {
-                            DtoTopologyStructure actualTopology = FindStructureFromId(_selectedTopology, info.ObjectId);
-                            if (changedStructure != null && actualTopology != null)
-                            {
-                                actualTopology.Name = changedStructure.Name;
-                                actualTopology.Color = changedStructure.Color;
-                                actualTopology.structureElementId = changedStructure.structureElementId;
-                                actualTopology.Attributes = changedStructure.Attributes;
+                            DtoTopologyStructure changedStructure = _integrationBase.ApiCore.Structures.GetTopology(_selectedTopology.Id, true);
 
-                                actualTopology.Layerid = changedStructure.Layerid;
-                                actualTopology.Number = changedStructure.Number;
-                                actualTopology.Parent = changedStructure.Parent;
-                                actualTopology.Type = changedStructure.Type;
-                            }
+                            DtoTopologyStructure actualTopology = FindStructureFromId(changedStructure, info.ObjectId);
 
-                            if (changedStructure != null)
+                            if (actualTopology != null)
                             {
                                 treeViewItem.DataContext = actualTopology;
 
@@ -295,16 +334,45 @@ namespace AllplanBimplusDemo.UserControls
                                     treeViewItem.InvalidateVisual();
                                 }
 
-                                Notification.Foreground = Brushes.Blue;
-                                Notification.Content = string.Format("Structure '{0}' changed.", changedStructure.Name);
+                                NotificationLabel.Foreground = Brushes.Blue;
+                                NotificationLabel.Content = string.Format("Structure '{0}' changed.", actualTopology.Name);
                             }
                         }
                         else
                         {
                             // Structure moved.
+                            DtoTopologyStructure changedStructure = _integrationBase.ApiCore.Structures.GetTopology(_selectedTopology.Id, true);
+                            DtoTopologyStructure actualTopology = FindStructureFromId(changedStructure, info.ObjectId);
+
+                            if (actualTopology != null)
+                            {
+                                // Get changed structure.
+                                GetStructure_Click(this, new RoutedEventArgs());
+
+                                NotificationLabel.Foreground = Brushes.Blue;
+                                NotificationLabel.Content = string.Format("Structure '{0}' changed.", actualTopology.Name);
+
+                                return;
+                            }
                         }
                     }
                 }), DispatcherPriority.Send);
+            }
+        }
+
+        private static void WriteChildren(DtoTopologyStructure topology)
+        {
+            if (topology != null)
+            {
+                Debug.WriteLine(string.Format("Write children of '{0}'", topology.Name));
+                Debug.WriteLine(string.Format("Name: {0}, Number: {1}", topology.Name, topology.Number));
+                if (topology.Children != null)
+                {
+                    foreach (DtoTopologyStructure item in topology.Children)
+                    {
+                        Debug.WriteLine(string.Format("Name: {0}, Number: {1}", item.Name, item.Number));
+                    }
+                }
             }
         }
 
@@ -314,7 +382,7 @@ namespace AllplanBimplusDemo.UserControls
             {
                 // Do nothing, if the created object is the root node.
                 if (info.ObjectId == SelectedTopology.Id)
-                    return; 
+                    return;
 
                 TreeViewItem rootItem = StructureTreeView.Items[0] as TreeViewItem;
 
@@ -360,8 +428,8 @@ namespace AllplanBimplusDemo.UserControls
 
                                         childItem.Focus();
 
-                                        Notification.Foreground = Brushes.LimeGreen;
-                                        Notification.Content = string.Format("Structure '{0}' created.", newStructure.Name);
+                                        NotificationLabel.Foreground = Brushes.LimeGreen;
+                                        NotificationLabel.Content = string.Format("Structure '{0}' created.", newStructure.Name);
                                     }
                                 }
                             }
@@ -394,8 +462,8 @@ namespace AllplanBimplusDemo.UserControls
 
                             DeleteStructure(true);
 
-                            Notification.Foreground = Brushes.Red;
-                            Notification.Content = string.Format("Structure '{0}' deleted.", structureName);
+                            NotificationLabel.Foreground = Brushes.Red;
+                            NotificationLabel.Content = string.Format("Structure '{0}' deleted.", structureName);
                         }
                     }), DispatcherPriority.Send);
                 }
@@ -580,7 +648,7 @@ namespace AllplanBimplusDemo.UserControls
                         structure.Children = new List<DtoTopologyStructure>();
 
                     DtoTopologyStructure newStructure = new DtoTopologyStructure { Name = "New structure", Parent = structure.Id };
-                    
+
                     // Type is a required field.
                     newStructure.Type = structure.Type;
 
@@ -902,6 +970,7 @@ namespace AllplanBimplusDemo.UserControls
         {
             StructureTreeView.Items.Clear();
             _orgStructureNamesDictionary.Clear();
+            NotificationLabel.Content = "";
         }
 
         private bool IsStructureBasedType(DtoTopologyStructure topology)
@@ -1190,7 +1259,7 @@ namespace AllplanBimplusDemo.UserControls
 
         private void ClearNotification()
         {
-            Notification.Content = " ";
+            NotificationLabel.Content = " ";
         }
 
         private void SetCursor(Cursor cursor)
@@ -1235,7 +1304,16 @@ namespace AllplanBimplusDemo.UserControls
             StructuresListBox.Focus();
         }
 
-        #endregion UserControl events
+        private void ListenToBimplus_Click(object sender, RoutedEventArgs e)
+        {
+            CheckBox checkBox = sender as CheckBox;
+            if (checkBox != null)
+            {
+                if (checkBox.IsChecked != true)
+                    NotificationLabel.Content = "";
+            }
+        }
 
+        #endregion UserControl events
     }
 }

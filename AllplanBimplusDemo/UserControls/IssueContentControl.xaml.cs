@@ -74,8 +74,11 @@ namespace AllplanBimplusDemo.UserControls
 
         private void _detailsControl_LoadCompleted(object sender, System.EventArgs e)
         {
-            _traceCodeTime.Dispose();
-            _traceCodeTime = null;
+            if (_traceCodeTime != null)
+            {
+                _traceCodeTime.Dispose();
+                _traceCodeTime = null;
+            }
         }
 
         private void EventHandlerCore_IssueViewSelected(object sender, BimPlusEventArgs e)

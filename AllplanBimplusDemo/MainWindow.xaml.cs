@@ -60,7 +60,10 @@ namespace AllplanBimplusDemo
                         fileStream = new FileStream(fileName, FileMode.Create);
 
                     if (fileStream != null)
+                    {
                         _streamWriter = new StreamWriter(fileStream);
+                        _streamWriter.AutoFlush = true;
+                    }
                 }
                 catch (Exception)
                 {
@@ -199,6 +202,7 @@ namespace AllplanBimplusDemo
             CsgObjects.IsEnabled = enable;
             CalatravaObjects.IsEnabled = enable;
             ConnectionObjects.IsEnabled = enable;
+            CatalogData.IsEnabled = enable;
         }
 
         private void AfterLogin()
@@ -443,6 +447,7 @@ namespace AllplanBimplusDemo
             _projectSelectionWindow.Content = _projectSelection;
             _projectSelectionWindow.Closed += ProjectSelectionWindow_Closed;
 
+            _projectSelectionWindow.Owner = this;
             _projectSelectionWindow.ShowDialog();
         }
 
@@ -770,6 +775,25 @@ namespace AllplanBimplusDemo
 
         #endregion Connections
 
+        #region Catalog data
+
+        private void CatalogData_Click(object sender, RoutedEventArgs e)
+        {
+            DisposeOldBimPlusUserControl();
+            SetViewText(sender);
+
+            CatalogsControl catalogsControl = new CatalogsControl();
+            catalogsControl.LoadContent(_integrationBase, this);
+
+
+            ContentControl.Content = catalogsControl;
+
+            SetUserControlSize(ContentControl, ContentControl.Content as Control);
+            CheckViewExist();
+        }
+
+        #endregion Catalog data
+
         #endregion menu events
 
         #region event handler
@@ -824,7 +848,9 @@ namespace AllplanBimplusDemo
 
         #region window events
 
-        private void Window_Closing(object sender, CancelEventArgs e)
+        #endregion window events
+
+        private void Window_Closed(object sender, EventArgs e)
         {
             if (_streamWriter != null)
             {
@@ -835,12 +861,8 @@ namespace AllplanBimplusDemo
 
             _applicationSettings.SaveSettings();
 
-            _streamWriter?.Flush();
-            _streamWriter?.Close();
             _integrationBase.SignalRCore?.Disconnect(true);
             DisposeOldBimPlusUserControl();
         }
-
-        #endregion window events
     }
 }

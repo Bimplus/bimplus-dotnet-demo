@@ -72,9 +72,11 @@
                     <Label Content="Structures:" Margin="{StaticResource labelMargin}" Width="67"/>
                 </StackPanel>
 
+                <!--No ContextMenu-->
+                <!--ContextMenu="{StaticResource ListBoxContentMenu}"-->
                 <ListBox Name="StructuresListBox" ItemsSource="{Binding Structures}" Margin="{StaticResource listBoxMargin}" SelectedItem="{Binding SelectedItem}"
                     IsSynchronizedWithCurrentItem="True"
-                    Height="300" HorizontalAlignment="Stretch" ContextMenu="{StaticResource ListBoxContentMenu}">
+                    Height="300" HorizontalAlignment="Stretch" >
                     
                     <ListBox.ItemTemplate>
                         <DataTemplate>
@@ -105,11 +107,11 @@
         <Grid Grid.Column="2" Name="AttributeGrid" Margin="13">
             
             <DockPanel>
-                <Label DockPanel.Dock="Bottom" Name="Notification" Content=" " FontSize="13" BorderBrush="#FF828790" BorderThickness="1,0,1,1" Visibility="Visible"/>
+                <Label DockPanel.Dock="Bottom" Name="NotificationLabel" Content=" " FontSize="13" BorderBrush="#FF828790" BorderThickness="1,0,1,1" Visibility="Visible"/>
 
                 <!--Currently no function-->
 
-                <CheckBox DockPanel.Dock="Top" Name="ListenToBimplus" Content="Listen to Bimplus." IsChecked="False" Margin="0,7,0,7" Visibility="Visible" />
+                <CheckBox DockPanel.Dock="Top" Name="ListenToBimplus" Content="Listen to Bimplus." IsChecked="False" Margin="0,7,0,7" Visibility="Visible" Click="ListenToBimplus_Click" />
 
                 <TreeView DockPanel.Dock="Top" Name="StructureTreeView" IsEnabled="{Binding HasObjects}" FontSize="13" BorderBrush="#FF828790"
                     ScrollViewer.VerticalScrollBarVisibility="Auto" HorizontalContentAlignment="Center"

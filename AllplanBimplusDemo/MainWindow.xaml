@@ -9,7 +9,7 @@
         
         mc:Ignorable="d"
         Title="Allplan Bimplus Demo" ShowInTaskbar="True" WindowStartupLocation="CenterScreen"
-        MinHeight="800" MinWidth="1200" SizeToContent="WidthAndHeight" Icon="Resources/BimplusIcon.ico" Closing="Window_Closing">
+        MinHeight="800" MinWidth="1200" SizeToContent="WidthAndHeight" Icon="Resources/BimplusIcon.ico" Closed="Window_Closed">
 
     <Window.Resources>
         <Thickness x:Key="verticalMargin">7,7,7,7</Thickness>
@@ -79,6 +79,10 @@
 
                     <MenuItem Name="Connections" Header="Co_nnections">
                         <MenuItem Name="ConnectionObjects" Header="Connection _objects" IsEnabled="False" Click="Connections_Click"/>
+                    </MenuItem>
+
+                    <MenuItem Name="Catalogs" Header="Catalogs">
+                        <MenuItem Name="CatalogData" Header="Get catalog data" IsEnabled="False" Click="CatalogData_Click"/>
                     </MenuItem>
                 </Menu>
             </Grid>

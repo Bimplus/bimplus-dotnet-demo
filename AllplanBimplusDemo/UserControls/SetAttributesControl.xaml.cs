@@ -656,7 +656,7 @@ namespace AllplanBimplusDemo.UserControls
 
             foreach (KeyValuePair<string, DtoAttributesGroup> kvpGroup in dtObject.AttributeGroups)
             {
-                DtoAttributesGroup orgGroup = null; ;
+                DtoAttributesGroup orgGroup = null;
                 if (orgAttributes != null)
                 {
                     (orgAttributes as Dictionary<string, DtoAttributesGroup>).TryGetValue(kvpGroup.Key, out orgGroup);
@@ -818,6 +818,8 @@ namespace AllplanBimplusDemo.UserControls
 
         private void GetObjects_Click(object sender, RoutedEventArgs e)
         {
+            SaveChangedAttributes();
+
             if (SelectedItem != null)
             {
                 _objects = GetObjectData(SelectedItem);
@@ -1573,6 +1575,5 @@ namespace AllplanBimplusDemo.UserControls
         }
 
         #endregion DataTemplates loaded
-
     }
 }

@@ -33,7 +33,7 @@
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="*"/>
             <ColumnDefinition Width="Auto"/>
-            <ColumnDefinition Width="Auto" MinWidth="164"/>
+            <ColumnDefinition Width="Auto" MinWidth="170"/>
         </Grid.ColumnDefinitions>
 
         <ContentControl Grid.Column="0" Name="BimExplorer" Margin="{StaticResource margin}"/>
@@ -44,7 +44,7 @@
             <StackPanel Orientation="Vertical">
                 <Label Content="Road" HorizontalAlignment="Center"/>
 
-                <Button Name="CreateAxis" Content="Create axis" IsEnabled="{Binding ButtonsEnabled}" HorizontalAlignment="Center" ToolTip="Create road axis"
+                <Button Name="CreateAxis" Content="Create Axis" IsEnabled="{Binding ButtonsEnabled}" HorizontalAlignment="Center" ToolTip="Create road axis"
                     Margin="{StaticResource VerticalMargin}" Height="{StaticResource ButtonHeight}" Width="{StaticResource ButtonWidth}"
                     Click="CreateAxis_Click"/>
             
@@ -58,6 +58,10 @@
                     Margin="{StaticResource VerticalMargin}" Height="{StaticResource ButtonHeight}" Width="{StaticResource ButtonWidth}"
                     Click="CreateBeams_Click"/>
 
+                <Button Name="CreateSlab" Content="Create Slab" IsEnabled="{Binding ButtonsEnabled}" HorizontalAlignment="Center" ToolTip="Create Slab (StructuralSurfaceMember)"
+                    Margin="{StaticResource VerticalMargin}" Height="{StaticResource ButtonHeight}" Width="{StaticResource ButtonWidth}"
+                    Click="CreateSlab_Click"/>
+
                 <Button Name="CreateSupports" Content="Create Supports" IsEnabled="{Binding ButtonsEnabled}" HorizontalAlignment="Center" ToolTip="Create Supports"
                     Margin="{StaticResource VerticalMargin}" Height="{StaticResource ButtonHeight}" Width="{StaticResource ButtonWidth}"
                     Click="CreateSupports_Click"/>
@@ -65,6 +69,19 @@
                 <Button Name="CreateLoads" Content="Create Loads" IsEnabled="{Binding ButtonsEnabled}" HorizontalAlignment="Center" ToolTip="Create Loads"
                     Margin="{StaticResource VerticalMargin}" Height="{StaticResource ButtonHeight}" Width="{StaticResource ButtonWidth}"
                     Click="CreateLoads_Click"/>
+
+                <Label Content="StructuralSteel" HorizontalAlignment="Center"/>
+
+                <Button Name="ElementAssembly" Content="Create ElementAssemblies" IsEnabled="{Binding ButtonsEnabled}" HorizontalAlignment="Center" ToolTip="Create ElementAssemblies"
+                    Margin="{StaticResource VerticalMargin}" Height="{StaticResource ButtonHeight}" Width="{StaticResource ButtonWidth}"
+                    Click="ElementAssembly_Click"/>
+                
+                <Label Content="Clean up" HorizontalAlignment="Center"/>
+
+                <Button Name="DeleteModels" Content="Delete Models" IsEnabled="{Binding ButtonsEnabled}" HorizontalAlignment="Center" ToolTip="Delete Models"
+                    Margin="{StaticResource VerticalMargin}" Height="{StaticResource ButtonHeight}" Width="{StaticResource ButtonWidth}" Click="DeleteModels_Click"
+                    />
+
             </StackPanel>
         </Grid>
         

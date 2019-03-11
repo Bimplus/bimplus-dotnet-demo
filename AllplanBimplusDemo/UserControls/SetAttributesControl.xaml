@@ -25,12 +25,13 @@
             <Thickness x:Key="labelMargin">7,2,7,2</Thickness>
             <Thickness x:Key="listBoxMargin">11,2,11,2</Thickness>
             <sys:Double x:Key="templateLabelWidth">180</sys:Double>
+            <sys:Double x:Key="testCheckBox">null</sys:Double>
 
             <ContextMenu x:Key="TreeViewContextMenu">
                 <MenuItem Header="Expand groups" IsEnabled="{Binding HasTreeViewItems}" Click="Expand_Click" />
                 <MenuItem Header="Collaps groups" IsEnabled="{Binding HasTreeViewItems}" Click="Collaps_Click" />
             </ContextMenu>
-
+            
             <DataTemplate x:Key="HeaderTextBoxTemplate">
                 <StackPanel x:Name="TextBoxTemplateStackPanel" Orientation="Horizontal" Loaded="DataTemplate_Loaded" >
                     <Label Content="{Binding Name}" Margin="2" Width="{StaticResource templateLabelWidth}"/>
@@ -66,7 +67,9 @@
             <DataTemplate x:Key="BooleanTemplate">
                 <StackPanel Orientation="Horizontal" Loaded="DataTemplate_Loaded" >
                     <Label Content="{Binding Name}" Margin="2" Width="{StaticResource templateLabelWidth}"/>
-                    <CheckBox Name="CheckBox" IsChecked="{Binding Value, Mode=TwoWay}" IsEnabled="{Binding IsChangeable}" Margin="2,10,0,0" Width="250" KeyDown="CheckBox_KeyDown" />
+                    <CheckBox Name="CheckBox" Content="{Binding Name, Mode=OneWay}" IsChecked="{Binding Value, Mode=TwoWay}" IsEnabled="{Binding IsChangeable}"
+                        Margin="2,7,0,0" Width="250" KeyDown="CheckBox_KeyDown" IsThreeState="True">
+                    </CheckBox>
                 </StackPanel>
             </DataTemplate>
 
@@ -132,7 +135,7 @@
 
         <Grid Grid.Column="2" Name="AttributeGrid" Margin="13">
             <TreeView Name="AttributeTreeView" IsEnabled="{Binding HasObjects}" FontSize="13" ContextMenu="{StaticResource TreeViewContextMenu}"
-                    ScrollViewer.VerticalScrollBarVisibility="Auto" HorizontalContentAlignment="Center"
+                ScrollViewer.VerticalScrollBarVisibility="Auto" HorizontalContentAlignment="Center"
                     SelectedItemChanged="AttributeTreeView_SelectedItemChanged" KeyDown="AttributeTreeView_KeyDown" IsTabStop="False"/>
         </Grid>
     </Grid>

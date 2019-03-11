@@ -29,31 +29,43 @@
     <ApplicationManifest>app.manifest</ApplicationManifest>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="BimPlus.Client">
+    <Reference Include="BimPlus.Client, Version=2018.0.0.0, Culture=neutral, PublicKeyToken=f8c5355fc4a4c88a, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
       <HintPath>..\SDK\BimPlus.Client.dll</HintPath>
     </Reference>
-    <Reference Include="BimPlus.Client.Api">
+    <Reference Include="BimPlus.Client.Api, Version=2018.0.0.0, Culture=neutral, PublicKeyToken=f8c5355fc4a4c88a, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
       <HintPath>..\SDK\BimPlus.Client.Api.dll</HintPath>
     </Reference>
-    <Reference Include="BimPlus.Client.Integration">
+    <Reference Include="BimPlus.Client.Integration, Version=2018.0.0.0, Culture=neutral, PublicKeyToken=f8c5355fc4a4c88a, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
       <HintPath>..\SDK\BimPlus.Client.Integration.dll</HintPath>
     </Reference>
-    <Reference Include="BimPlus.Client.WebControls">
+    <Reference Include="BimPlus.Client.WebControls, Version=2018.0.0.0, Culture=neutral, PublicKeyToken=f8c5355fc4a4c88a, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
       <HintPath>..\SDK\BimPlus.Client.WebControls.dll</HintPath>
     </Reference>
-    <Reference Include="BimPlus.Sdk.Api, Version=2017.0.0.0, Culture=neutral, PublicKeyToken=f8c5355fc4a4c88a, processorArchitecture=MSIL">
+    <Reference Include="BimPlus.LightCaseClient, Version=2018.0.0.0, Culture=neutral, PublicKeyToken=f8c5355fc4a4c88a, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\SDK\BimPlus.LightCaseClient.dll</HintPath>
+    </Reference>
+    <Reference Include="BimPlus.Sdk.Api, Version=2018.0.0.0, Culture=neutral, PublicKeyToken=f8c5355fc4a4c88a, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\SDK\BimPlus.Sdk.Api.dll</HintPath>
     </Reference>
-    <Reference Include="BimPlus.Sdk.Data, Version=2017.0.0.0, Culture=neutral, PublicKeyToken=f8c5355fc4a4c88a, processorArchitecture=MSIL">
+    <Reference Include="BimPlus.Sdk.Data, Version=2018.0.0.0, Culture=neutral, PublicKeyToken=f8c5355fc4a4c88a, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\SDK\BimPlus.Sdk.Data.dll</HintPath>
     </Reference>
-    <Reference Include="BimPlus.Sdk.IfcData, Version=2017.0.0.0, Culture=neutral, PublicKeyToken=f8c5355fc4a4c88a, processorArchitecture=MSIL">
+    <Reference Include="BimPlus.Sdk.Data.Definitions, Version=2018.0.0.0, Culture=neutral, PublicKeyToken=f8c5355fc4a4c88a, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\SDK\BimPlus.Sdk.Data.Definitions.dll</HintPath>
+    </Reference>
+    <Reference Include="BimPlus.Sdk.IfcData, Version=2018.0.0.0, Culture=neutral, PublicKeyToken=f8c5355fc4a4c88a, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\SDK\BimPlus.Sdk.IfcData.dll</HintPath>
     </Reference>
-    <Reference Include="BimPlus.Sdk.Utilities, Version=2017.0.0.0, Culture=neutral, PublicKeyToken=f8c5355fc4a4c88a, processorArchitecture=MSIL">
+    <Reference Include="BimPlus.Sdk.Utilities, Version=2018.0.0.0, Culture=neutral, PublicKeyToken=f8c5355fc4a4c88a, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\SDK\BimPlus.Sdk.Utilities.dll</HintPath>
     </Reference>
@@ -103,6 +115,9 @@
     <Compile Include="UserControls\CalatravaControl.xaml.cs">
       <DependentUpon>CalatravaControl.xaml</DependentUpon>
     </Compile>
+    <Compile Include="UserControls\CatalogControl.xaml.cs">
+      <DependentUpon>CatalogControl.xaml</DependentUpon>
+    </Compile>
     <Compile Include="UserControls\ConnectionsUserControl.xaml.cs">
       <DependentUpon>ConnectionsUserControl.xaml</DependentUpon>
     </Compile>
@@ -151,6 +166,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="UserControls\CalatravaControl.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="UserControls\CatalogControl.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -229,6 +248,10 @@
     <Resource Include="Resources\BimplusIcon.ico" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <PropertyGroup>
+    <PostBuildEvent>cd ..\..\..\SDK
+xcopy /Y "eowp.exe" "$(TargetDir)"</PostBuildEvent>
+  </PropertyGroup>
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.
   <Target Name="BeforeBuild">

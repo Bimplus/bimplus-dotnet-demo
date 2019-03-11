@@ -26,7 +26,16 @@ namespace AllplanBimplusDemo.UserControls
 
         #region properties
 
-        protected ProgressWindow ProgressWindow { get; set; }
+        private ProgressWindow _progressWindow;
+
+        protected ProgressWindow ProgressWindow
+        {
+            get { return _progressWindow; }
+            set
+            {
+                _progressWindow = value;
+            }
+        }
 
         protected bool ChangesSaved { get; set; }
 

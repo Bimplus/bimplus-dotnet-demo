@@ -10,7 +10,6 @@ using BimPlus.Sdk.Data.Geometry;
 using BimPlus.Sdk.Data.StructuralLoadResource;
 using BimPlus.Sdk.Data.TenantDto;
 using BimPlus.Sdk.Utilities.V2;
-using Nemetschek.NUtilLibrary;
 using System;
 using System.Collections.Generic;
 using System.Drawing;
@@ -20,6 +19,10 @@ using System.Windows;
 using WPFWindows = System.Windows;
 using Road = BimPlus.Sdk.Data.Road;
 using System.Diagnostics;
+using Nemetschek.NUtilLibrary;
+using BimPlus.Sdk.Data.DbCore.Steel;
+using BimPlus.Sdk.Data.CSG;
+using BimPlus.Sdk.Data.DbCore.Connection;
 
 namespace AllplanBimplusDemo.UserControls
 {
@@ -37,9 +40,13 @@ namespace AllplanBimplusDemo.UserControls
         #region private member
 
         private IntegrationBase _integrationBase;
-        private WPFWindows.Window _parentWindow;
+        private Window _parentWindow;
 
         private WebViewer _webViewer;
+
+        private const string _structuralAnalysisName = "StructuralAnalysis";
+        private const string _bimRoadName = "BimRoad TestModel_2.7";
+        private const string _structuralSteelName = "StructuralSteel";
 
         #endregion private member
 
@@ -65,7 +72,7 @@ namespace AllplanBimplusDemo.UserControls
 
         #region public methods
 
-        public void LoadContent(IntegrationBase integrationBase, WPFWindows.Window parent)
+        public void LoadContent(IntegrationBase integrationBase, Window parent)
         {
             _integrationBase = integrationBase;
             _integrationBase.EventHandlerCore.DataLoaded += EventHandlerCore_DataLoaded;
@@ -99,14 +106,13 @@ namespace AllplanBimplusDemo.UserControls
 
         #region private methods
 
-        private DtoDivision GetCalatravaModel()
+        private DtoDivision GetBimRoadModel()
         {
             DtoDivision model = null;
 
-            string modelName = "CalatravaModel";
-            string divisionName = "RootNode Calatrava model";
+            string modelName = _bimRoadName;
 
-            ProgressWindow.Text = "Get Calatrava model.";
+            ProgressWindow.Text = "Get BimRoad model.";
             ProgressWindow.Show();
             try
             {
@@ -130,7 +136,7 @@ namespace AllplanBimplusDemo.UserControls
                         // Create main root TopologyDivision node.
                         DtObject topologyDivision = _integrationBase.ApiCore.DtObjects.PostObject(new TopologyDivision
                         {
-                            Name = divisionName,
+                            Name = "RootNode",
                             Division = model.Id,
                             Parent = _integrationBase.CurrentProject.Id
                         });
@@ -156,18 +162,17 @@ namespace AllplanBimplusDemo.UserControls
             return model;
         }
 
-        private DtoDivision GetStructuralAnalysisModel()
+        private DtoDivision GetStructuralAnalysisModel(string structuralAnalysisName = _structuralAnalysisName)
         {
             DtoDivision model = null;
-            string structuralAnalysisName = "StructuralAnalysis";
-            string divisionName = "RootNode StructuralAnalysis model";
 
             ProgressWindow.Text = "Get StructuralAnalysis model.";
             ProgressWindow.Show();
 
             try
             {
-                DtoDivision existingModel = _integrationBase.ApiCore.Divisions.GetProjectDivisions(_integrationBase.CurrentProject.Id)?.Find(x => x.Name == structuralAnalysisName);
+                List<DtoDivision> divisions = _integrationBase.ApiCore.Divisions.GetProjectDivisions(_integrationBase.CurrentProject.Id);
+                DtoDivision existingModel = divisions?.Find(x => x.Name == structuralAnalysisName);
                 if (existingModel != null)
                     model = existingModel;
                 else
@@ -177,7 +182,7 @@ namespace AllplanBimplusDemo.UserControls
                     // Create main root TopologyDivision node.
                     DtObject topologyDivision = _integrationBase.ApiCore.DtObjects.PostObject(new TopologyDivision
                     {
-                        Name = divisionName,
+                        Name = "RootNode",
                         Division = model.Id,
                         Parent = _integrationBase.CurrentProject.Id
                     });
@@ -200,6 +205,13 @@ namespace AllplanBimplusDemo.UserControls
             }
 
             return model;
+        }
+
+        private DtoDivision GetModelByName(string name)
+        {
+            List<DtoDivision> divisions = _integrationBase.ApiCore.Divisions.GetProjectDivisions(_integrationBase.CurrentProject.Id);
+            DtoDivision existingModel = divisions?.Find(x => x.Name == name);
+            return existingModel;
         }
 
         /// <summary>
@@ -317,12 +329,12 @@ namespace AllplanBimplusDemo.UserControls
         }
 
         /// <summary>
-        /// Validate Axe informations...
+        /// Validate Axis informations.
         /// </summary>
         /// <param name="axes"></param>
         /// <param name="name"></param>
         /// <returns></returns>
-        private bool ValidateAxe(List<Axis> axes, string name)
+        private bool ValidateAxis(List<Axis> axes, string name)
         {
             if (axes == null || axes.Count == 0)
             {
@@ -411,7 +423,7 @@ namespace AllplanBimplusDemo.UserControls
 
         private void CreateAxis_Click(object sender, RoutedEventArgs e)
         {
-            DtoDivision model = GetCalatravaModel();
+            DtoDivision model = GetBimRoadModel();
             if (model == null)
                 return;
 
@@ -420,23 +432,23 @@ namespace AllplanBimplusDemo.UserControls
             try
             {
                 string axisName = "AXA1";
-                List<Axis> axes = _integrationBase.ApiCore.DtObjects.GetObjects<Axis>(model.TopologyDivisionId.Value, false, false, true);
+                List<Axis> axises = _integrationBase.ApiCore.DtObjects.GetObjects<Axis>(model.TopologyDivisionId.Value, false, false, true);
 
                 Axis axis = null;
 
-                if (axes != null)
+                if (axises == null || axises.Count == 0 || axises.All(x => x.Name != "AXA1"))
                 {
                     // Test.
-                    axis = axes.FirstOrDefault(a => a.Name == axisName);
+                    axis = axises.FirstOrDefault(a => a.Name == axisName);
                     // Create axis in Bimplus.
                     Axis dtoAxis = PostAxis(model, Properties.Resources.cadicsData);
 
                     if (dtoAxis != null)
-                        axes?.Add(dtoAxis);
+                        axises?.Add(dtoAxis);
                 }
 
                 // ConvertGeometry must be called at the end of all post commands to convert GeometryData to Templates.
-                if (ValidateAxe(axes, axisName))
+                if (ValidateAxis(axises, axisName))
                     _integrationBase.ApiCore.Projects.ConvertGeometry(model.ProjectId);
 
                 NavigateToControl();
@@ -481,9 +493,9 @@ namespace AllplanBimplusDemo.UserControls
                             Name = "N1",
                             Division = model.Id,
                             LogParentID = model.ProjectId,
-                            X = 500,
-                            Y = 500,
-                            Z = 200,
+                            X = 0.5,
+                            Y = 0.5,
+                            Z = 0.2,
                             NodeId = 1,
                             AppliedCondition = new BoundaryNodeCondition("TRigid", true, true, true, true, true, true)
                         },
@@ -493,9 +505,9 @@ namespace AllplanBimplusDemo.UserControls
                             Name = "N2",
                             Division = model.Id,
                             LogParentID = model.ProjectId,
-                            X = 1000,
-                            Y = 500,
-                            Z = 200,
+                            X = 2.0,
+                            Y = 0.5,
+                            Z = 0.2,
                             NodeId = 2,
                             AppliedCondition = new BoundaryNodeCondition("TRigid", false, false, false, true, false, false)
                         },
@@ -505,9 +517,9 @@ namespace AllplanBimplusDemo.UserControls
                             Name = "N3",
                             Division = model.Id,
                             LogParentID = model.ProjectId,
-                            X = 1800,
-                            Y = 500,
-                            Z = 200,
+                            X = 3.6,
+                            Y = 0.5,
+                            Z = 0.2,
                             NodeId = 3,
                             AppliedCondition = new BoundaryNodeCondition("TRigid",false,false,false,false,true,true)
                         },
@@ -517,9 +529,9 @@ namespace AllplanBimplusDemo.UserControls
                             Name = "N4",
                             Division = model.Id,
                             LogParentID = model.ProjectId,
-                            X = 500,
-                            Y = 2500,
-                            Z = 200,
+                            X = 0.5,
+                            Y = 6.0,
+                            Z = 0.2,
                             NodeId = 4,
                             AppliedCondition = new BoundaryNodeCondition("Fixed", false, 3, true, false, 1.9, false)
                         },
@@ -529,9 +541,9 @@ namespace AllplanBimplusDemo.UserControls
                             Name = "N5",
                             Division = model.Id,
                             LogParentID = model.ProjectId,
-                            X = 1000,
-                            Y = 2500,
-                            Z = 200,
+                            X = 2.0,
+                            Y = 6.0,
+                            Z = 0.2,
                             NodeId = 5,
                             AppliedCondition = new BoundaryNodeCondition("RRidig", false, false, false, true, true, true)
                         },
@@ -541,9 +553,9 @@ namespace AllplanBimplusDemo.UserControls
                             Name = "N6",
                             Division = model.Id,
                             LogParentID = model.ProjectId,
-                            X = 1500,
-                            Y = 2500,
-                            Z = 200,
+                            X = 3.6,
+                            Y = 6.0,
+                            Z = 0.2,
                             NodeId = 6,
                             AppliedCondition = new BoundaryNodeCondition("N6", 2.0, true, 3.0, 2.5, false, 4.7)
                         },
@@ -553,9 +565,9 @@ namespace AllplanBimplusDemo.UserControls
                             Name = "N7",
                             Division = model.Id,
                             LogParentID = model.ProjectId,
-                            X = 500,
-                            Y = 500,
-                            Z = 1700,
+                            X = 0.5,
+                            Y = 0.5,
+                            Z = 3.4,
                             NodeId = 7
                         },
                         new StructuralPointConnection
@@ -564,9 +576,9 @@ namespace AllplanBimplusDemo.UserControls
                             Name = "N8",
                             Division = model.Id,
                             LogParentID = model.ProjectId,
-                            X = 1000,
-                            Y = 500,
-                            Z = 1700,
+                            X = 2.0,
+                            Y = 0.5,
+                            Z = 3.4,
                             NodeId = 8
                         },
                         new StructuralPointConnection
@@ -575,9 +587,9 @@ namespace AllplanBimplusDemo.UserControls
                             Name = "N9",
                             Division = model.Id,
                             LogParentID = model.ProjectId,
-                            X = 1500,
-                            Y = 500,
-                            Z = 1700,
+                            X = 3.6,
+                            Y = 0.5,
+                            Z = 3.4,
                             NodeId = 9
                         },
                         new StructuralPointConnection
@@ -586,9 +598,9 @@ namespace AllplanBimplusDemo.UserControls
                             Name = "N10",
                             Division = model.Id,
                             LogParentID = model.ProjectId,
-                            X = 500,
-                            Y = 2500,
-                            Z = 2200,
+                            X = 0.5,
+                            Y = 6.0,
+                            Z = 4.4,
                             NodeId = 10
                         },
                         new StructuralPointConnection
@@ -597,9 +609,9 @@ namespace AllplanBimplusDemo.UserControls
                             Name = "N11",
                             Division = model.Id,
                             LogParentID = model.ProjectId,
-                            X = 1000,
-                            Y = 2500,
-                            Z = 2200,
+                            X = 2.0,
+                            Y = 6.0,
+                            Z = 4.4,
                             NodeId = 11
                         },
                         new StructuralPointConnection
@@ -608,9 +620,9 @@ namespace AllplanBimplusDemo.UserControls
                             Name = "N12",
                             Division = model.Id,
                             LogParentID = model.ProjectId,
-                            X = 1500,
-                            Y = 2500,
-                            Z = 2200,
+                            X = 3.600,
+                            Y = 6.000,
+                            Z = 4.400,
                             NodeId = 12
                         }
                     }
@@ -645,7 +657,7 @@ namespace AllplanBimplusDemo.UserControls
 
             if (nodes?.Count < 12 || nodes == null)
             {
-                MessageBoxHelper.ShowInformation("Please create at first Node objects.", _parentWindow);
+                MessageBoxHelper.ShowInformation("Please create at first Node objects (StructuralPointConnection).", _parentWindow);
                 return;
             }
 
@@ -985,7 +997,7 @@ namespace AllplanBimplusDemo.UserControls
 
             if (nodes?.Count < 12 || nodes == null)
             {
-                MessageBoxHelper.ShowInformation("Please create at first Node objects.", _parentWindow);
+                MessageBoxHelper.ShowInformation("Please create at first Node objects (StructuralPointConnection).", _parentWindow);
                 return;
             }
 
@@ -1099,8 +1111,11 @@ namespace AllplanBimplusDemo.UserControls
                         NavigateToControl();
                         return;
                     }
+                    else
+                        hideProgressWindow = true;
                 }
-                MessageBoxHelper.ShowInformation("Could not create StructuralPointReaction objects.", _parentWindow);
+                else
+                    MessageBoxHelper.ShowInformation("Could not create StructuralPointReaction objects.", _parentWindow);
             }
             finally
             {
@@ -1120,7 +1135,7 @@ namespace AllplanBimplusDemo.UserControls
 
             if (nodes?.Count < 12 || nodes == null)
             {
-                MessageBoxHelper.ShowInformation("Please create at first Node objects.", _parentWindow);
+                MessageBoxHelper.ShowInformation("Please create at first Node objects (StructuralPointConnection).", _parentWindow);
                 return;
             }
 
@@ -1286,6 +1301,289 @@ namespace AllplanBimplusDemo.UserControls
                 if (hideProgressWindow)
                     ProgressWindow.Hide();
             }
+        }
+
+        private void CreateSlab_Click(object sender, RoutedEventArgs e)
+        {
+            DtoDivision model = GetStructuralAnalysisModel();
+            if (model == null)
+            {
+                MessageBoxHelper.ShowInformation("Could not create a model.", _parentWindow);
+                return;
+            }
+
+            List<StructuralPointConnection> nodes = _integrationBase.ApiCore.DtObjects.GetObjects<StructuralPointConnection>(model.TopologyDivisionId.Value, false, false, true);
+            if (nodes?.Count < 12)
+            {
+                MessageBoxHelper.ShowInformation("Please create at first node objects (StructuralPointConnection).");
+                return;
+            }
+
+            if (nodes == null)
+                return;
+
+            // use PostObjectAsync to create one StructuralSurfaceMember
+            StructuralSurfaceMember structuralSurfaceMember = new StructuralSurfaceMember
+            {
+                Parent = model.TopologyDivisionId.Value,
+                Name = "B12",
+                Division = model.Id,
+                LogParentID = model.ProjectId,
+                ConnectedBy = new List<RelConnectsStructuralMember>(2)
+                {
+                    new RelConnectsStructuralMember
+                    {
+                        OrderNumber = 1,
+                        Name = "P1",
+                        RelatedStructuralConnection = nodes.Find(x => x.NodeId == 9)?.Id
+                    },
+                    new RelConnectsStructuralMember
+                    {
+                        OrderNumber = 2,
+                        Name = "P2",
+                        RelatedStructuralConnection = nodes.Find(x => x.NodeId == 8)?.Id
+                    },
+                    new RelConnectsStructuralMember
+                    {
+                        OrderNumber = 3,
+                        Name = "P3",
+                        RelatedStructuralConnection = nodes.Find(x => x.NodeId == 11)?.Id
+                    },
+                    new RelConnectsStructuralMember
+                    {
+                        OrderNumber = 4,
+                        Name = "P4",
+                        RelatedStructuralConnection = nodes.Find(x => x.NodeId == 12)?.Id
+                    }
+                }
+            };
+
+            Action action = new Action(() =>
+            {
+                NavigateToControl();
+            });
+
+            // Test!
+            string json = Newtonsoft.Json.JsonConvert.SerializeObject(structuralSurfaceMember);
+            _integrationBase.ApiCore.DtObjects.PostObjectAsync(structuralSurfaceMember, (exception, result) =>
+            {
+                if (exception != null)
+                    MessageBoxHelper.ShowInformation(exception.Message);
+                else
+                {
+                    HttpStatusCode code = _integrationBase.ApiCore.Projects.ConvertGeometry(model.ProjectId);
+                    if (code != HttpStatusCode.OK)
+                        MessageBoxHelper.ShowInformation("StructuralSurfaceMember couldn't be created.");
+                    else
+                    {
+                        if (CreateSlab.CheckAccess())
+                            NavigateToControl();
+                        else
+                            Dispatcher.BeginInvoke(WPFWindows.Threading.DispatcherPriority.Normal, action);
+                    }
+                }
+            });
+        }
+
+        private void ElementAssembly_Click(object sender, RoutedEventArgs e)
+        {
+            DtoDivision model = GetStructuralAnalysisModel(_structuralSteelName);
+            if (model == null)
+            {
+                MessageBoxHelper.ShowInformation("Can't create a model.", _parentWindow);
+                return;
+            }
+
+            List<StructuralPointConnection> nodes = _integrationBase.ApiCore.DtObjects.GetObjects<StructuralPointConnection>(model.ProjectId, false, false, true);
+            if (nodes == null || nodes.Count < 12)
+            {
+                MessageBoxHelper.ShowInformation("Please create at first Node objects (StructuralPointConnection).");
+                return;
+            }
+
+            StructuralPointConnection node3 = nodes.Find(x => x.NodeId == 3);
+            StructuralPointConnection node6 = nodes.Find(x => x.NodeId == 6);
+            StructuralPointConnection node9 = nodes.Find(x => x.NodeId == 9);
+            StructuralPointConnection node12 = nodes.Find(x => x.NodeId == 12);
+            if (node12 == null || node3 == null || node6 == null || node9 == null)
+            {
+                MessageBoxHelper.ShowInformation("Can't identify nodes.");
+                return;
+            }
+
+            List<StructuralCurveMember> beams = _integrationBase.ApiCore.DtObjects.GetObjects<StructuralCurveMember>(model.ProjectId, false, false, true);
+            if (beams == null)
+            {
+                MessageBoxHelper.ShowInformation("Please create at first Beam objects (StructuralCurveMember).");
+                return;
+            }
+
+            TopologyDivision topologyDivision = new TopologyDivision
+            {
+                Id = model.TopologyDivisionId.Value,
+                Division = model.Id,
+                LogParentID = model.ProjectId
+            };
+
+            // Create some assemblies with relation to StructuralCurveMembers.
+            ElementAssembly assembly1 = new ElementAssembly
+            {
+                Name = "B3_Column",
+                Parent = model.TopologyDivisionId,
+                Division = model.Id,
+                LogParentID = _integrationBase.CurrentProject.Id,
+                CsgTree = new DtoCsgTree { Color = (uint)Color.MediumBlue.ToArgb() },
+                Connections = new List<ConnectionElement>
+                {
+                    new RelConnectsElements
+                    {
+                        Parent = model.ProjectId,
+                        Name = "Relation_B3_Assembly",
+                        RelatedElement = beams.Find(x => x.Name == "B3")?.Id
+                    }
+                }
+            };
+
+            assembly1.CsgTree.Elements.Add(new Path
+            {
+                Geometry = new List<CsgGeoElement>
+                {
+                    new StartPolygon {Point = new List<double> {node3.X.GetValueOrDefault() * 1000, node3.Y.GetValueOrDefault() * 1000, node3.Z.GetValueOrDefault() * 1000}},
+                    new Line {Point = new List<double> {node9.X.GetValueOrDefault() * 1000, node9.Y.GetValueOrDefault() * 1000, node9.Z.GetValueOrDefault() * 1000}}
+                },
+                CrossSection = "HEB120"
+            });
+            topologyDivision.AddChild(assembly1);
+
+            ElementAssembly assembly2 = new ElementAssembly
+            {
+                Name = "B6_Column",
+                Parent = model.TopologyDivisionId,
+                Division = model.Id,
+                LogParentID = _integrationBase.CurrentProject.Id,
+                CsgTree = new DtoCsgTree { Color = (uint)Color.MediumBlue.ToArgb() },
+                Connections = new List<ConnectionElement>
+                {
+                    new RelConnectsElements
+                    {
+                        Parent = model.ProjectId,
+                        Name = "Relation_B6_Assembly",
+                        RelatedElement = beams.Find(x => x.Name == "B6")?.Id
+                    }
+                }
+            };
+
+            assembly2.CsgTree.Elements.Add(new Path
+            {
+                Rotation = Math.PI / 2,
+                Geometry = new List<CsgGeoElement>
+                {
+                    new StartPolygon {Point = new List<double> {node6.X.GetValueOrDefault() * 1000, node6.Y.GetValueOrDefault() * 1000, node6.Z.GetValueOrDefault() * 1000}},
+                    new Line {Point = new List<double> {node12.X.GetValueOrDefault() * 1000, node12.Y.GetValueOrDefault() * 1000, node12.Z.GetValueOrDefault() * 1000}}
+                },
+                CrossSection = "HEB120"
+            });
+            topologyDivision.AddChild(assembly2);
+
+            ElementAssembly assembly3 = new ElementAssembly
+            {
+                Name = "B13_Column",
+                Parent = model.TopologyDivisionId,
+                Division = model.Id,
+                LogParentID = _integrationBase.CurrentProject.Id,
+                CsgTree = new DtoCsgTree { Color = (uint)Color.CornflowerBlue.ToArgb() },
+                Connections = new List<ConnectionElement>
+                {
+                    new RelConnectsElements
+                    {
+                        Parent = model.ProjectId,
+                        Name = "Relation_B13_Assembly",
+                        RelatedElement = beams.Find(x => x.Name == "B13")?.Id
+                    }
+                }
+            };
+
+            assembly3.CsgTree.Elements.Add(new Path
+            {
+                OffsetX = 30,
+                OffsetY = -50,
+                Geometry = new List<CsgGeoElement>
+                {
+                    new StartPolygon {Point = new List<double> {node9.X.GetValueOrDefault() * 1000, node9.Y.GetValueOrDefault() * 1000, node9.Z.GetValueOrDefault() * 1000}},
+                    new Line {Point = new List<double> {node12.X.GetValueOrDefault() * 1000, node12.Y.GetValueOrDefault() * 1000, node12.Z.GetValueOrDefault() * 1000}}
+                },
+                CrossSection = "UPE100"
+            });
+            topologyDivision.AddChild(assembly3);
+
+            ElementAssembly assembly4 = new ElementAssembly
+            {
+                Name = "B13_ColumnB",
+                Parent = model.TopologyDivisionId,
+                Division = model.Id,
+                LogParentID = _integrationBase.CurrentProject.Id,
+                CsgTree = new DtoCsgTree { Color = (uint)Color.CornflowerBlue.ToArgb() },
+                Connections = new List<ConnectionElement>
+                {
+                    new RelConnectsElements
+                    {
+                        Parent = model.ProjectId,
+                        Name = "Relation_B13_Assembly",
+                        RelatedElement = beams.Find(x => x.Name == "B13")?.Id
+                    }
+                }
+            };
+
+            assembly4.CsgTree.Elements.Add(new Path
+            {
+                Rotation = Math.PI,
+                OffsetX = 30,
+                OffsetY = 50,
+                Geometry = new List<CsgGeoElement>
+                {
+                    new StartPolygon {Point = new List<double> {node9.X.GetValueOrDefault() * 1000, node9.Y.GetValueOrDefault() * 1000, node9.Z.GetValueOrDefault() * 1000}},
+                    new Line {Point = new List<double> {node12.X.GetValueOrDefault() * 1000, node12.Y.GetValueOrDefault() * 1000, node12.Z.GetValueOrDefault() * 1000}}
+                },
+                CrossSection = "UPE100"
+            });
+            topologyDivision.AddChild(assembly4);
+
+            string json = Newtonsoft.Json.JsonConvert.SerializeObject(topologyDivision);
+
+            // Post object to Bimplus.
+            HttpStatusCode result = _integrationBase.ApiCore.DtObjects.PutObject(topologyDivision);
+
+            if (result == HttpStatusCode.OK)
+            {
+                result = _integrationBase.ApiCore.Projects.ConvertGeometry(model.ProjectId);
+                if (result == HttpStatusCode.OK)
+                    NavigateToControl();
+            }
+            else
+                MessageBoxHelper.ShowInformation("Can't create a TopologyDivision.");
+        }
+
+        private void DeleteModels_Click(object sender, RoutedEventArgs e)
+        {
+            DtoDivision model = GetModelByName(_structuralAnalysisName);
+            if (model != null)
+            {
+                bool deleted = _integrationBase.ApiCore.Divisions.DeleteDtoDivision(model.Id);
+            }
+
+            model = GetModelByName(_bimRoadName);
+            if (model != null)
+            {
+                bool deleted = _integrationBase.ApiCore.Divisions.DeleteDtoDivision(model.Id);
+            }
+
+            model = GetModelByName(_structuralSteelName);
+            if (model != null)
+            {
+                bool deleted = _integrationBase.ApiCore.Divisions.DeleteDtoDivision(model.Id);
+            }
+
+            NavigateToControl();
         }
 
         #endregion button events
