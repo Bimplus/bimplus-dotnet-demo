@@ -2240,6 +2240,22 @@
             Property RelatedStructuralActivity can be a StructuralReaction (Support) or a StructuralAction (Load).
             </summary>
         </member>
+        <member name="T:BimPlus.Sdk.Data.DbCore.Analysis.RelConnectsWithEccentricity">
+            <summary>
+            RelConnectsWithEccentricity class.
+            http://www.buildingsmart-tech.org/ifc/IFC4/Add2/html/schema/ifcstructuralanalysisdomain/lexical/ifcrelconnectswitheccentricity.htm
+            </summary>
+        </member>
+        <member name="P:BimPlus.Sdk.Data.DbCore.Analysis.RelConnectsWithEccentricity.ObjectName">
+            <summary>
+            Returns ObjectName.
+            </summary>
+        </member>
+        <member name="P:BimPlus.Sdk.Data.DbCore.Analysis.RelConnectsWithEccentricity.Elementtyp">
+            <summary>
+            Returns Elementtyp.
+            </summary>
+        </member>
         <member name="T:BimPlus.Sdk.Data.DbCore.Analysis.RelConnectsStructuralMember">
             <summary>
             RelConnectsStructuralMember class.
@@ -2290,6 +2306,24 @@
         <member name="P:BimPlus.Sdk.Data.DbCore.Analysis.RelConnectsStructuralMember.DirectionZ">
             <summary>
             Property DirectionZ.
+            </summary>
+        </member>
+        <member name="T:BimPlus.Sdk.Data.DbCore.Analysis.StructuralAnalysisDomain">
+            <summary>
+            StructuralAnalysis class.
+                General Structural Analysis elements.
+                Type_Id = /21/773/
+                IFC:  7.7.3 IfcStructuralAnalysisDomain
+            </summary>
+        </member>
+        <member name="P:BimPlus.Sdk.Data.DbCore.Analysis.StructuralAnalysisDomain.ObjectName">
+            <summary>
+            Returns ObjectName.
+            </summary>
+        </member>
+        <member name="P:BimPlus.Sdk.Data.DbCore.Analysis.StructuralAnalysisDomain.Elementtyp">
+            <summary>
+            Returns Elementtyp.
             </summary>
         </member>
         <member name="T:BimPlus.Sdk.Data.DbCore.Analysis.StructuralCurveAction">
@@ -2656,18 +2690,18 @@
             Returns Elementtyp.
             </summary>
         </member>
-        <member name="T:BimPlus.Sdk.Data.DbCore.Bridge.Foundation">
+        <member name="T:BimPlus.Sdk.Data.DbCore.Bridge.BridgeFoundation">
             <summary>
             Foundation class.
                 Type_Id = /14/20/
             </summary>
         </member>
-        <member name="P:BimPlus.Sdk.Data.DbCore.Bridge.Foundation.ObjectName">
+        <member name="P:BimPlus.Sdk.Data.DbCore.Bridge.BridgeFoundation.ObjectName">
             <summary>
             Returns ObjectName.
             </summary>
         </member>
-        <member name="P:BimPlus.Sdk.Data.DbCore.Bridge.Foundation.Elementtyp">
+        <member name="P:BimPlus.Sdk.Data.DbCore.Bridge.BridgeFoundation.Elementtyp">
             <summary>
             Returns Elementtyp.
             </summary>
@@ -3323,6 +3357,22 @@
             Returns Elementtyp.
             </summary>
         </member>
+        <member name="T:BimPlus.Sdk.Data.DbCore.Inventory.Furnishing">
+            <summary>
+            Furnishing class.
+                Furnishing /180/54320/
+            </summary>
+        </member>
+        <member name="P:BimPlus.Sdk.Data.DbCore.Inventory.Furnishing.ObjectName">
+            <summary>
+            Returns ObjectName.
+            </summary>
+        </member>
+        <member name="P:BimPlus.Sdk.Data.DbCore.Inventory.Furnishing.Elementtyp">
+            <summary>
+            Returns Elementtyp.
+            </summary>
+        </member>
         <member name="T:BimPlus.Sdk.Data.DbCore.Precast.PrecastLayerSubArea">
             <summary>
             PrecastLayerSubArea class.
@@ -3697,23 +3747,6 @@
             </summary>
         </member>
         <member name="P:BimPlus.Sdk.Data.DbCore.Building.Plate.Elementtyp">
-            <summary>
-            Returns Elementtyp.
-            </summary>
-        </member>
-        <member name="T:BimPlus.Sdk.Data.DbCore.Building.Railing">
-            <summary>
-            Railing class.
-                Railing element
-                Type_Id = /1/10/63325/
-            </summary>
-        </member>
-        <member name="P:BimPlus.Sdk.Data.DbCore.Building.Railing.ObjectName">
-            <summary>
-            Returns ObjectName.
-            </summary>
-        </member>
-        <member name="P:BimPlus.Sdk.Data.DbCore.Building.Railing.Elementtyp">
             <summary>
             Returns Elementtyp.
             </summary>
@@ -4627,18 +4660,18 @@
             Returns Elementtyp.
             </summary>
         </member>
-        <member name="T:BimPlus.Sdk.Data.DbCore.Finishings.Furnishing">
+        <member name="T:BimPlus.Sdk.Data.DbCore.Finishings.Fixture">
             <summary>
-            Furnishing class.
-                Furnishing /3/20/54320/
+            Fixture class.
+                Fixture /30/1/
             </summary>
         </member>
-        <member name="P:BimPlus.Sdk.Data.DbCore.Finishings.Furnishing.ObjectName">
+        <member name="P:BimPlus.Sdk.Data.DbCore.Finishings.Fixture.ObjectName">
             <summary>
             Returns ObjectName.
             </summary>
         </member>
-        <member name="P:BimPlus.Sdk.Data.DbCore.Finishings.Furnishing.Elementtyp">
+        <member name="P:BimPlus.Sdk.Data.DbCore.Finishings.Fixture.Elementtyp">
             <summary>
             Returns Elementtyp.
             </summary>
@@ -5862,6 +5895,11 @@
             Property ImportType.
             </summary>
         </member>
+        <member name="P:BimPlus.Sdk.Data.DbCore.Revision.Revision.Release">
+            <summary>
+            Property Release.
+            </summary>
+        </member>
         <member name="T:BimPlus.Sdk.Data.DbCore.Road.CentralReserve">
             <summary>
             CentralReserve class.
@@ -6324,6 +6362,21 @@
             </summary>
         </member>
         <member name="P:BimPlus.Sdk.Data.DbCore.Structure.TopologyStructure.Elementtyp">
+            <summary>
+            Returns Elementtyp.
+            </summary>
+        </member>
+        <member name="T:BimPlus.Sdk.Data.DbCore.Structure.TopologyItemFilterResult">
+            <summary>
+            TopologyItemFilterResult (topology structure node) class.
+            </summary>
+        </member>
+        <member name="P:BimPlus.Sdk.Data.DbCore.Structure.TopologyItemFilterResult.ObjectName">
+            <summary>
+            Returns ObjectName.
+            </summary>
+        </member>
+        <member name="P:BimPlus.Sdk.Data.DbCore.Structure.TopologyItemFilterResult.Elementtyp">
             <summary>
             Returns Elementtyp.
             </summary>
@@ -7008,7 +7061,8 @@
         </member>
         <member name="T:BimPlus.Sdk.Data.DbCore.Terrain.TerrainElement">
             <summary>
-            TerrainElement class.
+            TerrainElement class. 
+            (For this element is also IFC element  "IfcGeographicElement" used)
                 Terrain element
                 Type_Id = /16/10/
             </summary>
@@ -7405,6 +7459,11 @@
             <summary>
             Complex property
             </summary>.
+        </member>
+        <member name="F:BimPlus.Sdk.Data.DbCore.DbObjectType.Catalog">
+            <summary>
+            Catalog.
+            </summary>
         </member>
         <member name="T:BimPlus.Sdk.Data.DbCore.DbObjectHandler">
             <summary>
@@ -7982,6 +8041,11 @@
             Public member tabAttribProjectProperties.
             </summary>
         </member>
+        <member name="F:BimPlus.Sdk.Data.DbCore.TableNames.tabAttribDivisionProperties">
+            <summary>
+            Public member tabAttribProjectProperties.
+            </summary>
+        </member>
         <member name="F:BimPlus.Sdk.Data.DbCore.TableNames.tabAttribCalculatedProperties">
             <summary>
             Public member tabAttribCalculatedProperties.
@@ -8274,6 +8338,16 @@
             <param name="value"></param>
             <returns>True if added.</returns>
         </member>
+        <member name="M:BimPlus.Sdk.Data.DbCore.DtObject.AddGuidProperty(System.String,System.String,System.Nullable{System.Guid},System.Boolean)">
+            <summary>
+            Add Guid property.
+            </summary>
+            <param name="generalGroup"></param>
+            <param name="property"></param>
+            <param name="value"></param>
+            <param name="replaceIfExists"></param>
+            <returns>True if added.</returns>
+        </member>
         <member name="M:BimPlus.Sdk.Data.DbCore.DtObject.AddProperty(System.String,System.String,System.Object,System.Boolean)">
             <summary>
             Add property.
@@ -8552,6 +8626,382 @@
             </summary>
             <param name="msg">message</param>
         </member>
+        <member name="T:BimPlus.Sdk.Data.Job.DtoLandXmlJobData">
+            <summary>
+            DtoLandXmlJobData class.
+            </summary>
+        </member>
+        <member name="P:BimPlus.Sdk.Data.Job.DtoLandXmlJobData.TeamSlug">
+            <summary>
+            Property TeamSlug.
+            </summary>
+        </member>
+        <member name="P:BimPlus.Sdk.Data.Job.DtoLandXmlJobData.ProjectId">
+            <summary>
+            Property ProjectId.
+            </summary>
+        </member>
+        <member name="P:BimPlus.Sdk.Data.Job.DtoLandXmlJobData.ProjectName">
+            <summary>
+            Property ProjectName.
+            </summary>
+        </member>
+        <member name="P:BimPlus.Sdk.Data.Job.DtoLandXmlJobData.ModelId">
+            <summary>
+            Property ModelId.
+            </summary>
+        </member>
+        <member name="P:BimPlus.Sdk.Data.Job.DtoLandXmlJobData.ModelName">
+            <summary>
+            Property ModelName.
+            </summary>
+        </member>
+        <member name="P:BimPlus.Sdk.Data.Job.DtoLandXmlJobData.AttachmentId">
+            <summary>
+            Property AttachmentId.
+            </summary>
+        </member>
+        <member name="P:BimPlus.Sdk.Data.Job.DtoLandXmlJobData.FileKey">
+            <summary>
+            Property FileKey.
+            </summary>
+        </member>
+        <member name="P:BimPlus.Sdk.Data.Job.DtoLandXmlJobData.FileName">
+            <summary>
+            Property FileName.
+            </summary>
+        </member>
+        <member name="P:BimPlus.Sdk.Data.Job.DtoLandXmlJobData.FilePath">
+            <summary>
+            Property FilePath.
+            </summary>
+        </member>
+        <member name="P:BimPlus.Sdk.Data.Job.DtoLandXmlJobData.CrossToken">
+            <summary>
+            Property CrossToken.
+            </summary>
+        </member>
+        <member name="T:BimPlus.Sdk.Data.Job.DtoExportJobData">
+            <summary>
+            DtoExportJobData class.
+            </summary>
+        </member>
+        <member name="P:BimPlus.Sdk.Data.Job.DtoExportJobData.TeamSlug">
+            <summary>
+            Property TeamSlug.
+            </summary>
+        </member>
+        <member name="P:BimPlus.Sdk.Data.Job.DtoExportJobData.ProjectId">
+            <summary>
+            Property ProjectId.
+            The project-id the job is for.
+            </summary>
+        </member>
+        <member name="P:BimPlus.Sdk.Data.Job.DtoExportJobData.ProjectName">
+            <summary>
+            Property ProjectName
+            The project name the job is for.
+            </summary>
+        </member>
+        <member name="P:BimPlus.Sdk.Data.Job.DtoExportJobData.ModelId">
+            <summary>
+            Property ModelId.
+            The model-id the job is for.
+            </summary>
+        </member>
+        <member name="P:BimPlus.Sdk.Data.Job.DtoExportJobData.ModelName">
+            <summary>
+            Property ModelName.
+            The model name the job is for.
+            </summary>
+        </member>
+        <member name="P:BimPlus.Sdk.Data.Job.DtoExportJobData.SelectionId">
+            <summary>
+            Property SelectionId.
+            The selection-id the job is for.
+            </summary>
+        </member>
+        <member name="P:BimPlus.Sdk.Data.Job.DtoExportJobData.FileName">
+            <summary>
+            Property 
+            The name of exported ifc file.
+            </summary>
+        </member>
+        <member name="P:BimPlus.Sdk.Data.Job.DtoExportJobData.IfcFileVersion">
+            <summary>
+            Property IfcFileVersion.
+            </summary>
+        </member>
+        <member name="P:BimPlus.Sdk.Data.Job.DtoExportJobData.CrossToken">
+            <summary>
+            Property CrossToken.
+            Resource token for upload exported IFC file.
+            </summary>
+        </member>
+        <member name="P:BimPlus.Sdk.Data.Job.DtoExportJobData.AttachmentId">
+            <summary>
+            Property AttachmentId.
+            Id of attachment - there is exported IFC file.
+            </summary>
+        </member>
+        <member name="P:BimPlus.Sdk.Data.Job.DtoExportJobData.AttachmentUrl">
+            <summary>
+            Property AttachmentUrl.
+            URL for download attachment from server.
+            </summary>
+        </member>
+        <member name="P:BimPlus.Sdk.Data.Job.DtoExportJobData.ExportStatus">
+            <summary>
+            Property 
+            URL for download attachment from server.
+            </summary>
+        </member>
+        <member name="P:BimPlus.Sdk.Data.Job.DtoExportJobData.UserId">
+            <summary>
+            Property UserId.
+            Id of user that started the export.
+            </summary>
+        </member>
+        <member name="T:BimPlus.Sdk.Data.Job.DtoImportJob">
+            <summary>
+            DtoImportJob class.
+            </summary>
+        </member>
+        <member name="P:BimPlus.Sdk.Data.Job.DtoImportJob.ProjectId">
+            <summary>
+            Property ProjectId.
+            The project id the job is for.        /// </summary>
+        </member>
+        <member name="P:BimPlus.Sdk.Data.Job.DtoImportJob.ModelId">
+            <summary>
+            Property ModelId.
+            The model id the job is for.
+            </summary>
+        </member>
+        <member name="P:BimPlus.Sdk.Data.Job.DtoImportJob.JobNumber">
+            <summary>
+            Property JobNumber.
+            A speakable continuous unique-number of the job.
+            </summary>
+        </member>
+        <member name="P:BimPlus.Sdk.Data.Job.DtoImportJob.Type">
+            <summary>
+            Property Type.
+            The worker type this job is for (f.e. IMPORT).
+            </summary>
+        </member>
+        <member name="P:BimPlus.Sdk.Data.Job.DtoImportJob.Locked">
+            <summary>
+            Property Locked.
+            A flag if the job is locked and is already processed by a worker.
+            </summary>
+        </member>
+        <member name="P:BimPlus.Sdk.Data.Job.DtoImportJob.TeamId">
+            <summary>
+            Property TeamId.
+            The team id the job is for.
+            </summary>
+        </member>
+        <member name="P:BimPlus.Sdk.Data.Job.DtoImportJob.UserId">
+            <summary>
+            Property UserId.
+            The user id of the user how created this job.
+            </summary>
+        </member>
+        <member name="P:BimPlus.Sdk.Data.Job.DtoImportJob.Timestamp">
+            <summary>
+            Property Timestamp.
+            The timestamp then the job was created.
+            </summary>
+        </member>
+        <member name="P:BimPlus.Sdk.Data.Job.DtoImportJob.JobData">
+            <summary>
+            Property JobData.
+            Additional data to start the job.
+            </summary>
+        </member>
+        <member name="P:BimPlus.Sdk.Data.Job.DtoImportJob.Status">
+            <summary>
+            Property Status.
+            The status of the job (f.e. PENDING, PROCESSING, DONE or FAILED).
+            </summary>
+        </member>
+        <member name="P:BimPlus.Sdk.Data.Job.DtoImportJob.Output">
+            <summary>
+            Property Output.
+            The output of the job.
+            </summary>
+        </member>
+        <member name="P:BimPlus.Sdk.Data.Job.DtoImportJob.OutputData">
+            <summary>
+            Property OutputData.
+            The output data of the job (could be the exception message or someting).
+            </summary>
+        </member>
+        <member name="P:BimPlus.Sdk.Data.Job.DtoImportJob.StartedAt">
+            <summary>
+            Property StartedAt.
+            The timestamp then the worker starts to work on the job.
+            </summary>
+        </member>
+        <member name="P:BimPlus.Sdk.Data.Job.DtoImportJob.DoneAt">
+            <summary>
+            Property DoneAt.
+            The timestamp then the worker stops working on the job.
+            </summary>
+        </member>
+        <member name="P:BimPlus.Sdk.Data.Job.DtoImportJob.DurationInSeconds">
+            <summary>
+            Property DurationInSeconds.
+            The processing time of the job in seconds.
+            </summary>
+        </member>
+        <member name="P:BimPlus.Sdk.Data.Job.DtoImportJob.ImportFileSize">
+            <summary>
+            Property ImportFileSize.
+            The size of imported file.
+            </summary>
+        </member>
+        <member name="P:BimPlus.Sdk.Data.Job.DtoImportJob.AlterObjectsCount">
+            <summary>
+            Property AlterObjectsCount.
+            The AlterObjectsCount represents a count of TBs to be altered, 
+            or count of alter objects to be processed before set ALLPLAN_ASYNC job to the status done.
+            </summary>
+        </member>
+        <member name="P:BimPlus.Sdk.Data.Job.DtoImportJob.SuppressEmailNotification">
+            <summary>
+            Property SuppressEmailNotification.
+            </summary>
+        </member>
+        <member name="T:BimPlus.Sdk.Data.Job.AllplanJobData">
+            <summary>
+            AllplanJobData class.
+            Job data for allplan import job (created by server).
+            </summary>
+        </member>
+        <member name="P:BimPlus.Sdk.Data.Job.AllplanJobData.TeamId">
+            <summary>
+            Property TeamId.
+            </summary>
+        </member>
+        <member name="P:BimPlus.Sdk.Data.Job.AllplanJobData.TeamSlug">
+            <summary>
+            Property TeamSlug.
+            </summary>
+        </member>
+        <member name="P:BimPlus.Sdk.Data.Job.AllplanJobData.ProjectId">
+            <summary>
+            Property ProjectId.
+            </summary>
+        </member>
+        <member name="P:BimPlus.Sdk.Data.Job.AllplanJobData.ProjectName">
+            <summary>
+            Property ProjectName.
+            </summary>
+        </member>
+        <member name="P:BimPlus.Sdk.Data.Job.AllplanJobData.ModelId">
+            <summary>
+            Property ModelId.
+            </summary>
+        </member>
+        <member name="P:BimPlus.Sdk.Data.Job.AllplanJobData.ModelName">
+            <summary>
+            Property ModelName.
+            </summary>
+        </member>
+        <member name="P:BimPlus.Sdk.Data.Job.AllplanJobData.JobData">
+            <summary>
+            Property JobData.
+            Original additional data to start the job (taken from DtoImportJob).
+            </summary>
+        </member>
+        <member name="P:BimPlus.Sdk.Data.Job.AllplanJobData.JobRequestToken">
+            <summary>
+            Property JobRequestToken.
+            Job request to be executed as async job in api server.
+            </summary>
+        </member>
+        <member name="P:BimPlus.Sdk.Data.Job.AllplanJobData.SuppressEmailNotification">
+            <summary>
+            Property SuppressEmailNotification.
+            </summary>
+        </member>
+        <member name="T:BimPlus.Sdk.Data.Job.DtoImportJobData">
+            <summary>
+            DtoImportJobData class.
+            </summary>
+        </member>
+        <member name="P:BimPlus.Sdk.Data.Job.DtoImportJobData.TeamSlug">
+            <summary>
+            Property TeamSlug.
+            </summary>
+        </member>
+        <member name="P:BimPlus.Sdk.Data.Job.DtoImportJobData.ProjectId">
+            <summary>
+            Property ProjectId.
+            </summary>
+        </member>
+        <member name="P:BimPlus.Sdk.Data.Job.DtoImportJobData.ProjectName">
+            <summary>
+            Property ProjectName.
+            </summary>
+        </member>
+        <member name="P:BimPlus.Sdk.Data.Job.DtoImportJobData.ModelId">
+            <summary>
+            Property ModelId.
+            </summary>
+        </member>
+        <member name="P:BimPlus.Sdk.Data.Job.DtoImportJobData.ModelName">
+            <summary>
+            Property ModelName.
+            </summary>
+        </member>
+        <member name="P:BimPlus.Sdk.Data.Job.DtoImportJobData.AttachmentId">
+            <summary>
+            Property AttachmentId.
+            </summary>
+        </member>
+        <member name="P:BimPlus.Sdk.Data.Job.DtoImportJobData.FileKey">
+            <summary>
+            Property FileKey.
+            </summary>
+        </member>
+        <member name="P:BimPlus.Sdk.Data.Job.DtoImportJobData.FileName">
+            <summary>
+            Property FileName.
+            </summary>
+        </member>
+        <member name="P:BimPlus.Sdk.Data.Job.DtoImportJobData.FilePath">
+            <summary>
+            Property FilePath.
+            </summary>
+        </member>
+        <member name="P:BimPlus.Sdk.Data.Job.DtoImportJobData.FileExtension">
+            <summary>
+            Property FileExtension.
+            </summary>
+        </member>
+        <member name="P:BimPlus.Sdk.Data.Job.DtoImportJobData.FileZipped">
+            <summary>
+            Property FileZipped.
+            </summary>
+        </member>
+        <member name="P:BimPlus.Sdk.Data.Job.DtoImportJobData.CrossToken">
+            <summary>
+            Property CrossToken.
+            </summary>
+        </member>
+        <member name="P:BimPlus.Sdk.Data.Job.DtoImportJobData.AttachmentLogId">
+            <summary>
+            Property AttachmentLogId.
+            </summary>
+        </member>
+        <member name="P:BimPlus.Sdk.Data.Job.DtoImportJobData.AttachmentLogUrl">
+            <summary>
+            Property AttachmentLogUrl.
+            </summary>
+        </member>
         <member name="T:BimPlus.Sdk.Data.Messages.DtoSystemGroup">
             <summary>
             DtoSystemGroup class.
@@ -8800,6 +9250,11 @@
             PROJECT_STRUCTURES_DELETED.
             </summary>
         </member>
+        <member name="F:BimPlus.Sdk.Data.Notification.ProjectItemChangeType.STRUCTURE_TRIGGERED">
+            <summary>
+            STRUCTURE_TRIGGERED.
+            </summary>
+        </member>
         <member name="F:BimPlus.Sdk.Data.Notification.ProjectItemChangeType.TOPOLOGY_ITEM_CREATED">
             <summary>
             TOPOLOGY_ITEM_CREATED.
@@ -8860,6 +9315,11 @@
         <member name="P:BimPlus.Sdk.Data.Notification.ProjectLockChangedInfo.ClientId">
             <summary>
             Property ClientId (Id of the client who initiated change).
+            </summary>
+        </member>
+        <member name="P:BimPlus.Sdk.Data.Notification.ProjectLockChangedInfo.Name">
+            <summary>
+            Property Name (name of root object).
             </summary>
         </member>
         <member name="T:BimPlus.Sdk.Data.Notification.ClashDetectionProgressReport">
@@ -10128,6 +10588,11 @@
             Property Description.
             </summary>
         </member>
+        <member name="P:BimPlus.Sdk.Data.Content.BaseContentDto.Localization">
+            <summary>
+            Property Localization.
+            </summary>
+        </member>
         <member name="T:BimPlus.Sdk.Data.Content.ContextUnitTypes">
             <summary>
             Predefined context unit types.
@@ -10766,6 +11231,61 @@
         <member name="P:BimPlus.Sdk.Data.Content.DtoBaseUnitDef.ObjectID">
             <summary>
             Property ObjectID (Parent's derived unit object ID. For internal purposes only).
+            </summary>
+        </member>
+        <member name="T:BimPlus.Sdk.Data.Content.DtoCatalog">
+            <summary>
+            DtoCatalog class.
+            </summary>
+        </member>
+        <member name="P:BimPlus.Sdk.Data.Content.DtoCatalog.Norms">
+            <summary>
+            Property Norms.
+            </summary>
+        </member>
+        <member name="P:BimPlus.Sdk.Data.Content.DtoCatalog.Countries">
+            <summary>
+            Property Countries.
+            </summary>
+        </member>
+        <member name="P:BimPlus.Sdk.Data.Content.DtoCatalog.CatalogType">
+            <summary>
+            Property CatalogType.
+            </summary>
+        </member>
+        <member name="M:BimPlus.Sdk.Data.Content.DtoCatalog.#ctor">
+            <summary>
+            DtoCatalog constructor.
+            </summary>
+        </member>
+        <member name="T:BimPlus.Sdk.Data.Content.DtoCatalogItemProperties">
+            <summary>
+            DtoCatalogItemProperties class.
+            </summary>
+        </member>
+        <member name="P:BimPlus.Sdk.Data.Content.DtoCatalogItemProperties.FreeAttributeId">
+            <summary>
+            Property FreeAttributeId.
+            </summary>
+        </member>
+        <member name="P:BimPlus.Sdk.Data.Content.DtoCatalogItemProperties.FreeAttributeValue">
+            <summary>
+            Property FreeAttributeValue.
+            </summary>
+        </member>
+        <member name="T:BimPlus.Sdk.Data.Content.DtoCatalogItem">
+            <summary>
+            DtoCatalogItem class.
+            </summary>
+        </member>
+        <member name="P:BimPlus.Sdk.Data.Content.DtoCatalogItem.CatalogId">
+            <summary>
+            Property CatalogId.
+            </summary>
+        </member>
+        <member name="P:BimPlus.Sdk.Data.Content.DtoCatalogItem.Properties">
+            <summary>
+            Properties
             </summary>
         </member>
         <member name="T:BimPlus.Sdk.Data.CSG.CsgGeoType">
@@ -11598,6 +12118,9 @@
         <member name="F:BimPlus.Sdk.Data.AttachmentType.SCIA">
             <summary>/2/8/ SCIA.</summary>
         </member>
+        <member name="F:BimPlus.Sdk.Data.AttachmentType.LandXML">
+            <summary>/2/9/ LandXML file.</summary>
+        </member>
         <member name="T:BimPlus.Sdk.Data.AttachmentClassification">
             <summary>
             AttachmentClassification enum.
@@ -11726,6 +12249,9 @@
         <member name="F:BimPlus.Sdk.Data.ExportReturnCode.ERROR_SHARE_CREATING">
             <summary>ERROR_SHARE_CREATING.</summary>
         </member>
+        <member name="F:BimPlus.Sdk.Data.ExportReturnCode.ERROR_ATTACHMENT_TOO_BIG">
+            <summary>ERROR_ATTACHMENT_TOO_BIG - exported IFC file is too big</summary>
+        </member>
         <member name="T:BimPlus.Sdk.Data.WorkerType">
             <summary>
             WorkerType enum.
@@ -11783,6 +12309,9 @@
         </member>
         <member name="F:BimPlus.Sdk.Data.WorkerType.REVISIONS_COMPARISION">
             <summary>REVISIONS_COMPARISION.</summary>
+        </member>
+        <member name="F:BimPlus.Sdk.Data.WorkerType.LANDXML">
+            <summary>LANDXML.</summary>
         </member>
         <member name="T:BimPlus.Sdk.Data.JobStatus">
             <summary>
@@ -11980,21 +12509,6 @@
         <member name="F:BimPlus.Sdk.Data.CacheType.ElementPsetCache">
             <summary>
             ElementPsetCache.
-            </summary>
-        </member>
-        <member name="T:BimPlus.Sdk.Data.LocalisationType">
-            <summary>
-            LocalisationType enum.
-            </summary>
-        </member>
-        <member name="F:BimPlus.Sdk.Data.LocalisationType.Content">
-            <summary>
-            Content.
-            </summary>
-        </member>
-        <member name="F:BimPlus.Sdk.Data.LocalisationType.ElementType">
-            <summary>
-            ElementType.
             </summary>
         </member>
         <member name="T:BimPlus.Sdk.Data.ExternalServices.DtoExternalServiceInput">
@@ -12259,327 +12773,6 @@
         <member name="P:BimPlus.Sdk.Data.Hello.DtoHello.Status">
             <summary>
             Return status.
-            </summary>
-        </member>
-        <member name="T:BimPlus.Sdk.Data.Job.DtoExportJobData">
-            <summary>
-            DtoExportJobData class.
-            </summary>
-        </member>
-        <member name="P:BimPlus.Sdk.Data.Job.DtoExportJobData.TeamSlug">
-            <summary>
-            Property TeamSlug.
-            </summary>
-        </member>
-        <member name="P:BimPlus.Sdk.Data.Job.DtoExportJobData.ProjectId">
-            <summary>
-            Property ProjectId.
-            The project-id the job is for.
-            </summary>
-        </member>
-        <member name="P:BimPlus.Sdk.Data.Job.DtoExportJobData.ProjectName">
-            <summary>
-            Property ProjectName
-            The project name the job is for.
-            </summary>
-        </member>
-        <member name="P:BimPlus.Sdk.Data.Job.DtoExportJobData.ModelId">
-            <summary>
-            Property ModelId.
-            The model-id the job is for.
-            </summary>
-        </member>
-        <member name="P:BimPlus.Sdk.Data.Job.DtoExportJobData.ModelName">
-            <summary>
-            Property ModelName.
-            The model name the job is for.
-            </summary>
-        </member>
-        <member name="P:BimPlus.Sdk.Data.Job.DtoExportJobData.SelectionId">
-            <summary>
-            Property SelectionId.
-            The selection-id the job is for.
-            </summary>
-        </member>
-        <member name="P:BimPlus.Sdk.Data.Job.DtoExportJobData.FileName">
-            <summary>
-            Property 
-            The name of exported ifc file.
-            </summary>
-        </member>
-        <member name="P:BimPlus.Sdk.Data.Job.DtoExportJobData.IfcFileVersion">
-            <summary>
-            Property IfcFileVersion.
-            </summary>
-        </member>
-        <member name="P:BimPlus.Sdk.Data.Job.DtoExportJobData.CrossToken">
-            <summary>
-            Property CrossToken.
-            Resource token for upload exported IFC file.
-            </summary>
-        </member>
-        <member name="P:BimPlus.Sdk.Data.Job.DtoExportJobData.AttachmentId">
-            <summary>
-            Property AttachmentId.
-            Id of attachment - there is exported IFC file.
-            </summary>
-        </member>
-        <member name="P:BimPlus.Sdk.Data.Job.DtoExportJobData.AttachmentUrl">
-            <summary>
-            Property AttachmentUrl.
-            URL for download attachment from server.
-            </summary>
-        </member>
-        <member name="P:BimPlus.Sdk.Data.Job.DtoExportJobData.ExportStatus">
-            <summary>
-            Property 
-            URL for download attachment from server.
-            </summary>
-        </member>
-        <member name="P:BimPlus.Sdk.Data.Job.DtoExportJobData.UserId">
-            <summary>
-            Property UserId.
-            Id of user that started the export.
-            </summary>
-        </member>
-        <member name="T:BimPlus.Sdk.Data.Job.DtoImportJob">
-            <summary>
-            DtoImportJob class.
-            </summary>
-        </member>
-        <member name="P:BimPlus.Sdk.Data.Job.DtoImportJob.ProjectId">
-            <summary>
-            Property ProjectId.
-            The project id the job is for.        /// </summary>
-        </member>
-        <member name="P:BimPlus.Sdk.Data.Job.DtoImportJob.ModelId">
-            <summary>
-            Property ModelId.
-            The model id the job is for.
-            </summary>
-        </member>
-        <member name="P:BimPlus.Sdk.Data.Job.DtoImportJob.JobNumber">
-            <summary>
-            Property JobNumber.
-            A speakable continuous unique-number of the job.
-            </summary>
-        </member>
-        <member name="P:BimPlus.Sdk.Data.Job.DtoImportJob.Type">
-            <summary>
-            Property Type.
-            The worker type this job is for (f.e. IMPORT).
-            </summary>
-        </member>
-        <member name="P:BimPlus.Sdk.Data.Job.DtoImportJob.Locked">
-            <summary>
-            Property Locked.
-            A flag if the job is locked and is already processed by a worker.
-            </summary>
-        </member>
-        <member name="P:BimPlus.Sdk.Data.Job.DtoImportJob.TeamId">
-            <summary>
-            Property TeamId.
-            The team id the job is for.
-            </summary>
-        </member>
-        <member name="P:BimPlus.Sdk.Data.Job.DtoImportJob.UserId">
-            <summary>
-            Property UserId.
-            The user id of the user how created this job.
-            </summary>
-        </member>
-        <member name="P:BimPlus.Sdk.Data.Job.DtoImportJob.Timestamp">
-            <summary>
-            Property Timestamp.
-            The timestamp then the job was created.
-            </summary>
-        </member>
-        <member name="P:BimPlus.Sdk.Data.Job.DtoImportJob.JobData">
-            <summary>
-            Property JobData.
-            Additional data to start the job.
-            </summary>
-        </member>
-        <member name="P:BimPlus.Sdk.Data.Job.DtoImportJob.Status">
-            <summary>
-            Property Status.
-            The status of the job (f.e. PENDING, PROCESSING, DONE or FAILED).
-            </summary>
-        </member>
-        <member name="P:BimPlus.Sdk.Data.Job.DtoImportJob.Output">
-            <summary>
-            Property Output.
-            The output of the job.
-            </summary>
-        </member>
-        <member name="P:BimPlus.Sdk.Data.Job.DtoImportJob.OutputData">
-            <summary>
-            Property OutputData.
-            The output data of the job (could be the exception message or someting).
-            </summary>
-        </member>
-        <member name="P:BimPlus.Sdk.Data.Job.DtoImportJob.StartedAt">
-            <summary>
-            Property StartedAt.
-            The timestamp then the worker starts to work on the job.
-            </summary>
-        </member>
-        <member name="P:BimPlus.Sdk.Data.Job.DtoImportJob.DoneAt">
-            <summary>
-            Property DoneAt.
-            The timestamp then the worker stops working on the job.
-            </summary>
-        </member>
-        <member name="P:BimPlus.Sdk.Data.Job.DtoImportJob.DurationInSeconds">
-            <summary>
-            Property DurationInSeconds.
-            The processing time of the job in seconds.
-            </summary>
-        </member>
-        <member name="P:BimPlus.Sdk.Data.Job.DtoImportJob.ImportFileSize">
-            <summary>
-            Property ImportFileSize.
-            The size of imported file.
-            </summary>
-        </member>
-        <member name="P:BimPlus.Sdk.Data.Job.DtoImportJob.AlterObjectsCount">
-            <summary>
-            Property AlterObjectsCount.
-            The AlterObjectsCount represents a count of TBs to be altered, 
-            or count of alter objects to be processed before set ALLPLAN_ASYNC job to the status done.
-            </summary>
-        </member>
-        <member name="P:BimPlus.Sdk.Data.Job.DtoImportJob.SuppressEmailNotification">
-            <summary>
-            Property SuppressEmailNotification.
-            </summary>
-        </member>
-        <member name="T:BimPlus.Sdk.Data.Job.AllplanJobData">
-            <summary>
-            AllplanJobData class.
-            Job data for allplan import job (created by server).
-            </summary>
-        </member>
-        <member name="P:BimPlus.Sdk.Data.Job.AllplanJobData.TeamId">
-            <summary>
-            Property TeamId.
-            </summary>
-        </member>
-        <member name="P:BimPlus.Sdk.Data.Job.AllplanJobData.TeamSlug">
-            <summary>
-            Property TeamSlug.
-            </summary>
-        </member>
-        <member name="P:BimPlus.Sdk.Data.Job.AllplanJobData.ProjectId">
-            <summary>
-            Property ProjectId.
-            </summary>
-        </member>
-        <member name="P:BimPlus.Sdk.Data.Job.AllplanJobData.ProjectName">
-            <summary>
-            Property ProjectName.
-            </summary>
-        </member>
-        <member name="P:BimPlus.Sdk.Data.Job.AllplanJobData.ModelId">
-            <summary>
-            Property ModelId.
-            </summary>
-        </member>
-        <member name="P:BimPlus.Sdk.Data.Job.AllplanJobData.ModelName">
-            <summary>
-            Property ModelName.
-            </summary>
-        </member>
-        <member name="P:BimPlus.Sdk.Data.Job.AllplanJobData.JobData">
-            <summary>
-            Property JobData.
-            Original additional data to start the job (taken from DtoImportJob).
-            </summary>
-        </member>
-        <member name="P:BimPlus.Sdk.Data.Job.AllplanJobData.JobRequestToken">
-            <summary>
-            Property JobRequestToken.
-            Job request to be executed as async job in api server.
-            </summary>
-        </member>
-        <member name="P:BimPlus.Sdk.Data.Job.AllplanJobData.SuppressEmailNotification">
-            <summary>
-            Property SuppressEmailNotification.
-            </summary>
-        </member>
-        <member name="T:BimPlus.Sdk.Data.Job.DtoImportJobData">
-            <summary>
-            DtoImportJobData class.
-            </summary>
-        </member>
-        <member name="P:BimPlus.Sdk.Data.Job.DtoImportJobData.TeamSlug">
-            <summary>
-            Property TeamSlug.
-            </summary>
-        </member>
-        <member name="P:BimPlus.Sdk.Data.Job.DtoImportJobData.ProjectId">
-            <summary>
-            Property ProjectId.
-            </summary>
-        </member>
-        <member name="P:BimPlus.Sdk.Data.Job.DtoImportJobData.ProjectName">
-            <summary>
-            Property ProjectName.
-            </summary>
-        </member>
-        <member name="P:BimPlus.Sdk.Data.Job.DtoImportJobData.ModelId">
-            <summary>
-            Property ModelId.
-            </summary>
-        </member>
-        <member name="P:BimPlus.Sdk.Data.Job.DtoImportJobData.ModelName">
-            <summary>
-            Property ModelName.
-            </summary>
-        </member>
-        <member name="P:BimPlus.Sdk.Data.Job.DtoImportJobData.AttachmentId">
-            <summary>
-            Property AttachmentId.
-            </summary>
-        </member>
-        <member name="P:BimPlus.Sdk.Data.Job.DtoImportJobData.FileKey">
-            <summary>
-            Property FileKey.
-            </summary>
-        </member>
-        <member name="P:BimPlus.Sdk.Data.Job.DtoImportJobData.FileName">
-            <summary>
-            Property FileName.
-            </summary>
-        </member>
-        <member name="P:BimPlus.Sdk.Data.Job.DtoImportJobData.FilePath">
-            <summary>
-            Property FilePath.
-            </summary>
-        </member>
-        <member name="P:BimPlus.Sdk.Data.Job.DtoImportJobData.FileExtension">
-            <summary>
-            Property FileExtension.
-            </summary>
-        </member>
-        <member name="P:BimPlus.Sdk.Data.Job.DtoImportJobData.FileZipped">
-            <summary>
-            Property FileZipped.
-            </summary>
-        </member>
-        <member name="P:BimPlus.Sdk.Data.Job.DtoImportJobData.CrossToken">
-            <summary>
-            Property CrossToken.
-            </summary>
-        </member>
-        <member name="P:BimPlus.Sdk.Data.Job.DtoImportJobData.AttachmentLogId">
-            <summary>
-            Property AttachmentLogId.
-            </summary>
-        </member>
-        <member name="P:BimPlus.Sdk.Data.Job.DtoImportJobData.AttachmentLogUrl">
-            <summary>
-            Property AttachmentLogUrl.
             </summary>
         </member>
         <member name="T:BimPlus.Sdk.Data.Monitoring.DtoMonitoringCompany">
@@ -13672,61 +13865,6 @@
             Property Value.
             </summary>
         </member>
-        <member name="T:BimPlus.Sdk.Data.TenantDto.DtoObjectType">
-            <summary>
-            DtoObjectType class.
-            </summary>
-        </member>
-        <member name="P:BimPlus.Sdk.Data.TenantDto.DtoObjectType.Id">
-            <summary>
-            Property Id.
-            </summary>
-        </member>
-        <member name="P:BimPlus.Sdk.Data.TenantDto.DtoObjectType.ProjectId">
-            <summary>
-            Property project Id.
-            </summary>
-        </member>
-        <member name="P:BimPlus.Sdk.Data.TenantDto.DtoObjectType.Type">
-            <summary>
-            Property project Id.
-            </summary>
-        </member>
-        <member name="P:BimPlus.Sdk.Data.TenantDto.DtoObjectType.Name">
-            <summary>
-            Property Name.
-            </summary>
-        </member>
-        <member name="P:BimPlus.Sdk.Data.TenantDto.DtoObjectType.Description">
-            <summary>
-            Property description.
-            </summary>
-        </member>
-        <member name="P:BimPlus.Sdk.Data.TenantDto.DtoObjectType.CustomModeType">
-            <summary>
-            Property CustomModeType.
-            </summary>
-        </member>
-        <member name="P:BimPlus.Sdk.Data.TenantDto.DtoObjectType.DefinedBy">
-            <summary>
-            Property add.
-            </summary>
-        </member>
-        <member name="F:BimPlus.Sdk.Data.TenantDto.ObjectType.ModelType">
-            <summary>
-            Model type.
-            </summary>
-        </member>
-        <member name="F:BimPlus.Sdk.Data.TenantDto.ObjectType.DocumentType">
-            <summary>
-            Document type.
-            </summary>
-        </member>
-        <member name="F:BimPlus.Sdk.Data.TenantDto.ObjectType.GroupType">
-            <summary>
-            Groups type.
-            </summary>
-        </member>
         <member name="T:BimPlus.Sdk.Data.TenantDto.DtoObjectsAttributes">
             <summary>
             DtoObjectsAttributes class.
@@ -14650,6 +14788,16 @@
             Norms for profile
             </summary>
         </member>
+        <member name="P:BimPlus.Sdk.Data.TenantDto.DtoCrossSection.GroupName">
+            <summary>
+             GroupName of CrossSectionDefinition will be returned by filter query i.ex. 'filter=I200'
+            </summary>
+        </member>
+        <member name="P:BimPlus.Sdk.Data.TenantDto.DtoCrossSection.CrossSectionDefinitionId">
+            <summary>
+            CrossSectionDefinition will be returned by filter query i.ex. 'filter=I200'
+            </summary>
+        </member>
         <member name="M:BimPlus.Sdk.Data.TenantDto.DtoCrossSection.GetHashCode">
             <summary>
             Get hash code.
@@ -14967,6 +15115,36 @@
             Specifies list of issue id's, which should be exported into Excel file.
             </summary>
         </member>
+        <member name="T:BimPlus.Sdk.Data.TenantDto.DtoExcelCustomTableExport">
+            <summary>
+            DtoExcelIssuesExport class.
+            Class, where are all informations for export issues into Excel file.
+            </summary>
+        </member>
+        <member name="P:BimPlus.Sdk.Data.TenantDto.DtoExcelCustomTableExport.Columns">
+            <summary>
+            Property columns.
+            Specifies list of column names, which should be exported into Excel file.
+            </summary>
+        </member>
+        <member name="P:BimPlus.Sdk.Data.TenantDto.DtoExcelCustomTableExport.RangeColumn">
+            <summary>
+            Property columns.
+            Specifies column name for witch is defined range for output
+            </summary>
+        </member>
+        <member name="P:BimPlus.Sdk.Data.TenantDto.DtoExcelCustomTableExport.MinValue">
+            <summary>
+            Property MinValue.
+            Specifies min value for rangeColumn
+            </summary>
+        </member>
+        <member name="P:BimPlus.Sdk.Data.TenantDto.DtoExcelCustomTableExport.MaxValue">
+            <summary>
+            Property MaxValue.
+            Specifies max value for rangeColumn
+            </summary>
+        </member>
         <member name="T:BimPlus.Sdk.Data.TenantDto.DtoExportObject">
             <summary>
             DtoExportObject class.
@@ -15042,6 +15220,11 @@
             Structure type.
             </summary>
         </member>
+        <member name="F:BimPlus.Sdk.Data.TenantDto.DtoExportObjectSelection.SelectionType.TopologyStructure">
+            <summary>
+            TopologyStructure type.
+            </summary>
+        </member>
         <member name="M:BimPlus.Sdk.Data.TenantDto.DtoExportObjectSelection.#ctor(BimPlus.Sdk.Data.TenantDto.DtoExportObjectSelection.SelectionType)">
             <summary>
             Constructor.
@@ -15093,6 +15276,11 @@
             Property Structure.
             </summary>
         </member>
+        <member name="P:BimPlus.Sdk.Data.TenantDto.DtoExportObjectSelection.TopologyStructure">
+            <summary>
+            Property TopologyStructure.
+            </summary>
+        </member>
         <member name="T:BimPlus.Sdk.Data.TenantDto.DtoFilterElements">
             <summary>
             DtoFilterElements class.
@@ -15126,6 +15314,26 @@
         <member name="P:BimPlus.Sdk.Data.TenantDto.DtoFilterSelection.NodeInfoList">
             <summary>
             Property NodeInfoList.
+            </summary>
+        </member>
+        <member name="T:BimPlus.Sdk.Data.TenantDto.DtoTopologyStructureSelection">
+            <summary>
+            DtoTopologyStructureSelection class.
+            </summary>
+        </member>
+        <member name="M:BimPlus.Sdk.Data.TenantDto.DtoTopologyStructureSelection.#ctor">
+            <summary>
+            Constructor.
+            </summary>
+        </member>
+        <member name="P:BimPlus.Sdk.Data.TenantDto.DtoTopologyStructureSelection.Layers">
+            <summary>
+            Property Layers. Specifies layers objects for scene.
+            </summary>
+        </member>
+        <member name="P:BimPlus.Sdk.Data.TenantDto.DtoTopologyStructureSelection.Structures">
+            <summary>
+            Property Structures.
             </summary>
         </member>
         <member name="T:BimPlus.Sdk.Data.TenantDto.DtoStructureSelection">
@@ -15847,6 +16055,11 @@
             Property Rights.
             </summary>
         </member>
+        <member name="P:BimPlus.Sdk.Data.TenantDto.DtoAttachment.Thumbnail">
+            <summary>
+            Property Thumbnail.
+            </summary>
+        </member>
         <member name="M:BimPlus.Sdk.Data.TenantDto.DtoAttachment.#ctor">
             <summary>
             Constructor.
@@ -16040,6 +16253,11 @@
             Property ProjectId.
             </summary>
         </member>
+        <member name="P:BimPlus.Sdk.Data.TenantDto.DtoDivision.UserGroupId">
+            <summary>
+            Property UserGroupId.
+            </summary>
+        </member>
         <member name="P:BimPlus.Sdk.Data.TenantDto.DtoDivision.TopologyDivisionId">
             <summary>
             Property TopologyDivisionId.
@@ -16126,9 +16344,9 @@
             Property IfcProject (IfcProjectId, if it's available).
             </summary>
         </member>
-        <member name="P:BimPlus.Sdk.Data.TenantDto.DtoDivision.ModelType">
+        <member name="P:BimPlus.Sdk.Data.TenantDto.DtoDivision.Thumbnail">
             <summary>
-            Model Type.
+            Property Thumbnail.
             </summary>
         </member>
         <member name="T:BimPlus.Sdk.Data.TenantDto.DtoDivisionMove">
@@ -16765,6 +16983,16 @@
             Property InputType (type of imported model (Allplan, IFC, SketchUp, ...)).
             </summary>
         </member>
+        <member name="P:BimPlus.Sdk.Data.TenantDto.DtoRevision.Release">
+            <summary>
+            Property Release
+            </summary>
+        </member>
+        <member name="P:BimPlus.Sdk.Data.TenantDto.DtoRevision.ReleaseLastVersion">
+            <summary>
+            Property release Last Version
+            </summary>
+        </member>
         <member name="P:BimPlus.Sdk.Data.TenantDto.DtoRevision.CreatedByUserId">
             <summary>
             Property CreatedByUserId.
@@ -17024,6 +17252,11 @@
             Property HighlightedSelected (List of Guid's of highlighted selected objects).
             </summary>
         </member>
+        <member name="P:BimPlus.Sdk.Data.TenantDto.DtoSceneObjects.Coloring">
+            <summary>
+            Property Coloring (List of Guid's of defined color).
+            </summary>
+        </member>
         <member name="M:BimPlus.Sdk.Data.TenantDto.DtoSceneObjects.InitializeEmptyField">
             <summary>
             Initialize empty fields.
@@ -17099,7 +17332,11 @@
             Property ClippingPlane. Specifies scene clipping plane.
             </summary>
         </member>
-        <!-- Ungültiger XML-Kommentar wurde für den Member "P:BimPlus.Sdk.Data.TenantDto.DtoScene.ClippingPlanes" ignoriert -->
+        <member name="P:BimPlus.Sdk.Data.TenantDto.DtoScene.ClippingPlanes">
+            <summary>
+            Property ClippingPlanes. Specifies scene clipping planes.
+            </summary>
+        </member>
         <member name="P:BimPlus.Sdk.Data.TenantDto.DtoScene.RotationCenter">
             <summary>
             Property RotationCenter. (x,y,z coordinate)
@@ -17870,6 +18107,11 @@
             Property IfcType.
             </summary>
         </member>
+        <member name="P:BimPlus.Sdk.Data.TenantDto.DtoElementTypeStructure.OrderNumber">
+            <summary>
+            Property OrderNr ( internally for sorting).
+            </summary>
+        </member>
         <member name="T:BimPlus.Sdk.Data.TenantDto.TopologyInputData">
             <summary>
             TopologyInputData class. Class containing additional input data for topology calls.
@@ -18634,6 +18876,11 @@
             List of roles (Not including user rights).
             </summary>
         </member>
+        <member name="P:BimPlus.Sdk.Data.UserAdministration.DtoProjectMember.Group">
+            <summary>
+            Property group.
+            </summary>
+        </member>
         <member name="T:BimPlus.Sdk.Data.UserAdministration.DtoDocumentMember">
             <summary>
             DtoDocumentMember class.
@@ -18738,6 +18985,9 @@
              Property Roles (Id and name of user's roles withing the project).
             </summary>
         </member>
+        <member name="P:BimPlus.Sdk.Data.UserAdministration.DtoProjectRoleShort.UserGroup">
+            <summary>Group to which the user is invited.</summary>
+        </member>
         <member name="T:BimPlus.Sdk.Data.UserAdministration.TeamMembersProjectsRolesOverview">
             <summary>
             TeamMembersProjectsRolesOverview class.
@@ -18797,6 +19047,98 @@
             Property NewPassword.
             </summary>
         </member>
+        <member name="T:BimPlus.Sdk.Data.UserAdministration.DtoUserGroup">
+            <summary>
+            DtoUserGroup class.
+            </summary>
+        </member>
+        <member name="P:BimPlus.Sdk.Data.UserAdministration.DtoUserGroup.Id">
+            <summary>
+            Property Id.
+            </summary>
+        </member>
+        <member name="P:BimPlus.Sdk.Data.UserAdministration.DtoUserGroup.Name">
+            <summary>
+            Property Name.
+            </summary>
+        </member>
+        <member name="P:BimPlus.Sdk.Data.UserAdministration.DtoUserGroup.Description">
+            <summary>
+            Property Description.
+            </summary>
+        </member>
+        <member name="P:BimPlus.Sdk.Data.UserAdministration.DtoUserGroup.CustomGroup">
+            <summary>
+            Property customGroup.
+            </summary>
+        </member>
+        <member name="P:BimPlus.Sdk.Data.UserAdministration.DtoUserGroup.Users">
+            <summary>
+            Property Users.
+            </summary>
+        </member>
+        <member name="P:BimPlus.Sdk.Data.UserAdministration.DtoUserGroup.Rights">
+            <summary>
+            Property Rights.
+            </summary>
+        </member>
+        <member name="T:BimPlus.Sdk.Data.UserAdministration.UserGroup">
+            <summary>
+            UserGroup class.
+            </summary>
+        </member>
+        <member name="P:BimPlus.Sdk.Data.UserAdministration.UserGroup.User">
+            <summary>
+            Id of user
+            </summary>
+        </member>
+        <member name="P:BimPlus.Sdk.Data.UserAdministration.UserGroup.GroupRole">
+            <summary>
+            Id of group role
+            </summary>
+        </member>
+        <member name="T:BimPlus.Sdk.Data.UserAdministration.UserGroupRoleId">
+            <summary>
+            Id of default an only roles of group
+            </summary>
+        </member>
+        <member name="F:BimPlus.Sdk.Data.UserAdministration.UserGroupRoleId.GroupAdmin">
+            role of group  Group Admin
+        </member>
+        <member name="F:BimPlus.Sdk.Data.UserAdministration.UserGroupRoleId.GroupMember">
+            role of group  Group  Member
+        </member>
+        <member name="T:BimPlus.Sdk.Data.UserAdministration.UserGroupRoleName">
+            <summary>
+            Name of default an only roles of group
+            </summary>
+        </member>
+        <member name="F:BimPlus.Sdk.Data.UserAdministration.UserGroupRoleName.GroupAdmin">
+            role of group  Group Admin
+        </member>
+        <member name="F:BimPlus.Sdk.Data.UserAdministration.UserGroupRoleName.GroupMember">
+            role of group  Group  Member
+        </member>
+        <member name="T:BimPlus.Sdk.Data.UserAdministration.DtoGroupUserRights">
+            <summary>
+            DtoGroupUserRights class.
+            </summary>
+        </member>
+        <member name="P:BimPlus.Sdk.Data.UserAdministration.DtoGroupUserRights.GroupAdmin">
+            <summary>
+            Property groupAdmin
+            </summary>
+        </member>
+        <member name="P:BimPlus.Sdk.Data.UserAdministration.DtoGroupUserRights.GroupMember">
+            <summary>
+            Property groupMember.
+            </summary>
+        </member>
+        <member name="M:BimPlus.Sdk.Data.UserAdministration.DtoGroupUserRights.#ctor">
+            <summary>
+            DtoGroupUser rights.
+            </summary>
+        </member>
         <member name="T:BimPlus.Sdk.Data.UserAdministration.DtoRole">
             <summary>
             DtoRole class.
@@ -18818,6 +19160,16 @@
             Property Name.
             </summary>
         </member>
+        <member name="P:BimPlus.Sdk.Data.UserAdministration.DtoRole.Type">
+            <summary>
+            Property type (project/group/team).
+            </summary>
+        </member>
+        <member name="P:BimPlus.Sdk.Data.UserAdministration.DtoRole.Rank">
+            <summary>
+            Property rank (priority of roles).
+            </summary>
+        </member>
         <member name="P:BimPlus.Sdk.Data.UserAdministration.DtoRole.CustomRole">
             <summary>
             Property CustomRole.
@@ -18833,29 +19185,24 @@
             Property Children.
             </summary>
         </member>
-        <member name="P:BimPlus.Sdk.Data.UserAdministration.DtoRole.ProjectRightsRolesTemplate">
+        <member name="T:BimPlus.Sdk.Data.UserAdministration.RoleTypes">
             <summary>
-            Property ProjectRightsRolesTemplate.
+            Types of role.
             </summary>
         </member>
-        <member name="T:BimPlus.Sdk.Data.UserAdministration.DtoProjectRightsRolesTemplate">
+        <member name="F:BimPlus.Sdk.Data.UserAdministration.RoleTypes.Project">
             <summary>
-            DtoProjectRightsRolesTemplate class.
+            Project type.
             </summary>
         </member>
-        <member name="P:BimPlus.Sdk.Data.UserAdministration.DtoProjectRightsRolesTemplate.Id">
+        <member name="F:BimPlus.Sdk.Data.UserAdministration.RoleTypes.Team">
             <summary>
-            Property Id.
+            Team type.
             </summary>
         </member>
-        <member name="P:BimPlus.Sdk.Data.UserAdministration.DtoProjectRightsRolesTemplate.Name">
+        <member name="F:BimPlus.Sdk.Data.UserAdministration.RoleTypes.Group">
             <summary>
-            Property Name.
-            </summary>
-        </member>
-        <member name="P:BimPlus.Sdk.Data.UserAdministration.DtoProjectRightsRolesTemplate.Description">
-            <summary>
-            Property Description.
+            Group type.
             </summary>
         </member>
         <member name="T:BimPlus.Sdk.Data.UserAdministration.DtoRoleInfo">
@@ -18879,6 +19226,21 @@
             Constructor.
             </summary>
         </member>
+        <member name="T:BimPlus.Sdk.Data.UserAdministration.DtoGroupInfo">
+            <summary>
+            DtoGroupInfo of member
+            </summary>
+        </member>
+        <member name="P:BimPlus.Sdk.Data.UserAdministration.DtoGroupInfo.Id">
+            <summary>
+            Id of group 
+            </summary>
+        </member>
+        <member name="P:BimPlus.Sdk.Data.UserAdministration.DtoGroupInfo.Role">
+            <summary>
+            Role of group
+            </summary>
+        </member>
         <member name="T:BimPlus.Sdk.Data.UserAdministration.UserRoleID">
             <summary>
             UserRoleID class.
@@ -18894,8 +19256,14 @@
         <member name="F:BimPlus.Sdk.Data.UserAdministration.UserRoleID.TeamMember">
             Public static member TeamMember.
         </member>
-        <member name="F:BimPlus.Sdk.Data.UserAdministration.UserRoleID.EmptyRole">
-            Public static member EmptyRole.
+        <member name="F:BimPlus.Sdk.Data.UserAdministration.UserRoleID.ProjectAdmin">
+            Public static member ProjectAdmin.
+        </member>
+        <member name="F:BimPlus.Sdk.Data.UserAdministration.UserRoleID.ProjectEditor">
+            Public static member ProjectEditor.
+        </member>
+        <member name="F:BimPlus.Sdk.Data.UserAdministration.UserRoleID.ProjectViewer">
+            Public static member ProjectViewer.
         </member>
         <member name="F:BimPlus.Sdk.Data.UserAdministration.UserRoleID.DocumentAdmin">
             Public static member DocumentAdmin.
@@ -18932,13 +19300,13 @@
         <member name="F:BimPlus.Sdk.Data.UserAdministration.UserRoleName.DocumentNoAccess">
             Public const member DocumentNoAccess.
         </member>
-        <member name="T:BimPlus.Sdk.Data.UserAdministration.RoleNameIsAlreadyDefined">
+        <member name="T:BimPlus.Sdk.Data.UserAdministration.NameIsAlreadyDefined">
             <summary>
-            RoleNameIsAlreadyDefined class.
+            NameIsAlreadyDefined class.
             Exception for cross section.
             </summary>
         </member>
-        <member name="M:BimPlus.Sdk.Data.UserAdministration.RoleNameIsAlreadyDefined.#ctor(System.String)">
+        <member name="M:BimPlus.Sdk.Data.UserAdministration.NameIsAlreadyDefined.#ctor(System.String)">
             <summary>
             Throw this exception for cross section.
             </summary>
@@ -19201,6 +19569,9 @@
         </member>
         <member name="P:BimPlus.Sdk.Data.UserAdministration.DtoUserAddition.Roles">
             <summary>User role.</summary>
+        </member>
+        <member name="P:BimPlus.Sdk.Data.UserAdministration.DtoUserAddition.UserGroup">
+            <summary>Group to which the user is invited.</summary>
         </member>
         <member name="P:BimPlus.Sdk.Data.UserAdministration.DtoUserAddition.AdditionText">
             <summary>Addition text.</summary>

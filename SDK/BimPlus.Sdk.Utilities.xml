@@ -564,6 +564,27 @@
             <param name="layerId"></param>
             <returns>DtoModel</returns>
         </member>
+        <member name="M:BimPlus.Sdk.Utilities.V2.ITeamSession.GetPagedMeshblobAsync(System.Guid,System.Nullable{System.Guid},System.Int32,System.Int32,BimPlus.LightCaseClient.Support.RestCallBack{BimPlus.Sdk.Data.Paging.DtoModelPagingResult{BimPlus.Sdk.Data.DbCore.DtObject}})">
+            <summary>
+            Get paged object geometry asynchronously by layerId and objectId.
+            response 
+            </summary>
+            <param name="objectId">requested root node</param>
+            <param name="layerId">filter for layer or null for all objects</param>
+            <param name="page">requested page</param>
+            <param name="pageSize">count of requested objects for one page</param>
+            <param name="callback">callback function</param>
+        </member>
+        <member name="M:BimPlus.Sdk.Utilities.V2.ITeamSession.GetPagedMeshblob(System.Guid,System.Nullable{System.Guid},System.Int32,System.Int32)">
+            <summary>
+            Get paged object geometry by objectId and additional optional layerId.
+            response 
+            </summary>
+            <param name="objectId">requested root node</param>
+            <param name="layerId">filter for layer or null for all objects</param>
+            <param name="page">requested page</param>
+            <param name="pageSize">count of requested objects for one page</param>
+        </member>
         <member name="M:BimPlus.Sdk.Utilities.V2.ITeamSession.GetObjectGeometryAsync(System.Guid,BimPlus.LightCaseClient.Support.RestCallBack{BimPlus.Sdk.Data.TenantDto.DtoModel})">
             <summary>
             Get object geometry asynchronously by objectId.
@@ -1559,6 +1580,41 @@
             <param name="type"></param>
             <returns>DtoTemplateArticle</returns>
         </member>
+        <member name="M:BimPlus.Sdk.Utilities.V2.ITeamSession.GetExportObject(System.Guid)">
+            <summary>
+            Get DtoExportObject from exportObjectId
+            </summary>
+            <param name="exportObjectId"></param>
+            <returns></returns>
+        </member>
+        <member name="M:BimPlus.Sdk.Utilities.V2.ITeamSession.GetExportSelections(System.Guid)">
+            <summary>
+            Get all ExportSelections from given project
+            </summary>
+            <param name="projectId"></param>
+            <returns></returns>
+        </member>
+        <member name="M:BimPlus.Sdk.Utilities.V2.ITeamSession.GetExportSelection(System.Guid)">
+            <summary>
+            Get selection object
+            </summary>
+            <param name="selectionId"></param>
+            <returns></returns>
+        </member>
+        <member name="M:BimPlus.Sdk.Utilities.V2.ITeamSession.GetSelectedObjects(System.Guid)">
+            <summary>
+            Get selected Objects from ExportObjectsProvider
+            </summary>
+            <param name="selectionId"></param>
+            <returns>selected Objects</returns>
+        </member>
+        <member name="M:BimPlus.Sdk.Utilities.V2.ITeamSession.DeleteSelection(System.Guid)">
+            <summary>
+            Delete Selection object
+            </summary>
+            <param name="selectionId"></param>
+            <returns>HttpStatusCode.OK</returns>
+        </member>
         <member name="T:BimPlus.Sdk.Utilities.V2.TeamSession">
             <summary>
             Partial class TeamSession. Contains all REST calls.
@@ -1863,6 +1919,48 @@
             Protected member m_Log.
             </summary>
         </member>
+        <member name="M:BimPlus.Sdk.Utilities.V2.TeamSession.GetExportObject(System.Guid)">
+            <summary>
+            Get DtoExportObject from exportObjectId
+            </summary>
+            <param name="exportObjectId"></param>
+            <returns></returns>
+        </member>
+        <member name="M:BimPlus.Sdk.Utilities.V2.TeamSession.GetExportSelections(System.Guid)">
+            <summary>
+            Get all ExportSelections from given project
+            </summary>
+            <param name="projectId"></param>
+            <returns></returns>
+        </member>
+        <member name="M:BimPlus.Sdk.Utilities.V2.TeamSession.GetExportSelection(System.Guid)">
+            <summary>
+            Get selection object
+            </summary>
+            <param name="selectionId"></param>
+            <returns></returns>
+        </member>
+        <member name="M:BimPlus.Sdk.Utilities.V2.TeamSession.ExportSelection(BimPlus.Sdk.Data.TenantDto.DtoExportObjectSelection)">
+            <summary>
+            Create Selection object
+            </summary>
+            <param name="exportObject"></param>
+            <returns></returns>
+        </member>
+        <member name="M:BimPlus.Sdk.Utilities.V2.TeamSession.DeleteSelection(System.Guid)">
+            <summary>
+            Delete Selection object
+            </summary>
+            <param name="selectionId"></param>
+            <returns></returns>
+        </member>
+        <member name="M:BimPlus.Sdk.Utilities.V2.TeamSession.GetSelectedObjects(System.Guid)">
+            <summary>
+            Get selected Objects from Selection object
+            </summary>
+            <param name="selectionId"></param>
+            <returns>selected Objects</returns>
+        </member>
         <member name="M:BimPlus.Sdk.Utilities.V2.TeamSession.GetDtoIssue(System.Guid)">
             <summary>
             Get one DtoIssue by Id.
@@ -2027,7 +2125,16 @@
             <param name="projectId"></param>
             <param name="type"></param>
             <param name="flags"></param>
-            <returns>List of DtObjects</returns>
+            <returns>List of DtObjects.</returns>
+        </member>
+        <member name="M:BimPlus.Sdk.Utilities.V2.TeamSession.GetObjects(System.Guid,BimPlus.Sdk.IfcData.DbLayer,System.Boolean)">
+            <summary>
+            Get objects.
+            </summary>
+            <param name="projectId"></param>
+            <param name="layer"></param>
+            <param name="internalValues"></param>
+            <returns>List of DtObjects.</returns>
         </member>
         <member name="M:BimPlus.Sdk.Utilities.V2.TeamSession.GetObjectInternal(System.Guid)">
             <summary>
@@ -2064,6 +2171,15 @@
             <param name="objectId"></param>
             <param name="layerId"></param>
             <returns>DtoModel</returns>
+        </member>
+        <member name="M:BimPlus.Sdk.Utilities.V2.TeamSession.GetPagedMeshblob(System.Guid,System.Nullable{System.Guid},System.Int32,System.Int32)">
+            <summary>
+            Get paged object geometry asynchronously by layerId and objectId.
+            </summary>
+            <param name="objectId">requested root node</param>
+            <param name="layerId">filter for layer or null for all objects</param>
+            <param name="page">requested page</param>
+            <param name="pageSize">pagesize</param>
         </member>
         <member name="M:BimPlus.Sdk.Utilities.V2.TeamSession.GetObjectGeometryAsThreeJs(System.Guid)">
             <summary>
@@ -2115,6 +2231,16 @@
             </summary>
             <param name="objectId"></param>
             <param name="layerId"></param>
+            <param name="callback"></param>
+        </member>
+        <member name="M:BimPlus.Sdk.Utilities.V2.TeamSession.GetPagedMeshblobAsync(System.Guid,System.Nullable{System.Guid},System.Int32,System.Int32,BimPlus.LightCaseClient.Support.RestCallBack{BimPlus.Sdk.Data.Paging.DtoModelPagingResult{BimPlus.Sdk.Data.DbCore.DtObject}})">
+            <summary>
+            Get paged object geometry asynchronously by layerId and objectId.
+            </summary>
+            <param name="objectId">requested root node</param>
+            <param name="layerId">filter for layer or null for all objects</param>
+            <param name="page">requested page</param>
+            <param name="pageSize">pagesize</param>
             <param name="callback"></param>
         </member>
         <member name="M:BimPlus.Sdk.Utilities.V2.TeamSession.ObjectExists(System.Guid)">

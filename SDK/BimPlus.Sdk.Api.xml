@@ -4,6 +4,112 @@
         <name>BimPlus.Sdk.Api</name>
     </assembly>
     <members>
+        <member name="T:BimPlus.Sdk.Api.Catalogs">
+            <summary>
+            Content Catalogs Controller
+            </summary>
+        </member>
+        <member name="T:BimPlus.Sdk.Api.Catalogs.BaseContentType">
+            <summary>
+            BaseContentType
+            </summary>
+        </member>
+        <member name="F:BimPlus.Sdk.Api.Catalogs.BaseContentType.Norm">
+            Norm
+        </member>
+        <member name="F:BimPlus.Sdk.Api.Catalogs.BaseContentType.Country">
+            Country
+        </member>
+        <member name="F:BimPlus.Sdk.Api.Catalogs.BaseContentType.Type">
+            CatalogType
+        </member>
+        <member name="M:BimPlus.Sdk.Api.Catalogs.#ctor(BimPlus.Sdk.Api.Core)">
+            <summary>
+            Catalogs
+            </summary>
+            <param name="apiCore"></param>
+        </member>
+        <member name="M:BimPlus.Sdk.Api.Catalogs.GetContent(BimPlus.Sdk.Api.Catalogs.BaseContentType)">
+            <summary>
+            read all existing BaseContentTypes
+            </summary>
+            <param name="type"></param>
+            <returns></returns>
+        </member>
+        <member name="M:BimPlus.Sdk.Api.Catalogs.PostContent(BimPlus.Sdk.Api.Catalogs.BaseContentType,BimPlus.Sdk.Data.Content.BaseContentDto)">
+            <summary>
+            Create new BaseContentType
+            </summary>
+            <param name="resource"></param>
+            <param name="type"></param>
+            <returns></returns>
+        </member>
+        <member name="M:BimPlus.Sdk.Api.Catalogs.DeleteContent(BimPlus.Sdk.Api.Catalogs.BaseContentType,System.Guid)">
+            <summary>
+            Delete existing BaseContentType
+            </summary>
+            <param name="type"></param>
+            <param name="resourceId"></param>
+            <returns></returns>
+        </member>
+        <member name="M:BimPlus.Sdk.Api.Catalogs.GetAll(System.String)">
+            <summary>
+            Get all Content Catalogs
+            Example for filters
+            Type=Material
+            </summary>
+            <param name="filter">valid filter items are BaseContentTypes 'Type', 'Norm' and 'Country' /n</param>
+            <returns></returns>
+        </member>
+        <member name="M:BimPlus.Sdk.Api.Catalogs.Get(System.Guid)">
+            <summary>
+            Get Catalog
+            </summary>
+            <param name="catalogId"></param>
+            <returns></returns>
+        </member>
+        <member name="M:BimPlus.Sdk.Api.Catalogs.Post(BimPlus.Sdk.Data.Content.DtoCatalog)">
+            <summary>
+            Create Catalog
+            </summary>
+            <param name="catalog"></param>
+            <returns></returns>
+        </member>
+        <member name="M:BimPlus.Sdk.Api.Catalogs.Delete(System.Guid)">
+            <summary>
+            Delete Catalog
+            </summary>
+            <param name="catalogId"></param>
+            <returns></returns>
+        </member>
+        <member name="M:BimPlus.Sdk.Api.Catalogs.GetAllCatalogItems(System.Guid)">
+            <summary>
+            Get all CatalogItems
+            </summary>
+            <param name="catalogId"></param>
+            <returns></returns>
+        </member>
+        <member name="M:BimPlus.Sdk.Api.Catalogs.GetCatalogItem(System.Guid)">
+            <summary>
+            Get CatalogItem
+            </summary>
+            <param name="catalogItemId"></param>
+            <returns></returns>
+        </member>
+        <member name="M:BimPlus.Sdk.Api.Catalogs.PostItem(BimPlus.Sdk.Data.Content.DtoCatalogItem)">
+            <summary>
+            Create CatalogItem
+            </summary>
+            <param name="catalogItem"></param>
+            <returns></returns>
+        </member>
+        <member name="M:BimPlus.Sdk.Api.Catalogs.DeleteItem(System.Guid)">
+            <summary>
+            Delete CatalogItem
+            </summary>
+            <param name="catalogItemId"></param>
+            <returns></returns>
+        </member>
         <member name="T:BimPlus.Sdk.Api.Core">
             <summary>
             Wrapper for BimPlus.Sdk.Utilities.V2.TeamSession-methods.
@@ -269,6 +375,11 @@
         <member name="P:BimPlus.Sdk.Api.Core.GeometryTemplate">
             <summary>
                 Wrap GeometryTemplates
+            </summary>
+        </member>
+        <member name="P:BimPlus.Sdk.Api.Core.Catalogs">
+            <summary>
+            Get catalogs.
             </summary>
         </member>
         <member name="P:BimPlus.Sdk.Api.Core.MachineId">
@@ -701,6 +812,16 @@
             <param name="layerId"></param>
             <returns>DtoModel</returns>
         </member>
+        <member name="M:BimPlus.Sdk.Api.Wrapper.DtObjects.GetPagedMeshblob(System.Guid,System.Nullable{System.Guid},System.Int32,System.Int32)">
+            <summary>
+            Get paged object geometry asynchronously by layerId and objectId.
+            response 
+            </summary>
+            <param name="objectId">requested root node</param>
+            <param name="layerId">filter for layer or null for all objects</param>
+            <param name="page">requested page</param>
+            <param name="pageSize">count of requested objects for one page</param>
+        </member>
         <member name="M:BimPlus.Sdk.Api.Wrapper.DtObjects.GetObjectGeometryAsThreeJs(System.Guid)">
             <summary>
             Get threejs geometry from DtObject by objectId.
@@ -760,6 +881,17 @@
             <param name="objectId"></param>
             <param name="layerId"></param>
             <param name="callBack"></param>
+        </member>
+        <member name="M:BimPlus.Sdk.Api.Wrapper.DtObjects.GetPagedMeshblobAsync(System.Guid,System.Nullable{System.Guid},System.Int32,System.Int32,BimPlus.LightCaseClient.Support.RestCallBack{BimPlus.Sdk.Data.Paging.DtoModelPagingResult{BimPlus.Sdk.Data.DbCore.DtObject}})">
+            <summary>
+            Get paged object geometry asynchronously by layerId and objectId.
+            response 
+            </summary>
+            <param name="objectId">requested root node</param>
+            <param name="layerId">filter for layer or null for all objects</param>
+            <param name="page">requested page</param>
+            <param name="pageSize">count of requested objects for one page</param>
+            <param name="callback">callback function</param>
         </member>
         <member name="M:BimPlus.Sdk.Api.Wrapper.DtObjects.GetElementTypes">
             <summary>
@@ -1302,6 +1434,51 @@
             <param name="cacheName"></param>
             <returns>T</returns>
         </member>
+        <member name="M:BimPlus.Sdk.Api.Wrapper.Objects.GetExportObject(System.Guid)">
+            <summary>
+            Get DtoExportObject from exportObjectId
+            </summary>
+            <param name="exportObjectId"></param>
+            <returns></returns>
+        </member>
+        <member name="M:BimPlus.Sdk.Api.Wrapper.Objects.GetExportSelections(System.Guid)">
+            <summary>
+            Get all ExportSelections from given project
+            </summary>
+            <param name="projectId"></param>
+            <returns>list of DtoExportObjectSelection</returns>
+        </member>
+        <member name="M:BimPlus.Sdk.Api.Wrapper.Objects.GetExportSelection(System.Guid)">
+            <summary>
+            Get selection object
+            </summary>
+            <param name="selectionId"></param>
+            <returns></returns>
+        </member>
+        <member name="M:BimPlus.Sdk.Api.Wrapper.Objects.CreateSelection``1(System.Guid,``0)">
+            <summary>
+            Create SelectionObject
+            'SelectionId' can now used for further DtObjects calls.
+            If it's no longer used by client it should be deleted with function 'DeleteSelection'
+            </summary>
+            <param name="projectId"></param>
+            <param name="objects">can be List of Guids or List of RevisionElement</param>
+            <returns>SelectionId</returns>
+        </member>
+        <member name="M:BimPlus.Sdk.Api.Wrapper.Objects.DeleteSelection(System.Guid)">
+            <summary>
+            Delete Selection
+            </summary>
+            <param name="selectionId"></param>
+            <returns></returns>
+        </member>
+        <member name="M:BimPlus.Sdk.Api.Wrapper.Objects.GetExportedObjects(System.Guid)">
+            <summary>
+            Get selected Objects from ExportObjectsProvider
+            </summary>
+            <param name="selectionId"></param>
+            <returns>selected Objects</returns>
+        </member>
         <member name="T:BimPlus.Sdk.Api.Wrapper.Projects">
             <summary>
                 Wrap project methods.
@@ -1606,6 +1783,12 @@
             Put a DtoStructure.
             </summary>
             <param name="structure"></param>
+        </member>
+        <member name="M:BimPlus.Sdk.Api.Wrapper.Structures.TriggerNotification(System.Guid)">
+            <summary>
+            Trigger Notification
+            </summary>
+            <param name="structureId"></param>
         </member>
         <member name="M:BimPlus.Sdk.Api.Wrapper.Structures.DeleteStructure(System.Guid)">
             <summary>
