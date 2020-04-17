@@ -53,17 +53,11 @@ namespace AllplanBimplusDemo
 
                 try
                 {
-                    FileStream fileStream = null;
-                    if (existFile)
-                        fileStream = new FileStream(fileName, FileMode.Append);
-                    else
-                        fileStream = new FileStream(fileName, FileMode.Create);
+                    var fileStream = existFile 
+                        ? new FileStream(fileName, FileMode.Append) 
+                        : new FileStream(fileName, FileMode.Create);
 
-                    if (fileStream != null)
-                    {
-                        _streamWriter = new StreamWriter(fileStream);
-                        _streamWriter.AutoFlush = true;
-                    }
+                    _streamWriter = new StreamWriter(fileStream) {AutoFlush = true};
                 }
                 catch (Exception)
                 {
@@ -73,14 +67,14 @@ namespace AllplanBimplusDemo
                 if (_streamWriter != null)
                 {
                     DateTime dateTime = DateTime.UtcNow;
-                    string output = string.Format("Start: {0}", dateTime);
+                    string output = $"Start: {dateTime}";
                     _streamWriter.WriteLine(output);
                 }
             }
 
             Guid clientId = LoginSettings.GetClientId();
 
-            _integrationBase = new IntegrationBase(clientId, TestApplicationId, _streamWriter)
+            _integrationBase = new IntegrationBase(clientId, _testApplicationId, _streamWriter)
             {
                 UseSignalRCore = true,
                 SignalRAppCode = "AllplanBimplusDemo",
@@ -136,14 +130,11 @@ namespace AllplanBimplusDemo
 
         #region private and internal member
 
-        private StreamWriter _streamWriter;
-        //private readonly Guid TestApplicationId = new Guid("5F43560D-9B0C-4F3C-85CB-B5721D098F7B");
-        private readonly Guid TestApplicationId = new Guid("c25706f5-e296-fa1b-9459-a9a25d1d01ac"); // Excel
+        private readonly StreamWriter _streamWriter;
+        private readonly Guid _testApplicationId = new Guid("5F43560D-9B0C-4F3C-85CB-B5721D098F7B");
+        //private readonly Guid _testApplicationId = new Guid("c25706f5-e296-fa1b-9459-a9a25d1d01ac"); // Excel
 
-        private ProjectSelection _projectSelection = null;
-        private Window _projectSelectionWindow = null;
-
-        private IntegrationBase _integrationBase;
+        private readonly IntegrationBase _integrationBase;
 
         #endregion private and internal member
 
@@ -165,12 +156,12 @@ namespace AllplanBimplusDemo
 
         public Visibility ContentControlHasContent
         {
-            get { return _contentControlHasContent; }
+            get => _contentControlHasContent;
 
             set { _contentControlHasContent = value; NotifyPropertyChanged(); }
         }
 
-        private ApplicationSettings _applicationSettings;
+        private readonly ApplicationSettings _applicationSettings;
 
         #endregion properties
 
@@ -199,7 +190,7 @@ namespace AllplanBimplusDemo
             SetAttributesMenuItem.IsEnabled = enable;
 
             StructureMenuItem.IsEnabled = enable;
-            CsgObjects.IsEnabled = enable;
+            GeometryData.IsEnabled = enable;
             CalatravaObjects.IsEnabled = enable;
             ConnectionObjects.IsEnabled = enable;
             CatalogData.IsEnabled = enable;
@@ -237,8 +228,7 @@ namespace AllplanBimplusDemo
 
         private void ContentControl_SizeChanged(object sender, SizeChangedEventArgs e)
         {
-            Control control = ContentControl.Content as Control;
-            if (control != null)
+            if (ContentControl.Content is Control control)
             {
                 SetUserControlSize(ContentControl, control);
             }
@@ -250,95 +240,84 @@ namespace AllplanBimplusDemo
 
         private void DisposeOldBimPlusUserControl()
         {
-            BimPlusUserControl bimPlusControl = ContentControl.Content as BimPlusUserControl;
-
-            if (bimPlusControl != null)
+            if (ContentControl.Content is BimPlusUserControl bimPlusControl)
             {
                 bimPlusControl.WebViewRecreated -= webViewer_WebViewRecreated;
 
                 bimPlusControl.Dispose();
-                bimPlusControl = null;
+                //bimPlusControl = null;
                 ContentControl.Content = null;
             }
             else if (ContentControl.Content is IssueContentControl)
             {
-                IssueContentControl issueContentControl = ContentControl.Content as IssueContentControl;
-                if (issueContentControl != null)
+                if (ContentControl.Content is IssueContentControl issueContentControl)
                     issueContentControl.UnloadContent();
 
-                issueContentControl = null;
+                //issueContentControl = null;
                 ContentControl.Content = null;
             }
             else if (ContentControl.Content is BIMExplorerAndTasks)
             {
-                BIMExplorerAndTasks bimExplorerAndTasks = ContentControl.Content as BIMExplorerAndTasks;
-                if (bimExplorerAndTasks != null)
+                if (ContentControl.Content is BIMExplorerAndTasks bimExplorerAndTasks)
                     bimExplorerAndTasks.UnloadContent();
 
-                bimExplorerAndTasks = null;
+                //bimExplorerAndTasks = null;
                 ContentControl.Content = null;
             }
-            else if (ContentControl.Content is StructureControl)
+            else if (ContentControl.Content is StructureControl structureControl)
             {
-                StructureControl structureControl = ContentControl.Content as StructureControl;
                 structureControl.SaveChangedStructure();
                 structureControl.DisconnectSignalR();
 
-                structureControl = null;
+                //structureControl = null;
                 ContentControl.Content = null;
                 ContentControl.InvalidateVisual();
             }
-            else if (ContentControl.Content is GetAttributesControl)
+            else if (ContentControl.Content is GetAttributesControl getAttributesControl)
             {
-                GetAttributesControl getAttributesControl = ContentControl.Content as GetAttributesControl;
-                getAttributesControl = null;
+                //getAttributesControl = null;
 
                 ContentControl.Content = null;
                 ContentControl.InvalidateVisual();
             }
-            else if (ContentControl.Content is SetAttributesControl)
+            else if (ContentControl.Content is SetAttributesControl setAttributesControl)
             {
-                SetAttributesControl setAttributesControl = ContentControl.Content as SetAttributesControl;
                 setAttributesControl.SaveChangedAttributes();
                 setAttributesControl.UnloadContent();
-                setAttributesControl = null;
+                //setAttributesControl = null;
 
                 ContentControl.Content = null;
                 ContentControl.InvalidateVisual();
             }
-            else if (ContentControl.Content is CsgObjectsControl)
+            else if (ContentControl.Content is CsgObjectsControl csgObjectsControl)
             {
-                CsgObjectsControl csgObjectsControl = ContentControl.Content as CsgObjectsControl;
                 csgObjectsControl.Visibility = Visibility.Collapsed;
                 csgObjectsControl.UnloadContent();
 
                 ContentControl.Content = null;
                 ContentControl.InvalidateVisual();
             }
-            else if (ContentControl.Content is CalatravaControl)
+            else if (ContentControl.Content is CalatravaControl calatravaControl)
             {
-                CalatravaControl calatravaControl = ContentControl.Content as CalatravaControl;
                 calatravaControl.Visibility = Visibility.Collapsed;
                 calatravaControl.UnloadContent();
 
-                calatravaControl = null;
+                //calatravaControl = null;
                 ContentControl.Content = null;
                 ContentControl.InvalidateVisual();
             }
-            else if (ContentControl.Content is ConnectionsUserControl)
+            else if (ContentControl.Content is ConnectionsUserControl connectionsUserControl)
             {
-                ConnectionsUserControl connectionsUserControl = ContentControl.Content as ConnectionsUserControl;
                 connectionsUserControl.Visibility = Visibility.Collapsed;
                 connectionsUserControl.UnloadContent();
 
-                connectionsUserControl = null;
+                //connectionsUserControl = null;
                 ContentControl.Content = null;
                 ContentControl.InvalidateVisual();
             }
-            else if (ContentControl.Content is UserControl)
+            else if (ContentControl.Content is UserControl userControl)
             {
-                UserControl userControl = ContentControl.Content as UserControl;
-                userControl = null;
+                //userControl = null;
                 ContentControl.Content = null;
                 ContentControl.InvalidateVisual();
             }
@@ -354,10 +333,9 @@ namespace AllplanBimplusDemo
         {
             CloseView.IsEnabled = ContentControl.Content is UserControl;
 
-            if (ContentControl.Content is UserControl)
-                ContentControlHasContent = Visibility.Visible;
-            else
-                ContentControlHasContent = Visibility.Collapsed;
+            ContentControlHasContent = ContentControl.Content is UserControl 
+                ? Visibility.Visible 
+                : Visibility.Collapsed;
         }
 
         private void SetUserControlSize(ContentControl contentControl, Control control)
@@ -371,15 +349,13 @@ namespace AllplanBimplusDemo
 
         private void SetViewText(object sender)
         {
-            MenuItem menuItem = sender as MenuItem;
-            if (menuItem != null)
+            if (!(sender is MenuItem menuItem)) 
+                return;
+            string headerText = menuItem.Header as string;
+            if (!string.IsNullOrEmpty(headerText))
             {
-                string headerText = menuItem.Header as string;
-                if (!string.IsNullOrEmpty(headerText))
-                {
-                    headerText = headerText.Replace("_", "");
-                    ViewText.Content = headerText;
-                }
+                headerText = headerText.Replace("_", "");
+                ViewText.Content = headerText;
             }
         }
 
@@ -436,30 +412,12 @@ namespace AllplanBimplusDemo
         {
             DisposeOldBimPlusUserControl();
 
-            _projectSelection = new ProjectSelection(_integrationBase);
-
-            _projectSelectionWindow = new Window() { Title = "Project selection", WindowStartupLocation = WindowStartupLocation.CenterScreen };
-            _projectSelectionWindow.Icon = Icon;
-
-            _projectSelectionWindow.Width = 1200;
-            _projectSelectionWindow.Height = 800;
-
-            _projectSelectionWindow.Content = _projectSelection;
-            _projectSelectionWindow.Closed += ProjectSelectionWindow_Closed;
-
-            _projectSelectionWindow.Owner = this;
-            _projectSelectionWindow.ShowDialog();
+            var projectSelection = new ProjectSelection(_integrationBase);
+            if (projectSelection.SelectBimPlusProject(Guid.Empty) == Guid.Empty)
+                MessageBoxHelper.ShowInformation("No project selected!");
         }
 
-        private void ProjectSelectionWindow_Closed(object sender, EventArgs e)
-        {
-            // Dispose project selection control.
-            _projectSelection.Dispose();
-
-            _projectSelectionWindow.Closed -= ProjectSelectionWindow_Closed;
-        }
-
-        #endregion login/logout
+       #endregion login/logout
 
         #region views
 
@@ -488,13 +446,10 @@ namespace AllplanBimplusDemo
 
         private void webViewer_WebViewRecreated(object sender, WebViewRecreatedArgs args)
         {
-            WebViewer webViewer = sender as WebViewer;
-
-            if (webViewer != null)
-            {
-                if (_integrationBase.CurrentProject != null)
-                    webViewer.NavigateToControl(_integrationBase.CurrentProject.Id);
-            }
+            if (!(sender is WebViewer webViewer)) 
+                return;
+            if (_integrationBase.CurrentProject != null)
+                webViewer.NavigateToControl(_integrationBase.CurrentProject.Id);
         }
 
         private void IssueContentControl_Click(object sender, RoutedEventArgs e)
@@ -800,9 +755,6 @@ namespace AllplanBimplusDemo
 
         private void EventHandlerCore_ProjectChanged(object sender, BimPlusEventArgs e)
         {
-            // Close the project selection window.
-            _projectSelectionWindow?.Close();
-
             if (e.Id != Guid.Empty && _integrationBase.CurrentProject != null)
             {
                 DtoProject project = _integrationBase.ApiCore.Projects.GetDtoProject(e.Id);
@@ -822,7 +774,7 @@ namespace AllplanBimplusDemo
         {
             Action action = new Action(() =>
             {
-                if (e.Id == null || e.Id == Guid.Empty)
+                if (e.Id == Guid.Empty)
                     ProjectName.Content = "";
 
                 _integrationBase.DtoUser = null;
@@ -855,7 +807,7 @@ namespace AllplanBimplusDemo
             if (_streamWriter != null)
             {
                 DateTime dateTime = DateTime.UtcNow;
-                string output = string.Format("End: {0}", dateTime);
+                string output = $"End: {dateTime}";
                 _streamWriter.WriteLine(output);
             }
 

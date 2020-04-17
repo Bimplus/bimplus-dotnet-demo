@@ -69,8 +69,8 @@
                         <MenuItem Name="StructureMenuItem" Header="_Create, view and edit structures" IsEnabled="False" Click="Structure_Click"/>
                     </MenuItem>
 
-                    <MenuItem Name="CsgModel" Header="_Csg model">
-                        <MenuItem Name="CsgObjects" Header="_Csg objects" IsEnabled="False" Click="CsgObjects_Click"/>
+                    <MenuItem Name="Geometry" Header="_Geometry">
+                        <MenuItem Name="GeometryData" Header="_GeometryData" IsEnabled="False" Click="CsgObjects_Click"/>
                     </MenuItem>
 
                     <MenuItem Name="Calatrava" Header="Calatra_va">

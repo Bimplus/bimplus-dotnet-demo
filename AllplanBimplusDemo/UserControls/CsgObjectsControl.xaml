@@ -41,9 +41,9 @@
 
         <Grid Grid.Column="2">
             <StackPanel Orientation="Vertical">
-                <Button Content="Create tube" Name="CreateTube" IsEnabled="{Binding ButtonsEnabled}" HorizontalAlignment="Center" ToolTip="Create Tube by given Geometry Information." 
-                    Margin="{StaticResource VerticalMargin}" Height="{StaticResource ButtonHeight}" Width="{StaticResource ButtonWidth}"
-                    Click="CreateTube_Click"/>
+                <Button Content="Create Reinforcement" Name="CreateTube" IsEnabled="{Binding ButtonsEnabled}" HorizontalAlignment="Center" ToolTip="Create Reinforcement by Csg Tube Information." 
+                        Margin="{StaticResource VerticalMargin}" Height="{StaticResource ButtonHeight}" Width="{StaticResource ButtonWidth}"
+                        Click="CreateTube_Click"/>
 
                 <Button Content="Create contour" Name="CreateContour" IsEnabled="{Binding ButtonsEnabled}" HorizontalAlignment="Center" ToolTip="Create 3D body by given CSG Geometry information." 
                     Margin="{StaticResource VerticalMargin}" Height="{StaticResource ButtonHeight}" Width="{StaticResource ButtonWidth}"
@@ -63,7 +63,10 @@
 
                 <Button Content="Create template" Name="CreateTemplate" IsEnabled="{Binding ButtonsEnabled}" HorizontalAlignment="Center" ToolTip="Create DtoTemplateArticle and objects StructuralPointReactions." 
                     Margin="{StaticResource VerticalMargin}" Height="{StaticResource ButtonHeight}" Width="{StaticResource ButtonWidth}"
-                    Click="CreateTemplate_Click"/>
+                    Click="CreateTemplate_Click" RenderTransformOrigin="0.568,2.224"/>
+                <Button Content="IdeaStatica" x:Name="IdeaStatica" IsEnabled="{Binding ButtonsEnabled}" HorizontalAlignment="Center" ToolTip="Import IdeaStatica data." 
+                    Margin="7.4,7" Height="{StaticResource ButtonHeight}" Width="{StaticResource ButtonWidth}"
+                    Click="IdeaStatica_OnClick" RenderTransformOrigin="0.568,2.224"/>
 
             </StackPanel>
         </Grid>

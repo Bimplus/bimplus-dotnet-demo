@@ -9,11 +9,12 @@
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>AllplanBimplusDemo</RootNamespace>
     <AssemblyName>AllplanBimplusDemo</AssemblyName>
-    <TargetFrameworkVersion>v4.7.1</TargetFrameworkVersion>
+    <TargetFrameworkVersion>v4.8</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <ProjectTypeGuids>{60dc8134-eba5-43b8-bcc9-bb4bc16c2548};{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}</ProjectTypeGuids>
     <WarningLevel>4</WarningLevel>
     <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
+    <TargetFrameworkProfile />
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <PlatformTarget>AnyCPU</PlatformTarget>
@@ -69,9 +70,11 @@
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\SDK\BimPlus.Sdk.Utilities.dll</HintPath>
     </Reference>
-    <Reference Include="Newtonsoft.Json, Version=4.5.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\SDK\Newtonsoft.Json.dll</HintPath>
+    <Reference Include="IdeaRS.OpenModel, Version=10.1.0.2, Culture=neutral, PublicKeyToken=b195254c3273d5c1, processorArchitecture=MSIL">
+      <HintPath>packages\IdeaStatiCa.OpenModel.10.1.0.2\lib\net40\IdeaRS.OpenModel.dll</HintPath>
+    </Reference>
+    <Reference Include="Newtonsoft.Json, Version=12.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
+      <HintPath>packages\Newtonsoft.Json.12.0.2\lib\net45\Newtonsoft.Json.dll</HintPath>
     </Reference>
     <Reference Include="PPAttribPictureType3, Version=2017.0.0.0, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
@@ -232,6 +235,7 @@
       <DependentUpon>ProgressWindow.cs</DependentUpon>
     </EmbeddedResource>
     <None Include="App.manifest" />
+    <None Include="packages.config" />
     <None Include="Properties\Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>
       <LastGenOutput>Settings.Designer.cs</LastGenOutput>
@@ -247,6 +251,7 @@
   <ItemGroup>
     <Resource Include="Resources\BimplusIcon.ico" />
   </ItemGroup>
+  <Import Project="..\IdeaStatiCa.Codes\IdeaStatiCa.Codes.projitems" Label="Shared" />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
     <PostBuildEvent>cd ..\..\..\SDK

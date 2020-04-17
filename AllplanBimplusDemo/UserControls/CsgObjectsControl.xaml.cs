@@ -1,5 +1,4 @@
 ﻿using AllplanBimplusDemo.Classes;
-using AllplanBimplusDemo.WinForms;
 using BimPlus.Client.Integration;
 using BimPlus.Client.WebControls.WPF;
 using BimPlus.Sdk.Data.Converter;
@@ -20,8 +19,20 @@ using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.Drawing;
+using System.Linq;
 using System.Windows;
+using BimPlus.Sdk.Data.StructuralLoadResource;
 using WPFWindows = System.Windows;
+using IdeaRS.OpenModel;
+using IdeaRS.OpenModel.CrossSection;
+using IdeaRS.OpenModel.Geometry3D;
+using IdeaRS.OpenModel.Model;
+using IdeaRS.OpenModel.Result;
+using IOM.SteelFrame;
+// ReSharper disable IdentifierTypo
+// ReSharper disable RedundantExtendsListEntry
+// ReSharper disable LocalizableElement
+// ReSharper disable StringLiteralTypo
 
 namespace AllplanBimplusDemo.UserControls
 {
@@ -47,7 +58,7 @@ namespace AllplanBimplusDemo.UserControls
 
         #region properties
 
-        private bool _buttonsEnabled = false;
+        private bool _buttonsEnabled;
 
         public bool ButtonsEnabled
         {
@@ -81,8 +92,7 @@ namespace AllplanBimplusDemo.UserControls
 
         public void UnloadContent()
         {
-            if (_webViewer != null)
-                _webViewer.Dispose();
+            _webViewer?.Dispose();
             _integrationBase.EventHandlerCore.DataLoaded -= EventHandlerCore_DataLoaded;
         }
 
@@ -104,42 +114,37 @@ namespace AllplanBimplusDemo.UserControls
         /// Find existing model or create the model.
         /// </summary>
         /// <returns></returns>
-        private DtoDivision CreateCsgModel()
+        public DtoDivision CreateCsgModel(string modelName = "CsgGeometryModel")
         {
-            DtoDivision model = null;
-            string modelName = "CsgModel";
+            var model = _integrationBase.ApiCore.Divisions.GetProjectDivisions(_integrationBase.CurrentProject.Id)?.Find(x => x.Name == modelName);
 
-            model = _integrationBase.ApiCore.Divisions.GetProjectDivisions(_integrationBase.CurrentProject.Id)?.Find(x => x.Name == modelName);
-
-            bool existModel = model != null;
             if (model == null)
             {
                 model = _integrationBase.ApiCore.Divisions.CreateModel(_integrationBase.CurrentProject.Id, new DtoDivision { Name = modelName });
+                MessageBoxHelper.ShowInformation(model == null
+                    ? $"Could not create a new model '{modelName}'"
+                    : $"model '{modelName}' successfully created");
             }
 
-            if (model != null)
+            if (model == null || model.TopologyDivisionId.GetValueOrDefault(Guid.Empty) != Guid.Empty) 
+                return model;
+
+            // Create main root TopologyDivision node.
+            DtObject topologyDivision = _integrationBase.ApiCore.DtObjects.PostObject(new TopologyDivision
             {
-                if (!existModel)
-                {
-                    // Create main root TopologyDivion node.
-                    DtObject topologyDivision = _integrationBase.ApiCore.DtObjects.PostObject(new TopologyDivision
-                    {
-                        Name = "RootNode CsgModel",
-                        Division = model.Id,
-                        Parent = _integrationBase.CurrentProject.Id
-                    });
+                Name = $"RootNode{modelName}",
+                Division = model.Id,
+                Parent = _integrationBase.CurrentProject.Id
+            });
 
-                    if (topologyDivision == null || topologyDivision.Id == Guid.Empty)
-                    {
-                        string message = "Could not create TopologyDivision object.";
-                        MessageBoxHelper.ShowInformation(message, _parentWindow);
+            if (topologyDivision == null || topologyDivision.Id == Guid.Empty)
+            {
+                string message = "Could not create TopologyDivision object.";
+                MessageBoxHelper.ShowInformation(message, _parentWindow);
 
-                        return null;
-                    }
-
-                    model.TopologyDivisionId = topologyDivision.Id;
-                }
+                return null;
             }
+            model.TopologyDivisionId = topologyDivision.Id;
 
             return model;
         }
@@ -713,6 +718,178 @@ namespace AllplanBimplusDemo.UserControls
             }
         }
 
+        /// <summary>
+        /// Import 'IdeaStatica' TestData into BimPlus
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void IdeaStatica_OnClick(object sender, RoutedEventArgs e)
+        {
+            DtoDivision model = CreateCsgModel("IdeaStatica");
+            if (model == null)
+                return;
+
+            ProgressWindow.Text = "Import IdeaStaticaExampleData.";
+            ProgressWindow.Show();
+
+            try
+            {
+                // create IOM and results
+                OpenModel example = Example.CreateIOM();
+                OpenModelResult result = Helpers.GetResults();
+
+                var nodes = _integrationBase.ApiCore.DtObjects.GetObjects<StructuralPointConnection>(
+                    model.TopologyDivisionId.GetValueOrDefault(), false, false, true);
+
+                if (nodes == null || nodes.Count < 9)
+                {
+                    // Create Nodes (StructuralPointConnections)
+                    var node = new TopologyItem
+                    {
+                        Name = "Nodes",
+                        Parent = model.TopologyDivisionId,
+                        Division = model.Id,
+                        LogParentID = model.ProjectId,
+                        Children = new List<DtObject>(example.Point3D.Count)
+                    };
+
+                    foreach (var pt in example.Point3D)
+                    {
+                        node.Children.Add(new StructuralPointConnection
+                        {
+                            Division = model.Id,
+                            LogParentID = model.ProjectId,
+                            Name = pt.Name,
+                            NodeId = pt.Id,
+                            X = pt.X,
+                            Y = pt.Y,
+                            Z = pt.Z,
+                            AppliedCondition = new BoundaryNodeCondition("", false, false, false, false, false, false)
+                        });
+                    }
+
+                    node = (TopologyItem) _integrationBase.ApiCore.DtObjects.PostObject(node);
+                    nodes = node.Children.OfType<StructuralPointConnection>().ToList();
+                }
+
+                // Create CurveMembers
+                var curveMembers = _integrationBase.ApiCore.DtObjects.GetObjects<StructuralCurveMember>(
+                    model.TopologyDivisionId.GetValueOrDefault(), false, false, true);
+                if (curveMembers.Count < 10)
+                {
+                    var beams = new TopologyItem
+                    {
+                        Name = "3DSegments",
+                        Parent = model.TopologyDivisionId,
+                        Division = model.Id,
+                        LogParentID = model.ProjectId,
+                        Children = new List<DtObject>(example.LineSegment3D.Count)
+                    };
+
+                    foreach (var cm in example.LineSegment3D)
+                    {
+                        beams.Children.Add(new StructuralCurveMember
+                        {
+                            Division = model.Id,
+                            LogParentID = model.ProjectId,
+                            Name = $"M{cm.Id}",
+                            ConnectedBy = new List<RelConnectsStructuralMember>(2)
+                            {
+                                new RelConnectsStructuralMember
+                                {
+                                    OrderNumber = 1,
+                                    Name = "R1",
+                                    RelatedStructuralConnection =
+                                        nodes.Find(x => x.NodeId == cm.StartPoint.Element.Id)?.Id
+                                },
+                                new RelConnectsStructuralMember
+                                {
+                                    OrderNumber = 1,
+                                    Name = "R1",
+                                    RelatedStructuralConnection =
+                                        nodes.Find(x => x.NodeId == cm.EndPoint.Element.Id)?.Id
+                                }
+                            }
+                        });
+                    }
+                    beams = (TopologyItem) _integrationBase.ApiCore.DtObjects.PostObject(beams);
+                    curveMembers = beams.Children.OfType<StructuralCurveMember>().ToList();
+                }
+
+                // create Assemblies
+                var assemblies = new TopologyItem
+                {
+                    Name = "Assemblies",
+                    Parent = model.TopologyDivisionId,
+                    Division = model.Id,
+                    LogParentID = model.ProjectId,
+                    Children = new List<DtObject>(example.Member1D.Count)
+                };
+                foreach (var member in example.Member1D)
+                {
+                    //var elements = member.Elements1D.OfType<Element1D>().ToList();
+                    var path = new BimPlus.Sdk.Data.CSG.Path
+                    {
+                        Geometry = new List<CsgGeoElement>()
+                    };
+                    CrossSection crossSection = null;
+                    foreach (var re in member.Elements1D)
+                    {
+                        if (!(re.Element is Element1D element))
+                            continue;
+
+                        if (crossSection == null)
+                            crossSection = element.CrossSectionBegin.Element as CrossSection;
+
+                        if (!(element.Segment.Element is LineSegment3D line)) 
+                            continue;
+
+                        if (path.Geometry.Count == 0)
+                        {
+                            if (crossSection != null)
+                                path.CrossSection = crossSection.Name;
+
+                            path.Rotation = element.RotationRx;
+                            path.OffsetX = element.EccentricityBeginX;
+                            path.OffsetY = element.EccentricityBeginY;
+                            if (line.StartPoint.Element is Point3D sp)
+                                path.Geometry.Add(new StartPolygon
+                                    {Point = new List<double> {sp.X * 1000F, sp.Y * 1000F, sp.Z * 1000F}});
+                        }
+
+                        if (line.EndPoint.Element is Point3D ep)
+                            path.Geometry.Add(new Line
+                                {Point = new List<double> {ep.X * 1000F, ep.Y * 1000F, ep.Z * 1000F}});
+                    }
+
+                    assemblies.Children.Add(new ElementAssembly
+                    {
+                        Division = model.Id,
+                        LogParentID = model.ProjectId,
+                        Name = member.Name,
+                        CsgTree = new DtoCsgTree
+                        {
+                            Color = (uint)Color.CadetBlue.ToArgb(),
+                            Elements = new List<CsgElement>(1){ path }
+                        }
+                    });
+                }
+                assemblies = (TopologyItem)_integrationBase.ApiCore.DtObjects.PostObject(assemblies);
+            }
+            catch (Exception exception)
+            {
+                Console.WriteLine(exception);
+                throw;
+            }
+            finally
+            {
+                // convert geometry templates
+                _integrationBase.ApiCore.Projects.ConvertGeometry(model.ProjectId);
+                // refresh webviewer
+                NavigateToControl();
+            }
+
+        }
         #endregion button events
     }
 }
