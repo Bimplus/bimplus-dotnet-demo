@@ -1,0 +1,68 @@
+﻿<local:NotifyPropertyChangedUserControl x:Class="AllplanBimplusDemo.UserControls.ConnectionsUserControl"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+                                        
+    xmlns:local="clr-namespace:AllplanBimplusDemo.UserControls"
+                                        
+    xmlns:sys="clr-namespace:System;assembly=mscorlib"
+                                        
+    mc:Ignorable="d" 
+    d:DesignHeight="300" d:DesignWidth="300">
+
+    <UserControl.Resources>
+
+        <ResourceDictionary>
+
+            <ResourceDictionary.MergedDictionaries>
+                <ResourceDictionary Source="Styles.xaml" />
+            </ResourceDictionary.MergedDictionaries>
+
+            <Thickness x:Key="margin">0</Thickness>
+
+            <Thickness x:Key="VerticalMargin">7,7,7,7</Thickness>
+            <sys:Double x:Key="ButtonHeight">24</sys:Double>
+            <sys:Double x:Key="ButtonWidth">150</sys:Double>
+
+        </ResourceDictionary>
+
+    </UserControl.Resources>
+
+    <Grid>
+
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="*"/>
+            <ColumnDefinition Width="Auto"/>
+            <ColumnDefinition Width="Auto" MinWidth="164"/>
+        </Grid.ColumnDefinitions>
+
+        <ContentControl Grid.Column="0" Name="BimExplorer" Margin="{StaticResource margin}"/>
+
+        <GridSplitter Grid.Column="1" Width="5" VerticalAlignment="Stretch" HorizontalAlignment="Center" Background="{StaticResource VerticalSplitBrush}"/>
+
+        <Grid Grid.Column="2">
+            <StackPanel Orientation="Vertical" IsEnabled="{Binding ButtonsEnabled}">
+                <Button Name="CreateObjects" Content="Create objects" HorizontalAlignment="Center" ToolTip="Create objects"
+                    Margin="{StaticResource VerticalMargin}" Height="{StaticResource ButtonHeight}" Width="{StaticResource ButtonWidth}"
+                    Click="CreateObjects_Click"/>
+
+                <Button Name="CreateConnection" Content="Create connection" HorizontalAlignment="Center" ToolTip="Create connection"
+                    Margin="{StaticResource VerticalMargin}" Height="{StaticResource ButtonHeight}" Width="{StaticResource ButtonWidth}"
+                    Click="CreateConnection_Click"/>
+
+                <Button Name="DeleteConnection" Content="Delete connection" HorizontalAlignment="Center" ToolTip="Delete connection"
+                    IsEnabled="False"
+                    Margin="{StaticResource VerticalMargin}" Height="{StaticResource ButtonHeight}" Width="{StaticResource ButtonWidth}"
+                    Click="DeleteConnection_Click"/>
+
+                <Button Name="DeleteModelAndObject" Content="Delete model and objects" HorizontalAlignment="Center" ToolTip="Delete model and objects"
+                    IsEnabled="False"
+                    Margin="{StaticResource VerticalMargin}" Height="{StaticResource ButtonHeight}" Width="{StaticResource ButtonWidth}"
+                    Click="DeleteModelAndObject_Click"/>
+            </StackPanel>
+        </Grid>
+        
+    </Grid>
+    
+</local:NotifyPropertyChangedUserControl>

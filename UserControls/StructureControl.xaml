@@ -1,0 +1,124 @@
+﻿<local:NotifyPropertyChangedUserControl x:Class="AllplanBimplusDemo.UserControls.StructureControl"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:local="clr-namespace:AllplanBimplusDemo.UserControls"
+    xmlns:classes="clr-namespace:AllplanBimplusDemo.Classes"
+             
+    mc:Ignorable="d" 
+    d:DesignHeight="600" d:DesignWidth="600" IsVisibleChanged="UserControl_IsVisibleChanged" Loaded="NotifyPropertyChangedUserControl_Loaded" >
+
+    <UserControl.Resources>
+
+        <ResourceDictionary>
+
+            <ResourceDictionary.MergedDictionaries>
+                <ResourceDictionary Source="Styles.xaml" />
+            </ResourceDictionary.MergedDictionaries>
+
+            <Thickness x:Key="controlMargin">3,11,3,11</Thickness>
+            <Thickness x:Key="labelMargin">7,2,7,2</Thickness>
+            <Thickness x:Key="listBoxMargin">11,2,11,2</Thickness>
+
+            <classes:BimplusColorToWpfColorConverter x:Key="ColorConverter" />
+
+            <ContextMenu x:Key="TreeViewItemContextMenu">
+                <MenuItem x:Name="EditNameMenuItem" Header="Edit name" Click="Edit_Click" InputGestureText="F2" Loaded="EditNameMenuItem_Loaded"/>
+                <MenuItem x:Name="CancelEditNameMenuItem" Header="Cancel edit name" InputGestureText="Esc" Click="CancelEditNameMenuItem_Click" />
+                <MenuItem x:Name="SaveNameMenuItem" Header="Save name" Click="Save_Click" />
+                <Separator />
+                <MenuItem x:Name="NewStructureMenuItem" Header="New structure" Click="NewStructure_Click" />
+                <MenuItem x:Name="NewSubStructureMenuItem" Header="New sub structure" Click="NewSubStructureMenuItem_Click" />
+                <MenuItem x:Name="DeleteStructureMenuItem" Header="Delete structure" Click="DeleteStructureMenuItem_Click" />
+            </ContextMenu>
+
+            <ContextMenu x:Key="ListBoxContentMenu">
+                <MenuItem x:Name="DeleteSelectedStructureMenuItem" Header="Delete structure" Click="DeleteSelectedStructureMenuItem_Click" />
+            </ContextMenu>
+
+            <DataTemplate x:Key="HeaderTextBoxTemplate">
+                <TextBox x:Name="TextBox" Text="{Binding Path=Name, UpdateSourceTrigger=PropertyChanged}" Margin="2" Width="250" 
+                ContextMenu="{StaticResource TreeViewItemContextMenu}" PreviewKeyDown="TextBox_PreviewKeyDown" Loaded="TextBox_Loaded" />
+            </DataTemplate>
+
+            <DataTemplate x:Key="HeaderTextBlockTemplate">
+                <!--<TextBlock x:Name="TextBlock" Text="{Binding Path=Name}" Margin="2" Width="250"
+                Foreground="{Binding Color,Converter={StaticResource ColorConverter}}"
+                ContextMenu="{StaticResource TreeViewItemContextMenu}" />-->
+                <TextBlock x:Name="TextBlock" Text="{Binding Path=Name}" Margin="2" ContextMenu="{StaticResource TreeViewItemContextMenu}"/>
+            </DataTemplate>
+
+        </ResourceDictionary>
+
+    </UserControl.Resources>
+
+    <Grid>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="*" MinWidth="100" IsEnabled="False"/>
+            <ColumnDefinition Width="Auto"/>
+            <ColumnDefinition Width="*" MinWidth="100"/>
+        </Grid.ColumnDefinitions>
+
+        <Grid Grid.Column="0" Name="LeftColumn">
+            <StackPanel Orientation="Vertical">
+
+                <StackPanel Orientation="Horizontal">
+                    <Label Content="Models:" Margin="{StaticResource labelMargin}" Width="67"/>
+                    <TextBlock Name="ProjectModelsText" Text="{Binding ProjectModels}" Margin="10,7,7,7" TextWrapping="Wrap"/>
+                </StackPanel>
+
+                <StackPanel Orientation="Horizontal">
+                    <Label Content="Structures:" Margin="{StaticResource labelMargin}" Width="67"/>
+                </StackPanel>
+
+                <!--No ContextMenu-->
+                <!--ContextMenu="{StaticResource ListBoxContentMenu}"-->
+                <ListBox Name="StructuresListBox" ItemsSource="{Binding Structures}" Margin="{StaticResource listBoxMargin}" SelectedItem="{Binding SelectedItem}"
+                    IsSynchronizedWithCurrentItem="True"
+                    Height="300" HorizontalAlignment="Stretch" >
+                    
+                    <ListBox.ItemTemplate>
+                        <DataTemplate>
+                            <TextBlock Text="{Binding RelativeSource={RelativeSource Mode=Self}, Path=DataContext.Name}" FontSize="13" />
+                        </DataTemplate>
+                    </ListBox.ItemTemplate>
+                    
+                </ListBox>
+
+                <StackPanel Orientation="Horizontal">
+                    <Label Content="Selection:" Margin="{StaticResource labelMargin}" Width="67" HorizontalAlignment="Center"/>
+                    <Label Content="{Binding SelectedItem.Name}" Margin="{StaticResource labelMargin}"/>
+                </StackPanel>
+
+                <StackPanel Orientation="Horizontal" HorizontalAlignment="Right">
+                    <Button Name="CreateStructure" Content="Create structure" Margin="{StaticResource listBoxMargin}"
+                        Width="120" Click="CreateStructure_Click" />
+                    <Button Name="GetStructure" Content="Load structure" IsEnabled="{Binding HasObjects}" Margin="{StaticResource listBoxMargin}"
+                        Width="120" Click="GetStructure_Click" />
+                </StackPanel>
+
+            </StackPanel>
+
+        </Grid>
+
+        <GridSplitter Grid.Column="1" Name="GridSplitter" Width="5" VerticalAlignment="Stretch" HorizontalAlignment="Center" Background="{StaticResource VerticalSplitBrush}"/>
+
+        <Grid Grid.Column="2" Name="AttributeGrid" Margin="13">
+            
+            <DockPanel>
+                <Label DockPanel.Dock="Bottom" Name="NotificationLabel" Content=" " FontSize="13" BorderBrush="#FF828790" BorderThickness="1,0,1,1" Visibility="Visible"/>
+
+                <!--Currently no function-->
+
+                <CheckBox DockPanel.Dock="Top" Name="ListenToBimplus" Content="Listen to Bimplus." IsChecked="False" Margin="0,7,0,7" Visibility="Visible" Click="ListenToBimplus_Click" />
+
+                <TreeView DockPanel.Dock="Top" Name="StructureTreeView" IsEnabled="{Binding HasObjects}" FontSize="13" BorderBrush="#FF828790"
+                    ScrollViewer.VerticalScrollBarVisibility="Auto" HorizontalContentAlignment="Center"
+                          SelectedItemChanged="StructureTreeView_SelectedItemChanged" PreviewKeyDown="StructureTreeView_PreviewKeyDown" />
+            </DockPanel>
+          
+        </Grid>
+        
+    </Grid>
+</local:NotifyPropertyChangedUserControl>

@@ -1,0 +1,143 @@
+﻿<local:BaseAttributesUserControl x:Class="AllplanBimplusDemo.UserControls.SetAttributesControl"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             
+    xmlns:sys="clr-namespace:System;assembly=mscorlib"
+                                 
+    xmlns:local="clr-namespace:AllplanBimplusDemo.UserControls"
+             
+    xmlns:controls="clr-namespace:AllplanBimplusDemo.Controls"
+             
+    mc:Ignorable="d" 
+    d:DesignHeight="600" d:DesignWidth="600" IsVisibleChanged="UserControl_IsVisibleChanged" Loaded="BaseAttributesUserControl_Loaded">
+
+    <UserControl.Resources>
+
+        <ResourceDictionary>
+
+            <ResourceDictionary.MergedDictionaries>
+                <ResourceDictionary Source="Styles.xaml" />
+            </ResourceDictionary.MergedDictionaries>
+
+            <Thickness x:Key="controlMargin">3,11,3,11</Thickness>
+            <Thickness x:Key="labelMargin">7,2,7,2</Thickness>
+            <Thickness x:Key="listBoxMargin">11,2,11,2</Thickness>
+            <sys:Double x:Key="templateLabelWidth">180</sys:Double>
+            <sys:Double x:Key="testCheckBox">null</sys:Double>
+
+            <ContextMenu x:Key="TreeViewContextMenu">
+                <MenuItem Header="Expand groups" IsEnabled="{Binding HasTreeViewItems}" Click="Expand_Click" />
+                <MenuItem Header="Collaps groups" IsEnabled="{Binding HasTreeViewItems}" Click="Collaps_Click" />
+            </ContextMenu>
+            
+            <DataTemplate x:Key="HeaderTextBoxTemplate">
+                <StackPanel x:Name="TextBoxTemplateStackPanel" Orientation="Horizontal" Loaded="DataTemplate_Loaded" >
+                    <Label Content="{Binding Name}" Margin="2" Width="{StaticResource templateLabelWidth}"/>
+                    <TextBox x:Name="TextBox" Text="{Binding Value, Mode=TwoWay}" IsEnabled="{Binding IsChangeable}" Margin="2" Width="250"/>
+                    <Label Content="{Binding Unit}" Margin="2"/>
+                </StackPanel>
+            </DataTemplate>
+
+            <DataTemplate x:Key="DateTimeTextBoxTemplate">
+                <StackPanel Orientation="Horizontal" Loaded="DataTemplate_Loaded" >
+                    <Label Content="{Binding Name}" Margin="2" Width="{StaticResource templateLabelWidth}"/>
+                    <controls:DateTimeTextBox x:Name="DateTimeTextBox" DateTimeValue="{Binding DateTime, Mode=TwoWay}" IsEnabled="{Binding IsChangeable}" Margin="2" Width="250"/>
+                    <Label Content="{Binding Unit}" Margin="2"/>
+                </StackPanel>
+            </DataTemplate>
+
+            <DataTemplate x:Key="DoubleTextBoxTemplate">
+                <StackPanel Orientation="Horizontal" Loaded="DataTemplate_Loaded" >
+                    <Label Content="{Binding Name}" Margin="2" Width="{StaticResource templateLabelWidth}"/>
+                    <controls:DoubleTextBox x:Name="DoubleTextBox" DoubleValue="{Binding Double, Mode=TwoWay}" IsEnabled="{Binding IsChangeable}" Margin="2" Width="250"/>
+                    <Label Content="{Binding Unit}" Margin="2"/>
+                </StackPanel>
+            </DataTemplate>
+
+            <DataTemplate x:Key="Int32TextBoxTemplate">
+                <StackPanel Orientation="Horizontal" Loaded="DataTemplate_Loaded" >
+                    <Label Content="{Binding Name}" Margin="2" Width="{StaticResource templateLabelWidth}"/>
+                    <controls:IntegerTextBox x:Name="IntegerTextBox" IntValue="{Binding Int, Mode=TwoWay}" IsEnabled="{Binding IsChangeable}" Margin="2" Width="250"/>
+                    <Label Content="{Binding Unit}" Margin="2"/>
+                </StackPanel>
+            </DataTemplate>
+
+            <DataTemplate x:Key="BooleanTemplate">
+                <StackPanel Orientation="Horizontal" Loaded="DataTemplate_Loaded" >
+                    <Label Content="{Binding Name}" Margin="2" Width="{StaticResource templateLabelWidth}"/>
+                    <CheckBox Name="CheckBox" Content="{Binding Name, Mode=OneWay}" IsChecked="{Binding Value, Mode=TwoWay}" IsEnabled="{Binding IsChangeable}"
+                        Margin="2,7,0,0" Width="250" KeyDown="CheckBox_KeyDown" IsThreeState="True">
+                    </CheckBox>
+                </StackPanel>
+            </DataTemplate>
+
+            <DataTemplate x:Key="EnumComboBoxTemplate">
+                <StackPanel Orientation="Horizontal" Loaded="DataTemplate_Loaded" >
+                    <Label Content="{Binding Name}" Margin="2" Width="{StaticResource templateLabelWidth}"/>
+                    <ComboBox x:Name="EnumComboBox" ItemsSource="{Binding Items}" SelectedItem="{Binding Value, Mode=TwoWay}"
+                          IsEnabled="{Binding IsChangeable}" Margin="2" Width="250" KeyDown="EnumComboBoxTemplate_KeyDown"/>
+                    <Label Content="{Binding Unit}" Margin="2"/>
+                </StackPanel>
+            </DataTemplate>
+        </ResourceDictionary>
+
+    </UserControl.Resources>
+
+    <Grid>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="*" MinWidth="100" IsEnabled="False"/>
+            <ColumnDefinition Width="Auto"/>
+            <ColumnDefinition Width="*" MinWidth="100"/>
+        </Grid.ColumnDefinitions>
+
+        <Grid Grid.Column="0" Name="LeftColumn">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="Auto" />
+                <RowDefinition />
+            </Grid.RowDefinitions>
+
+            <StackPanel Grid.Row="0" Orientation="Horizontal">
+                <Label Content="Models:" Margin="{StaticResource labelMargin}" Width="67"/>
+                <TextBlock Name="ProjectModelsText" Text="{Binding ProjectModels}" Margin="10,7,7,7" TextWrapping="Wrap"/>
+            </StackPanel>
+
+            <ListBox Grid.Row="1" Name="ObjectTypesList" Margin="{StaticResource listBoxMargin}" ItemsSource="{Binding ObjectTypes}" SelectedItem="{Binding SelectedItem}"
+                         Height="150" HorizontalAlignment="Stretch" IsEnabled="{Binding HasObjects}">
+                <ListBox.ItemTemplate>
+                    <DataTemplate>
+                        <TextBlock Text="{Binding RelativeSource={RelativeSource Mode=Self}, Path=DataContext.Name}" FontSize="13"/>
+                    </DataTemplate>
+                </ListBox.ItemTemplate>
+            </ListBox>
+
+            <StackPanel Grid.Row="2" Orientation="Horizontal">
+                <Label Content="Selection:" Margin="{StaticResource labelMargin}" Width="67" HorizontalAlignment="Center"/>
+                <Label Content="{Binding SelectedItem.Name}" Margin="{StaticResource labelMargin}"/>
+            </StackPanel>
+
+            <StackPanel Grid.Row="3" Orientation="Horizontal" HorizontalAlignment="Right">
+                <Button Name="GetObjects" Content="Load objects" IsEnabled="{Binding HasObjects}" Margin="{StaticResource listBoxMargin}" Width="120" Click="GetObjects_Click"/>
+            </StackPanel>
+
+            <DataGrid Grid.Row="4" Name="ObjectsDataGrid" Margin="11,11,11,11" CanUserAddRows="False" Height="Auto" MinHeight="100"
+                    ItemsSource="{Binding DataGridDataList}" SelectedItem="{Binding SelectedObject, Mode=TwoWay}"
+                    HorizontalGridLinesBrush="LightGray" VerticalGridLinesBrush="LightGray" Background="White" IsReadOnly="True"/>
+
+        </Grid>
+
+        <GridSplitter Grid.Column="1" Name="GridSplitter" Width="5" VerticalAlignment="Stretch" HorizontalAlignment="Center"
+                      Background="{StaticResource VerticalSplitBrush}" IsTabStop="False"/>
+
+        <Grid Grid.Column="2" Name="AttributeGrid" Margin="13">
+            <TreeView Name="AttributeTreeView" IsEnabled="{Binding HasObjects}" FontSize="13" ContextMenu="{StaticResource TreeViewContextMenu}"
+                ScrollViewer.VerticalScrollBarVisibility="Auto" HorizontalContentAlignment="Center"
+                    SelectedItemChanged="AttributeTreeView_SelectedItemChanged" KeyDown="AttributeTreeView_KeyDown" IsTabStop="False"/>
+        </Grid>
+    </Grid>
+
+</local:BaseAttributesUserControl>

@@ -1,0 +1,28 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 16
+VisualStudioVersion = 16.0.29519.181
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AllplanBimplusDemo", "AllplanBimplusDemo.csproj", "{BE53F457-644A-4E70-9352-C94957D9146D}"
+EndProject
+Project("{D954291E-2A0B-460D-934E-DC6B0785DB48}") = "IdeaStatiCa.Codes", "..\IdeaStatiCa.Codes\IdeaStatiCa.Codes.shproj", "{BE6E8E88-01DF-489F-BAA8-E61CA9E7C731}"
+EndProject
+Global
+	GlobalSection(SharedMSBuildProjectFiles) = preSolution
+		..\IdeaStatiCa.Codes\IdeaStatiCa.Codes.projitems*{be53f457-644a-4e70-9352-c94957d9146d}*SharedItemsImports = 4
+		..\IdeaStatiCa.Codes\IdeaStatiCa.Codes.projitems*{be6e8e88-01df-489f-baa8-e61ca9e7c731}*SharedItemsImports = 13
+	EndGlobalSection
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{BE53F457-644A-4E70-9352-C94957D9146D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{BE53F457-644A-4E70-9352-C94957D9146D}.Debug|Any CPU.Build.0 = Debug|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {E166940F-F127-40BE-8456-3E077FA448C7}
+	EndGlobalSection
+EndGlobal
