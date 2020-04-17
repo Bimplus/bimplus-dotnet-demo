@@ -64,9 +64,12 @@
                 <Button Content="Create template" Name="CreateTemplate" IsEnabled="{Binding ButtonsEnabled}" HorizontalAlignment="Center" ToolTip="Create DtoTemplateArticle and objects StructuralPointReactions." 
                     Margin="{StaticResource VerticalMargin}" Height="{StaticResource ButtonHeight}" Width="{StaticResource ButtonWidth}"
                     Click="CreateTemplate_Click" RenderTransformOrigin="0.568,2.224"/>
-                <Button Content="IdeaStatica" x:Name="IdeaStatica" IsEnabled="{Binding ButtonsEnabled}" HorizontalAlignment="Center" ToolTip="Import IdeaStatica data." 
+                <Button Content="Import IdeaStatica" x:Name="IdeaStatica" IsEnabled="{Binding ButtonsEnabled}" HorizontalAlignment="Center" ToolTip="Import IdeaStatica data." 
                     Margin="7.4,7" Height="{StaticResource ButtonHeight}" Width="{StaticResource ButtonWidth}"
                     Click="IdeaStatica_OnClick" RenderTransformOrigin="0.568,2.224"/>
+                <Button Content="IdeaStatica Connection" x:Name="IdeaStaticaConnection" IsEnabled="{Binding ButtonsEnabled}" HorizontalAlignment="Center" ToolTip="Import IdeaStatica data." 
+                    Margin="7.4,7" Height="{StaticResource ButtonHeight}" Width="{StaticResource ButtonWidth}"
+                    Click="IdeaStaticaConnection_OnClick"  RenderTransformOrigin="0.568,2.224"/>
 
             </StackPanel>
         </Grid>

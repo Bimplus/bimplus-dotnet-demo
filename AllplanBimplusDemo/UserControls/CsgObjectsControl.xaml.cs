@@ -890,6 +890,12 @@ namespace AllplanBimplusDemo.UserControls
             }
 
         }
+
+        private void IdeaStaticaConnection_OnClick(object sender, RoutedEventArgs e)
+        {
+            throw new NotImplementedException();
+        }
+
         #endregion button events
     }
 }
