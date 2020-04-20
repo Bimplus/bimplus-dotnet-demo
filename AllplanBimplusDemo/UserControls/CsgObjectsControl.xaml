@@ -1,0 +1,78 @@
+﻿<local:NotifyPropertyChangedUserControl x:Class="AllplanBimplusDemo.UserControls.CsgObjectsControl"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+    xmlns:local="clr-namespace:AllplanBimplusDemo.UserControls"
+    mc:Ignorable="d" 
+             
+    xmlns:sys="clr-namespace:System;assembly=mscorlib"
+             
+    d:DesignHeight="300" d:DesignWidth="300">
+
+    <UserControl.Resources>
+        
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <ResourceDictionary Source="Styles.xaml" />
+            </ResourceDictionary.MergedDictionaries>
+
+            <Thickness x:Key="margin">0</Thickness>
+
+            <Thickness x:Key="VerticalMargin">7,7,7,7</Thickness>
+            <sys:Double x:Key="ButtonHeight">24</sys:Double>
+            <sys:Double x:Key="ButtonWidth">150</sys:Double>
+
+        </ResourceDictionary>
+
+    </UserControl.Resources>
+    
+    <Grid>
+
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="*"/>
+            <ColumnDefinition Width="Auto"/>
+            <ColumnDefinition Width="Auto" MinWidth="164"/>
+        </Grid.ColumnDefinitions>
+
+        <ContentControl Grid.Column="0" Name="BimExplorer" Margin="{StaticResource margin}"/>
+
+        <GridSplitter Grid.Column="1" Width="5" VerticalAlignment="Stretch" HorizontalAlignment="Center" Background="{StaticResource VerticalSplitBrush}"/>
+
+        <Grid Grid.Column="2">
+            <StackPanel Orientation="Vertical">
+                <Button Content="Create Reinforcement" Name="CreateTube" IsEnabled="{Binding ButtonsEnabled}" HorizontalAlignment="Center" ToolTip="Create Reinforcement by Csg Tube Information." 
+                        Margin="{StaticResource VerticalMargin}" Height="{StaticResource ButtonHeight}" Width="{StaticResource ButtonWidth}"
+                        Click="CreateTube_Click"/>
+
+                <Button Content="Create contour" Name="CreateContour" IsEnabled="{Binding ButtonsEnabled}" HorizontalAlignment="Center" ToolTip="Create 3D body by given CSG Geometry information." 
+                    Margin="{StaticResource VerticalMargin}" Height="{StaticResource ButtonHeight}" Width="{StaticResource ButtonWidth}"
+                    Click="CreateContour_Click"/>
+
+                <Button Content="Create IPE200" Name="CreateIPE200" IsEnabled="{Binding ButtonsEnabled}" HorizontalAlignment="Center" ToolTip="Create steel column with reference to IPE CrossSectionDefinition."
+                    Margin="{StaticResource VerticalMargin}" Height="{StaticResource ButtonHeight}" Width="{StaticResource ButtonWidth}"
+                    Click="CreateIPE200_Click"/>
+
+                <Button Content="Create faces" Name="CreateFaces" IsEnabled="{Binding ButtonsEnabled}" HorizontalAlignment="Center" ToolTip="Create Faces by using 'Mesh' Property DbGeometry." 
+                    Margin="{StaticResource VerticalMargin}" Height="{StaticResource ButtonHeight}" Width="{StaticResource ButtonWidth}"
+                    Click="CreateFaces_Click"/>
+
+                <Button Content="Create BasePolyeder" Name="CreateBasePolyeder" IsEnabled="{Binding ButtonsEnabled}" HorizontalAlignment="Center" ToolTip="Create 3D body by using CBaseElementPolyeder, Point, Edges and Faces." 
+                    Margin="{StaticResource VerticalMargin}" Height="{StaticResource ButtonHeight}" Width="{StaticResource ButtonWidth}"
+                    Click="CreateBasePolyeder_Click"/>
+
+                <Button Content="Create template" Name="CreateTemplate" IsEnabled="{Binding ButtonsEnabled}" HorizontalAlignment="Center" ToolTip="Create DtoTemplateArticle and objects StructuralPointReactions." 
+                    Margin="{StaticResource VerticalMargin}" Height="{StaticResource ButtonHeight}" Width="{StaticResource ButtonWidth}"
+                    Click="CreateTemplate_Click" RenderTransformOrigin="0.568,2.224"/>
+                <Button Content="Import IdeaStatica" x:Name="IdeaStatica" IsEnabled="{Binding ButtonsEnabled}" HorizontalAlignment="Center" ToolTip="Import IdeaStatica data." 
+                    Margin="7.4,7" Height="{StaticResource ButtonHeight}" Width="{StaticResource ButtonWidth}"
+                    Click="IdeaStatica_OnClick" RenderTransformOrigin="0.568,2.224"/>
+                <Button Content="IdeaStatica Connection" x:Name="IdeaStaticaConnection" IsEnabled="{Binding ButtonsEnabled}" HorizontalAlignment="Center" ToolTip="Import IdeaStatica data." 
+                    Margin="7.4,7" Height="{StaticResource ButtonHeight}" Width="{StaticResource ButtonWidth}"
+                    Click="IdeaStaticaConnection_OnClick"  RenderTransformOrigin="0.568,2.224"/>
+
+            </StackPanel>
+        </Grid>
+
+    </Grid>
+</local:NotifyPropertyChangedUserControl>
