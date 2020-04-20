@@ -19,8 +19,11 @@ using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.Drawing;
+using System.Globalization;
 using System.Linq;
 using System.Windows;
+using BimPlus.Sdk.Data.DbCore.Connection;
+using BimPlus.Sdk.Data.DbCore.Recess;
 using BimPlus.Sdk.Data.StructuralLoadResource;
 using WPFWindows = System.Windows;
 using IdeaRS.OpenModel;
@@ -29,6 +32,8 @@ using IdeaRS.OpenModel.Geometry3D;
 using IdeaRS.OpenModel.Model;
 using IdeaRS.OpenModel.Result;
 using IOM.SteelFrame;
+using Point = System.Drawing.Point;
+
 // ReSharper disable IdentifierTypo
 // ReSharper disable RedundantExtendsListEntry
 // ReSharper disable LocalizableElement
@@ -893,7 +898,217 @@ namespace AllplanBimplusDemo.UserControls
 
         private void IdeaStaticaConnection_OnClick(object sender, RoutedEventArgs e)
         {
-            throw new NotImplementedException();
+            DtoDivision model = CreateCsgModel("IdeaStatica");
+            if (model == null)
+                return;
+
+            ProgressWindow.Text = "Import IdeaStaticaExampleData.";
+            ProgressWindow.Show();
+
+            // create/read bolt template
+            var boltTemplateId = _integrationBase.ApiCore.GeometryTemplate.Create(
+                JsonConvert.DeserializeObject<DtoTemplateArticle>(Properties.Resources.bolt_5074991643486136591));
+
+            var test = _integrationBase.ApiCore.GeometryTemplate.Get(boltTemplateId);
+
+            try
+            {
+                // create IOM and results
+                OpenModel example = Example.CreateIOM();
+                //OpenModelResult result = Helpers.GetResults();
+
+                var assemblies = _integrationBase.ApiCore.DtObjects.GetObjects<ElementAssembly>(
+                    model.TopologyDivisionId.GetValueOrDefault(), false, false, true);
+                if (assemblies == null || assemblies.Count == 0)
+                {
+                    MessageBoxHelper.ShowInformation("could not find steel assemblies\n please use Import IdeaStatica", _parentWindow);
+                    return;
+                }
+
+                var connections = _integrationBase.ApiCore.DtObjects.GetObjects<ProjectConnection>(model.ProjectId);
+                if (connections != null && connections.Count > 0)
+                {
+                    foreach (var con in connections)
+                    {
+                        _integrationBase.ApiCore.DtoConnection.DeleteConnections(con.Id);
+                    }
+                }
+
+                foreach (var idCon in example.Connections)
+                {
+                    // mappingTable between IdeaStatica.Id and BimPlus.Id
+                    Dictionary<int,Guid> connectionIds = new Dictionary<int, Guid>();
+                    foreach (var b in idCon.Beams)
+                    {
+                        var assembly = assemblies.Find(x => x.Name == b.Name);
+                        if (assembly == null) continue;
+                        connectionIds.Add(b.Id,assembly.Id);
+                    }
+
+                    DtoConnections connection = new DtoConnections
+                    {
+                        ElementIds = connectionIds.Values.ToList(),
+                        ConnectionElement = new ConnectionElement
+                        {
+                            Name =  "IdeaStatica_Connection",
+                            Children = new List<DtObject>()
+                        }
+                    };
+
+                    foreach (var p in idCon.Plates)
+                    {
+                        var plate = new SteelPlate
+                        {
+                            Name = p.Name,
+                            Parent = connectionIds[1], // TODO: p.OriginalModelId
+                            Division = model.Id,
+                            LogParentID = model.ProjectId,
+                            CsgTree = new DtoCsgTree
+                            {
+                                Color = (uint) Color.DarkCyan.ToArgb(),
+                                Elements = new List<CsgElement>(2)
+                                {
+                                    new Path
+                                    {
+                                        Rotation = -Math.PI/2,
+                                        Geometry = new List<CsgGeoElement>(2)
+                                        {
+                                            new StartPolygon
+                                            {
+                                                Point = new List<double>{0, 0, 0}
+                                            },
+                                            new Line
+                                            {
+                                                Point = (p.Name == "P1") // TODO: check direction of Path
+                                                    ? new List<double>{p.Thickness * 1000F * p.AxisX.X,
+                                                                       p.Thickness * 1000F * p.AxisX.Y,
+                                                                       p.Thickness * 1000F * p.AxisX.Z}
+                                                    : new List<double>{p.Thickness * 1000F * p.AxisZ.X,
+                                                                       p.Thickness * 1000F * p.AxisZ.Y,
+                                                                       p.Thickness * 1000F * p.AxisZ.Z 
+                                                }
+                                            }
+                                        }
+                                    },
+                                    new OuterContour
+                                    {
+                                        Geometry = new List<CsgGeoElement>()
+                                    }
+                                }
+                            }
+                        };
+                        // OuterContour
+                        var items = p.Region.Split(' ');
+                        for (int i = 0; i < items.Length; i += 3)
+                        {
+                            double x = double.Parse(items[i + 1], CultureInfo.InvariantCulture) * 1000F;
+                            double y = double.Parse(items[i + 2], CultureInfo.InvariantCulture) * 1000F;
+                            if (items[i] == "M")
+                                plate.CsgTree.Elements[1].Geometry.Add(new StartPolygon {Point = new List<double> {x, y}});
+                            else if (items[i] == "L")
+                                plate.CsgTree.Elements[1].Geometry.Add(new Line {Point = new List<double> {x, y}});
+                        }
+
+                        plate.Matrix = new TmpMatrix
+                        {
+                            Values = new[]
+                            {
+                                p.AxisX.X, p.AxisX.Y, p.AxisX.Z, p.Origin.X * 1000F,
+                                p.AxisY.X, p.AxisY.Y, p.AxisY.Z, p.Origin.Y * 1000F,
+                                p.AxisZ.X, p.AxisZ.Y, p.AxisZ.Z, p.Origin.Z * 1000F,
+                                0F, 0F, 0F, 1F
+                            }
+                        };
+
+                        plate.AddProperty(TableNames.tabAttribConstObjInstObj, "Objects_Connection", connectionIds[3]);
+
+                        connection.ConnectionElement.Children.Add(plate);
+                    }
+
+                    foreach (var bGrid in idCon.BoltGrids)
+                    {
+                        foreach (var bolt in bGrid.Positions)
+                        {
+                            var fastener = new MechanicalFastener
+                            {
+                                Name = bGrid.Standard,
+                                Parent = connectionIds[1], // TODO: check assembly
+                                Division = model.Id,
+                                LogParentID = _integrationBase.CurrentProject.Id,
+                                Template = boltTemplateId,
+                                Matrix = new TmpMatrix
+                                {
+                                    Values = new[]
+                                    {
+                                        bGrid.AxisX.X, bGrid.AxisX.Y, bGrid.AxisX.Z, bolt.X * 1000F,
+                                        bGrid.AxisY.X, bGrid.AxisY.Y, bGrid.AxisY.Z, bolt.Y * 1000F,
+                                        bGrid.AxisZ.X, bGrid.AxisZ.Y, bGrid.AxisZ.Z, bolt.Z * 1000F,
+                                        0F, 0F, 0F, 1F
+                                    }
+                                }
+                            };
+                            var json = Newtonsoft.Json.JsonConvert.SerializeObject(fastener);
+                            connection.ConnectionElement.Children.Add(fastener);
+
+                            var opening = new Opening
+                            {
+                                Name = bGrid.Standard,
+                                Parent = connectionIds[1], // TODO: check assembly
+                                Division = model.Id,
+                                LogParentID = _integrationBase.CurrentProject.Id,
+                                CsgTree = new DtoCsgTree
+                                {
+                                    Color = (uint)Color.Gray.ToArgb(),
+                                    Elements = new List<CsgElement>(1) 
+                                    { 
+                                        new Path {
+                                            Geometry = new List<CsgGeoElement>
+                                            {
+                                                new StartPolygon {Point = new List<double> {0, 0, 0}},
+                                                new Line {Point = new List<double> { 100F * bGrid.AxisX.X, 100F * bGrid.AxisX.Y, 100F * bGrid.AxisX.Z}}
+                                            },
+                                            CrossSection = "RD8"
+                                        }
+                                    }
+                                },
+                                Matrix = new TmpMatrix
+                                {
+                                    Values = new[]
+                                    {
+                                        bGrid.AxisX.X, bGrid.AxisX.Y, bGrid.AxisX.Z, bolt.X * 1000F,
+                                        bGrid.AxisY.X, bGrid.AxisY.Y, bGrid.AxisY.Z, bolt.Y * 1000F,
+                                        bGrid.AxisZ.X, bGrid.AxisZ.Y, bGrid.AxisZ.Z, bolt.Z * 1000F,
+                                        0F, 0F, 0F, 1F
+                                    }
+                                }
+                            };
+                            connection.ConnectionElement.Children.Add(opening);
+                        }
+                    }
+
+                    foreach (var weld in idCon.Welds)
+                    {
+                        ; // TODO create Weld objects
+                    }
+
+                    connection = _integrationBase.ApiCore.DtoConnection.CreateConnection(model.ProjectId, connection);
+                    if (connection == null || connection.Id == Guid.Empty)
+                        MessageBoxHelper.ShowInformation("DtoConnections could not be generated.", _parentWindow);
+                }
+
+            }
+            catch (Exception exception)
+            {
+                Console.WriteLine(exception);
+                throw;
+            }
+            finally
+            {
+                // convert geometry templates
+                _integrationBase.ApiCore.Projects.ConvertGeometry(model.ProjectId);
+                // refresh webviewer
+                NavigateToControl();
+            }
         }
 
         #endregion button events

@@ -228,8 +228,9 @@
       <DesignTimeSharedInput>True</DesignTimeSharedInput>
     </Compile>
     <EmbeddedResource Include="Properties\Resources.resx">
-      <Generator>ResXFileCodeGenerator</Generator>
+      <Generator>PublicResXFileCodeGenerator</Generator>
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>
+      <SubType>Designer</SubType>
     </EmbeddedResource>
     <EmbeddedResource Include="WinForms\ProgressWindow.resx">
       <DependentUpon>ProgressWindow.cs</DependentUpon>
@@ -246,6 +247,7 @@
     <None Include="App.config" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="Resources\bolt_5074991643486136591.json" />
     <None Include="Resources\cadicsData.xml" />
   </ItemGroup>
   <ItemGroup>
