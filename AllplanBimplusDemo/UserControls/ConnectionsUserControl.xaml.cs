@@ -22,10 +22,13 @@ using BimPlus.Sdk.Utilities.V2;
 namespace AllplanBimplusDemo.UserControls
 {
     /// <summary>
-    /// Interaction logic for ConnectionsUserControl.xaml
+    /// Class ConnectionsUserControl.
     /// </summary>
     public partial class ConnectionsUserControl : NotifyPropertyChangedUserControl
     {
+		/// <summary>
+		/// Constructor.
+		/// </summary>
         public ConnectionsUserControl()
         {
             InitializeComponent();
@@ -59,6 +62,9 @@ namespace AllplanBimplusDemo.UserControls
 
         private bool _buttonsEnabled = false;
 
+        /// <summary>
+        /// Property ButtonsEnabled.
+        /// </summary>
         public bool ButtonsEnabled
         {
             get { return _buttonsEnabled; }
@@ -77,7 +83,12 @@ namespace AllplanBimplusDemo.UserControls
 
         #region public methods
 
-        public void LoadContent(IntegrationBase integrationBase, WPFWindows.Window parent)
+        /// <summary>
+        /// Method LoadContent and WebViewer.
+        /// </summary>
+        /// <param name="integrationBase">IntegrationBase</param>
+        /// <param name="parent">Parent window</param>
+        public void LoadContent(IntegrationBase integrationBase, Window parent)
         {
             _integrationBase = integrationBase;
             _integrationBase.EventHandlerCore.DataLoaded += EventHandlerCore_DataLoaded;
@@ -101,6 +112,9 @@ namespace AllplanBimplusDemo.UserControls
             BimExplorer.Content = _webViewer;
         }
 
+        /// <summary>
+        /// Undload control.
+        /// </summary>
         public void UnloadContent()
         {
             if (_webViewer != null)
@@ -274,6 +288,7 @@ namespace AllplanBimplusDemo.UserControls
             if (hasValues)
             {
                 MessageBoxHelper.ShowInformation("ElementAssemblies are already created.", _parentWindow);
+                CreateConnection.IsEnabled = true;
                 return;
             }
 
@@ -373,7 +388,7 @@ namespace AllplanBimplusDemo.UserControls
 
             string propertyName = "ConnectionChild-Element";
 
-            ProgressWindow.Text = "Create connections.";
+            ProgressWindow.Text = "Create connection";
             ProgressWindow.Show();
             bool hideProgressWindow = true;
             try
@@ -410,7 +425,7 @@ namespace AllplanBimplusDemo.UserControls
                     LogParentID = _integrationBase.CurrentProject.Id,
                     CsgTree = csgTree
                 };
-                Slab.AddProperty(TableNames.tabAttribConstObjInstObj, propertyName, _bar0);
+                Slab.AddProperty(TableNames.tabAttribConstObjInstObj, propertyName, _bar0.Id);
 
                 DtoCsgTree rectangle = new DtoCsgTree { Color = (uint)Color.IndianRed.ToArgb() };
                 rectangle.Elements.Add(new Path
@@ -444,7 +459,7 @@ namespace AllplanBimplusDemo.UserControls
                     CsgTree = rectangle
                 };
 
-                Weld_1.AddProperty(TableNames.tabAttribConstObjInstObj, propertyName, _bar0);
+                Weld_1.AddProperty(TableNames.tabAttribConstObjInstObj, propertyName, _bar0.Id);
 
                 Weld Weld_2 = new Weld
                 {
@@ -466,7 +481,7 @@ namespace AllplanBimplusDemo.UserControls
                     }
                 };
 
-                Weld_2.AddProperty(TableNames.tabAttribConstObjInstObj, propertyName, _bar0);
+                Weld_2.AddProperty(TableNames.tabAttribConstObjInstObj, propertyName, _bar0.Id);
                 Weld_2.AddProperty("element", "matrix", matrix);
 
                 DtoCsgTree cabin = new DtoCsgTree { Color = (uint)Color.DarkBlue.ToArgb() };
@@ -756,6 +771,7 @@ namespace AllplanBimplusDemo.UserControls
 
                 connections.ConnectionElement.Children = new List<DtObject> { Slab, Weld_1, Weld_2, Screw_1, Screw_2, Screw_3, Screw_4, Hole_1, Hole_2, Hole_3, Hole_4 };
 
+                string jsonString = JsonConvert.SerializeObject(connections);
                 _savedDtoConnections = _integrationBase.ApiCore.DtoConnection.CreateConnection(_integrationBase.CurrentProject.Id, connections);
 
                 if (_savedDtoConnections == null)

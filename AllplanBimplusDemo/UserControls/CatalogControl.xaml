@@ -9,7 +9,7 @@
     xmlns:local="clr-namespace:AllplanBimplusDemo.UserControls"
                                  
     mc:Ignorable="d" 
-    d:DesignHeight="300" d:DesignWidth="300" Loaded="BaseAttributesUserControl_Loaded">
+    d:DesignHeight="380" d:DesignWidth="600" Loaded="CatalogControl_Loaded">
 
     <UserControl.Resources>
 
@@ -25,7 +25,7 @@
         </ResourceDictionary>
 
     </UserControl.Resources>
-    
+
     <Grid>
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="*" MinWidth="250" IsEnabled="False"/>
@@ -35,48 +35,69 @@
 
         <Grid Grid.Column="0" Name="LeftColumn">
             <Grid.RowDefinitions>
-                <RowDefinition Height="Auto" />
+                <RowDefinition Height="Auto" MinHeight="136" />
+                <RowDefinition />
             </Grid.RowDefinitions>
-            
-            <StackPanel Grid.Row="0" Orientation="Vertical">
 
-                <StackPanel Orientation="Horizontal">
-                    <Label Name="TypeName" Content="Type:" Margin="7" Width="40"/>
-                    <Label Name="ContentType" Margin="7" />
-                </StackPanel>
-
-                <DataGrid Name="BaseContentDtoDataGrid" Margin="11,7,11,11" Visibility="Visible"
-                    CanUserAddRows="False" Height="Auto" MinHeight="100"
-                    ItemsSource="{Binding BaseContentDtoList}" SelectedItem="{Binding SelectedObject, Mode=TwoWay}"
-                    HorizontalGridLinesBrush="LightGray" VerticalGridLinesBrush="LightGray" Background="White" IsReadOnly="True"/>
-
-                <DataGrid Name="DtoCatalogDataGrid" Margin="11,7,11,11" Visibility="Hidden"
-                    CanUserAddRows="False" Height="Auto" MinHeight="100"
-                    ItemsSource="{Binding CatalogClassList}" SelectedItem="{Binding SelectedObject, Mode=TwoWay}"
-                    HorizontalGridLinesBrush="LightGray" VerticalGridLinesBrush="LightGray" Background="White" IsReadOnly="True"/>
+            <StackPanel Grid.Row="0" Orientation="Horizontal" Margin="0,0,-0.2,2">
+                <Grid Name="StylesNorms">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*" MinWidth="150" />
+                        <ColumnDefinition Width="*" MinWidth="150"/>
+                        <ColumnDefinition Width="*" MinWidth="150"/>
+                    </Grid.ColumnDefinitions>
+                   <Label Content="Types" Grid.Column="0" Grid.RowSpan="3" Margin="10,0,10,0"/>
+                    <ListBox Grid.Column="0" Height="80" x:Name ="Types"  SelectionMode="Single" Margin="0,19,0,19" SelectionChanged="Types_SelectionChanged" Grid.RowSpan="2"/>
+                    <GridSplitter Width="10" Grid.Column="0"/>
+                    <Label Content="Norms" Grid.Column="1" Grid.RowSpan="3" Margin="10,0,10,0" />
+                    <ListBox Grid.Column="1" Height="80" Name ="Norms" SelectionMode="Single" Margin="0,19,0,19" SelectionChanged="Norms_SelectionChanged" Grid.RowSpan="2"/>
+                    <GridSplitter Width="10" Grid.Column="1"/>
+                    <Label Content="Countries"  Grid.Column="2"/>
+                    <ListBox  Grid.Column="2" Height="80" Name ="Countries" SelectionMode="Single" Margin="0,0,0.4,0" Grid.RowSpan="2"/>
+                </Grid>
             </StackPanel>
-            
+
+            <StackPanel Orientation="Horizontal" Grid.Row="1"  Margin="0,0,2,2">
+                <DataGrid Grid.Row="1" Name="DtoCatalogDataGrid" Margin="0,0,0,0" AutoGenerateColumns="False"
+                CanUserAddRows="False" Height="Auto" MinHeight="180" MinWidth="150"
+                ItemsSource="{Binding Catalogs}" SelectedItem="{Binding SelectedCatalog, Mode=TwoWay}"
+                HorizontalGridLinesBrush="LightGray" VerticalGridLinesBrush="LightGray" Background="White" 
+                VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Visible">
+                    <DataGrid.Columns>
+                        <DataGridTextColumn Header="Name" Binding="{Binding Name}"/>
+                        <DataGridTextColumn Header="Description" Binding="{Binding Description}"/>
+                    </DataGrid.Columns>
+                </DataGrid>
+                <GridSplitter Grid.Column="1" Name="sp" Width="5" VerticalAlignment="Stretch" HorizontalAlignment="Center"
+                      Background="{StaticResource VerticalSplitBrush}" IsTabStop="False"/>
+                <DataGrid Width="108" Margin="0,0,2,2" Name="CatalogItemsGrid"
+                    CanUserAddRows="False" Height="Auto" MinHeight="180" MinWidth="250"
+                    ItemsSource="{Binding CatalogItems}" SelectedItem="{Binding SelectedItem, Mode=TwoWay}"
+                    HorizontalGridLinesBrush="LightGray" VerticalGridLinesBrush="LightGray" Background="White" 
+                    VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Visible">
+                    <DataGrid.Columns>
+                        <DataGridTextColumn Header="Name" Binding="{Binding Name}"/>
+                        <DataGridTextColumn Header="Description" Binding="{Binding Description}"/>
+                        <DataGridTextColumn Header="Id" Binding="{Binding Id}"/>
+                    </DataGrid.Columns>
+                </DataGrid>
+            </StackPanel>
         </Grid>
 
         <GridSplitter Grid.Column="1" Name="GridSplitter" Width="5" VerticalAlignment="Stretch" HorizontalAlignment="Center"
                       Background="{StaticResource VerticalSplitBrush}" IsTabStop="False"/>
         <Grid Grid.Column="2" Name="RightColumn">
             <StackPanel Orientation="Vertical">
-                
-                <Button Name="GetNormData" Content="Get norms" IsEnabled="{Binding ButtonsEnabled}" HorizontalAlignment="Center" ToolTip="Get norms"
-                    Margin="{StaticResource VerticalMargin}" Height="{StaticResource ButtonHeight}" Width="{StaticResource ButtonWidth}" Click="GetNormData_Click"/>
-
-                <Button Name="GetCountryData" Content="Get countries" IsEnabled="{Binding ButtonsEnabled}" HorizontalAlignment="Center" ToolTip="Get countries"
-                    Margin="{StaticResource VerticalMargin}" Height="{StaticResource ButtonHeight}" Width="{StaticResource ButtonWidth}" Click="GetCountryData_Click"/>
-
-                <Button Name="GetTypeData" Content="Get types" IsEnabled="{Binding ButtonsEnabled}" HorizontalAlignment="Center" ToolTip="Get types"
-                    Margin="{StaticResource VerticalMargin}" Height="{StaticResource ButtonHeight}" Width="{StaticResource ButtonWidth}" Click="GetTypeData_Click"/>
-
-                <Button Name="GetCatalogData" Content="Get catalog data" IsEnabled="{Binding ButtonsEnabled}" HorizontalAlignment="Center" ToolTip="Get catalog data"
-                    Margin="{StaticResource VerticalMargin}" Height="{StaticResource ButtonHeight}" Width="{StaticResource ButtonWidth}" Click="GetCatalogData_Click" />
+                <Label Content="Properties" />
+                <DataGrid Name="PropertiesTable"  Margin="0,0,0.4,0"
+                    CanUserAddRows="False" Height="Auto" MinHeight="180" MinWidth="250"
+                    ItemsSource="{Binding ItemProperties}" SelectedItem="{Binding SelectedItem, Mode=TwoWay}"
+                    HorizontalGridLinesBrush="LightGray" VerticalGridLinesBrush="LightGray" Background="White" 
+                    VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Visible">
+                </DataGrid>
             </StackPanel>
         </Grid>
 
     </Grid>
-    
+
 </local:BaseAttributesUserControl>

@@ -71,18 +71,12 @@
 
                     <MenuItem Name="Geometry" Header="_Geometry">
                         <MenuItem Name="GeometryData" Header="_GeometryData" IsEnabled="False" Click="CsgObjects_Click"/>
-                    </MenuItem>
-
-                    <MenuItem Name="Calatrava" Header="Calatra_va">
                         <MenuItem Name="CalatravaObjects" Header="Calatrava _objects" IsEnabled="False" Click="CalatravaObjects_Click" />
-                    </MenuItem>
-
-                    <MenuItem Name="Connections" Header="Co_nnections">
                         <MenuItem Name="ConnectionObjects" Header="Connection _objects" IsEnabled="False" Click="Connections_Click"/>
                     </MenuItem>
 
                     <MenuItem Name="Catalogs" Header="Catalogs">
-                        <MenuItem Name="CatalogData" Header="Get catalog data" IsEnabled="False" Click="CatalogData_Click"/>
+                        <MenuItem Name="CatalogData" Header="Get catalog data" Click="CatalogData_Click"/>
                     </MenuItem>
                 </Menu>
             </Grid>

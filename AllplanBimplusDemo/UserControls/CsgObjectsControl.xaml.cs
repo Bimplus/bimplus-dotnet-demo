@@ -62,6 +62,9 @@ namespace AllplanBimplusDemo.UserControls
         #endregion private member
 
         #region properties
+        public static string CrossSectionAttributeId = "32b57db0-f4a1-49e7-ab8b-0d81f0bf8684";
+        public static string MaterialAttributeId = "f2d74244-feb2-45e3-b87b-07ef37bb7174";
+        public static string RotationAttributeId = "e47e1bcc-7f14-4f91-9222-17b8fb15bcdc";
 
         private bool _buttonsEnabled;
 
@@ -773,7 +776,7 @@ namespace AllplanBimplusDemo.UserControls
                         });
                     }
 
-                    node = (TopologyItem) _integrationBase.ApiCore.DtObjects.PostObject(node);
+                    node = (TopologyItem)_integrationBase.ApiCore.DtObjects.PostObject(node);
                     nodes = node.Children.OfType<StructuralPointConnection>().ToList();
                 }
 
@@ -784,20 +787,27 @@ namespace AllplanBimplusDemo.UserControls
                 {
                     var beams = new TopologyItem
                     {
-                        Name = "3DSegments",
+                        Name = "Element1D",
                         Parent = model.TopologyDivisionId,
                         Division = model.Id,
                         LogParentID = model.ProjectId,
                         Children = new List<DtObject>(example.LineSegment3D.Count)
                     };
 
-                    foreach (var cm in example.LineSegment3D)
+                    foreach (var elem1d in example.Element1D)
                     {
-                        beams.Children.Add(new StructuralCurveMember
+                        var cm = elem1d.Segment.Element as LineSegment3D;
+                        var cs = elem1d.CrossSectionBegin.Element as CrossSectionParameter;
+                        var mat = cs?.Material.Element as IdeaRS.OpenModel.Material.MatSteelEc2;
+
+                        if (cm == null)
+                            continue;
+                        var curveMember = new StructuralCurveMember
                         {
                             Division = model.Id,
                             LogParentID = model.ProjectId,
-                            Name = $"M{cm.Id}",
+                            OrderNumber = cm.Id,
+                            Name = elem1d.Name,
                             ConnectedBy = new List<RelConnectsStructuralMember>(2)
                             {
                                 new RelConnectsStructuralMember
@@ -809,22 +819,28 @@ namespace AllplanBimplusDemo.UserControls
                                 },
                                 new RelConnectsStructuralMember
                                 {
-                                    OrderNumber = 1,
-                                    Name = "R1",
+                                    OrderNumber = 2,
+                                    Name = "R2",
                                     RelatedStructuralConnection =
                                         nodes.Find(x => x.NodeId == cm.EndPoint.Element.Id)?.Id
                                 }
                             }
-                        });
+                        };
+                        curveMember.AddProperty(TableNames.contentAttributes, RotationAttributeId, elem1d.RotationRx);
+                        curveMember.AddProperty(TableNames.contentAttributes, CrossSectionAttributeId, cs.Name);
+                        if (mat != null)
+                            curveMember.AddProperty(TableNames.contentAttributes, MaterialAttributeId, mat.Name);
+
+                        beams.Children.Add(curveMember);
                     }
-                    beams = (TopologyItem) _integrationBase.ApiCore.DtObjects.PostObject(beams);
+                    beams = (TopologyItem)_integrationBase.ApiCore.DtObjects.PostObject(beams);
                     curveMembers = beams.Children.OfType<StructuralCurveMember>().ToList();
                 }
 
                 // create Assemblies
                 var assemblies = new TopologyItem
                 {
-                    Name = "Assemblies",
+                    Name = "Member1D",
                     Parent = model.TopologyDivisionId,
                     Division = model.Id,
                     LogParentID = model.ProjectId,
@@ -832,22 +848,33 @@ namespace AllplanBimplusDemo.UserControls
                 };
                 foreach (var member in example.Member1D)
                 {
+                    var relatedConnections = new List<ConnectionElement>();
                     //var elements = member.Elements1D.OfType<Element1D>().ToList();
                     var path = new BimPlus.Sdk.Data.CSG.Path
                     {
                         Geometry = new List<CsgGeoElement>()
                     };
-                    CrossSection crossSection = null;
+                    CrossSectionParameter crossSection = null;
+                    double rot = 0F;
                     foreach (var re in member.Elements1D)
                     {
                         if (!(re.Element is Element1D element))
                             continue;
 
+                        rot = element.RotationRx;
                         if (crossSection == null)
-                            crossSection = element.CrossSectionBegin.Element as CrossSection;
+                            crossSection = element.CrossSectionBegin.Element as CrossSectionParameter;
 
-                        if (!(element.Segment.Element is LineSegment3D line)) 
+                        if (!(element.Segment.Element is LineSegment3D line))
                             continue;
+
+                        var rel = curveMembers.Find(x => x.OrderNumber == line.Id);
+                        if (rel != null)
+                            relatedConnections.Add(new RelConnectsElements
+                            {
+                                Parent = model.ProjectId,
+                                RelatedElement = rel.Id
+                            });
 
                         if (path.Geometry.Count == 0)
                         {
@@ -859,25 +886,35 @@ namespace AllplanBimplusDemo.UserControls
                             path.OffsetY = element.EccentricityBeginY;
                             if (line.StartPoint.Element is Point3D sp)
                                 path.Geometry.Add(new StartPolygon
-                                    {Point = new List<double> {sp.X * 1000F, sp.Y * 1000F, sp.Z * 1000F}});
+                                { Point = new List<double> { sp.X * 1000F, sp.Y * 1000F, sp.Z * 1000F } });
                         }
 
                         if (line.EndPoint.Element is Point3D ep)
                             path.Geometry.Add(new Line
-                                {Point = new List<double> {ep.X * 1000F, ep.Y * 1000F, ep.Z * 1000F}});
+                            { Point = new List<double> { ep.X * 1000F, ep.Y * 1000F, ep.Z * 1000F } });
                     }
 
-                    assemblies.Children.Add(new ElementAssembly
+                    var assembly = new ElementAssembly
                     {
                         Division = model.Id,
                         LogParentID = model.ProjectId,
                         Name = member.Name,
+                        OrderNumber = member.Id,
                         CsgTree = new DtoCsgTree
                         {
                             Color = (uint)Color.CadetBlue.ToArgb(),
-                            Elements = new List<CsgElement>(1){ path }
-                        }
-                    });
+                            Elements = new List<CsgElement>(1) { path }
+                        },
+                        Connections = relatedConnections
+                    };
+
+                    // add some attributes 'crossSection', 'material'
+                    assembly.AddProperty(TableNames.contentAttributes, RotationAttributeId, rot);
+                    assembly.AddProperty(TableNames.contentAttributes, CrossSectionAttributeId, crossSection.Name);
+                    IdeaRS.OpenModel.Material.MatSteelEc2 material = crossSection.Material.Element as IdeaRS.OpenModel.Material.MatSteelEc2;
+                    if (material != null)
+                        assembly.AddProperty(TableNames.contentAttributes, MaterialAttributeId, material.Name);
+                    assemblies.Children.Add(assembly);
                 }
                 assemblies = (TopologyItem)_integrationBase.ApiCore.DtObjects.PostObject(assemblies);
             }
@@ -960,7 +997,7 @@ namespace AllplanBimplusDemo.UserControls
                         var plate = new SteelPlate
                         {
                             Name = p.Name,
-                            Parent = connectionIds[1], // TODO: p.OriginalModelId
+                            Parent = connection.ElementIds[0], // TODO: p.OriginalModelId
                             Division = model.Id,
                             LogParentID = model.ProjectId,
                             CsgTree = new DtoCsgTree
@@ -1020,7 +1057,7 @@ namespace AllplanBimplusDemo.UserControls
                             }
                         };
 
-                        plate.AddProperty(TableNames.tabAttribConstObjInstObj, "Objects_Connection", connectionIds[3]);
+                        plate.AddProperty(TableNames.tabAttribConstObjInstObj, "ConnectionChild-Element", connection.ElementIds[0]);
 
                         connection.ConnectionElement.Children.Add(plate);
                     }
@@ -1032,7 +1069,7 @@ namespace AllplanBimplusDemo.UserControls
                             var fastener = new MechanicalFastener
                             {
                                 Name = bGrid.Standard,
-                                Parent = connectionIds[1], // TODO: check assembly
+                                Parent = connection.ElementIds[0], // TODO: check assembly
                                 Division = model.Id,
                                 LogParentID = _integrationBase.CurrentProject.Id,
                                 Template = boltTemplateId,
@@ -1053,7 +1090,7 @@ namespace AllplanBimplusDemo.UserControls
                             var opening = new Opening
                             {
                                 Name = bGrid.Standard,
-                                Parent = connectionIds[1], // TODO: check assembly
+                                Parent = connection.ElementIds[0], // TODO: check assembly
                                 Division = model.Id,
                                 LogParentID = _integrationBase.CurrentProject.Id,
                                 CsgTree = new DtoCsgTree
@@ -1067,7 +1104,7 @@ namespace AllplanBimplusDemo.UserControls
                                                 new StartPolygon {Point = new List<double> {0, 0, 0}},
                                                 new Line {Point = new List<double> { 100F * bGrid.AxisX.X, 100F * bGrid.AxisX.Y, 100F * bGrid.AxisX.Z}}
                                             },
-                                            CrossSection = "RD8"
+                                            CrossSection = "RD16"
                                         }
                                     }
                                 },
@@ -1090,7 +1127,7 @@ namespace AllplanBimplusDemo.UserControls
                     {
                         ; // TODO create Weld objects
                     }
-
+                    string jsonString = JsonConvert.SerializeObject(connection);
                     connection = _integrationBase.ApiCore.DtoConnection.CreateConnection(model.ProjectId, connection);
                     if (connection == null || connection.Id == Guid.Empty)
                         MessageBoxHelper.ShowInformation("DtoConnections could not be generated.", _parentWindow);

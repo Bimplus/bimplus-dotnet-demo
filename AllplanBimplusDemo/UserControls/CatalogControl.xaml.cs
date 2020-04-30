@@ -1,25 +1,157 @@
-﻿using BimPlus.Client.Integration;
+﻿using AllplanBimplusDemo.WinForms;
+using BimPlus.Client.Integration;
 using BimPlus.Sdk.Data.Content;
+using BimPlus.Sdk.Data.TenantDto;
 using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
+using System.ComponentModel;
+using System.Diagnostics;
 using System.Windows;
 
 namespace AllplanBimplusDemo.UserControls
 {
-    /// <summary>
-    /// Interaction logic for CatalogsControl.xaml
-    /// </summary>
-    public partial class CatalogsControl : BaseAttributesUserControl
+	/// <summary>
+	/// Class CatalogsControl.
+	/// </summary>
+	public partial class CatalogsControl : BaseAttributesUserControl
     {
+		/// <summary>
+		/// Contructor.
+		/// </summary>
         public CatalogsControl()
         {
             InitializeComponent();
             DataContext = this;
         }
 
-        private void BaseAttributesUserControl_Loaded(object sender, RoutedEventArgs e)
+        private void CatalogControl_Loaded(object sender, RoutedEventArgs e)
         {
+            PropertyChanged += CatalogsControl_PropertyChanged;
             ButtonsEnabled = true;
+
+            List<BaseContentDto> list = _integrationBase.ApiCore.Catalogs.GetContent(BimPlus.Sdk.Api.Catalogs.BaseContentType.Norm);
+            if (list != null && list.Count > 0)
+            {
+                foreach (var norm in list)
+                {
+                    Norms.Items.Add(norm.Name);
+                }
+                Norms.SelectedItem = Norms.Items[1];
+            }
+
+            list = _integrationBase.ApiCore.Catalogs.GetContent(BimPlus.Sdk.Api.Catalogs.BaseContentType.Type);
+            if (list != null && list.Count > 0)
+            {
+                foreach (var type in list)
+                {
+                    Types.Items.Add(type.Name);
+                }
+                Types.SelectedItem = Types.Items[0];
+            }
+
+            list = _integrationBase.ApiCore.Catalogs.GetContent(BimPlus.Sdk.Api.Catalogs.BaseContentType.Country);
+            if (list != null && list.Count > 0)
+            {
+                foreach (var type in list)
+                {
+                    Countries.Items.Add(type.Name);
+                }
+            }
+
+            ContentAttributes = _integrationBase.ApiCore.Attributes.GetAll();
+
+        }
+
+        private void CatalogsControl_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
+        {
+            switch (e.PropertyName)
+            {
+                case "Type":
+                case "Norm":
+                    {
+                        var t = _integrationBase.ApiCore.Catalogs.GetAll($"Type={Type}&Norm={Norm}");
+
+                        ItemProperties.Clear();
+                        CatalogItems.Clear();
+                        _catalogs.Clear();
+
+                        if (t != null && t.Count > 0)
+                        {
+                            foreach (var item in t)
+                            {
+                                Catalogs.Add(new CatalogGroup
+                                {
+                                    Id = item.Id,
+                                    Name = item.Name,
+                                    Description = item.Description
+                                });
+                                if (Type == "CrossSection")
+                                {
+                                    var serviceUrl = $"{_integrationBase.ServerName}/v2/content/crosssectiondefinitions/{item.Id}";
+                                    try
+                                    {
+                                        var cd = BimPlus.LightCaseClient.GenericProxies.RestGet<DtoCrossSectionDefinition>(serviceUrl, _integrationBase.ClientConfiguration);
+                                        if (cd == null || cd.Shapes?.Count == 0)
+                                            continue;
+                                        foreach (var shape in cd.Shapes)
+                                        {
+                                            Catalogs.Add(new CatalogGroup
+                                            {
+                                                Id = shape.Id,
+                                                Description = shape.Name,
+                                                Name = ""
+                                            });
+                                        }
+                                    }
+                                    catch (Exception ex)
+                                    {
+                                        Trace.WriteLine(string.Format("Get catalogs: {0}", ex.Message));
+                                    }
+                                }
+                            }
+                        }
+                        break;
+                    }
+                case "SelectedCatalog":
+                    {
+                        var catalog = SelectedCatalog as CatalogGroup;
+                        if (catalog == null)
+                            break;
+                        var items = _integrationBase.ApiCore.Catalogs.GetAllCatalogItems(catalog.Id);
+                        ItemProperties.Clear();
+                        CatalogItems.Clear();
+                        foreach (var item in items)
+                        {
+                            CatalogItems.Add(new CatalogGroup
+                            {
+                                Id = item.Id,
+                                Name = item.Name,
+                                Description = item.Description
+                            });
+                        }
+                        break;
+                    }
+                case "SelectedItem":
+                    {
+                        var item = SelectedItem as CatalogGroup;
+                        if (item == null)
+                            break;
+                        var properties = _integrationBase.ApiCore.Catalogs.GetCatalogItem(item.Id);
+                        ItemProperties.Clear();
+                        foreach (var property in properties.Properties)
+                        {
+                            ItemProperties.Add(new CatalogProperty
+                            {
+                                Id = property.Key,
+                                Name = ContentAttributes.Find(x => x.Id == property.Key)?.Name ?? property.Key.ToString(),
+                                AttributeValue = property.Value 
+                            });
+                        }
+                        break;
+                    }
+            }
+            //base.PropertyChanged(sender, e);
         }
 
         #region private member
@@ -30,183 +162,102 @@ namespace AllplanBimplusDemo.UserControls
 
         #region properties
 
-        private bool _buttonsEnabled = false;
+        public string Norm => (string) Norms.SelectedItem ?? "";
+        public string Type => (string) Types.SelectedItem ?? "";
 
+
+        //private List<DtoFreeAttribute> _contentAttributes;
+        public List<DtoFreeAttribute> ContentAttributes { get; set; }
         /// <summary>
-        /// Property ButtonsEnabled.
+        /// collections of Catalogs
         /// </summary>
-        public bool ButtonsEnabled
+        private ObservableCollection<CatalogGroup> _catalogs = new ObservableCollection<CatalogGroup>();
+        public ObservableCollection<CatalogGroup> Catalogs
         {
-            get { return _buttonsEnabled; }
-            set { _buttonsEnabled = value; NotifyPropertyChanged(); }
+            get { return _catalogs; }
+            set { _catalogs = value; NotifyPropertyChanged("Catalogs"); }
         }
 
-        private List<BaseContentDto> _baseContentDtoList;
-
         /// <summary>
-        /// Property BaseContentDtoList.
+        /// collections of CatalogItems
         /// </summary>
-        public List<BaseContentDto> BaseContentDtoList
+        private ObservableCollection<CatalogGroup> _catalogItems = new ObservableCollection<CatalogGroup>();
+        public ObservableCollection<CatalogGroup> CatalogItems
         {
-            get { return _baseContentDtoList; }
-            set { _baseContentDtoList = value; NotifyPropertyChanged(); }
+            get { return _catalogItems; }
+            set { _catalogs = value; NotifyPropertyChanged("CatalogItems"); }
         }
 
-        private List<CatalogClass> _catalogClassList;
-
         /// <summary>
-        /// Property CatalogClassList.
+        /// collections of CatalogProperties
         /// </summary>
-        public List<CatalogClass> CatalogClassList
+        private ObservableCollection<CatalogProperty> _itemProperties = new ObservableCollection<CatalogProperty>();
+        public ObservableCollection<CatalogProperty> ItemProperties
         {
-            get { return _catalogClassList; }
-            set { _catalogClassList = value; NotifyPropertyChanged(); }
+            get { return _itemProperties; }
+            set { _itemProperties = value; NotifyPropertyChanged("ItemProperties"); }
         }
 
-        private object _selectedObject;
-
         /// <summary>
-        /// Property SelectedObject.
+        /// Property SelectedItem.
         /// </summary>
-        public object SelectedObject
+        private object _selectedCatalog;
+        public object SelectedCatalog
         {
-            get { return _selectedObject; }
-            set { _selectedObject = value; NotifyPropertyChanged(); }
+            get { return _selectedCatalog; }
+            set { _selectedCatalog = value; NotifyPropertyChanged("SelectedCatalog"); }
+        }
+
+        private object _SelectedItem;
+        public object SelectedItem
+        {
+            get { return _SelectedItem; }
+            set { _SelectedItem = value; NotifyPropertyChanged("SelectedItem"); }
         }
 
         #endregion properties
 
+        /// <summary>
+        /// Load content.
+        /// </summary>
+        /// <param name="integrationBase">IntegrationBase</param>
+        /// <param name="parent">Parent window</param>
         internal void LoadContent(IntegrationBase integrationBase, Window parent)
         {
             _integrationBase = integrationBase;
+
         }
 
-        private void GetNormData_Click(object sender, RoutedEventArgs e)
+
+        private void Types_SelectionChanged(object sender, System.Windows.Controls.SelectionChangedEventArgs e)
         {
-            ContentType.Content = "Norm";
-
-            BaseContentDtoDataGrid.Visibility = Visibility.Visible;
-            DtoCatalogDataGrid.Visibility = Visibility.Collapsed;
-
-            List<BaseContentDto> list = _integrationBase.ApiCore.Catalogs.GetContent(BimPlus.Sdk.Api.Catalogs.BaseContentType.Norm);
-            if (list != null && list.Count > 0)
-            {
-                BaseContentDtoDataGrid.Focus();
-                BaseContentDtoList = list;
-                SelectedObject = BaseContentDtoList[0];
-            }
+            NotifyPropertyChanged("Type");
         }
 
-        private void GetCountryData_Click(object sender, RoutedEventArgs e)
+        private void Norms_SelectionChanged(object sender, System.Windows.Controls.SelectionChangedEventArgs e)
         {
-            ContentType.Content = "Country";
-
-            BaseContentDtoDataGrid.Visibility = Visibility.Visible;
-            DtoCatalogDataGrid.Visibility = Visibility.Collapsed;
-
-            List<BaseContentDto> list = _integrationBase.ApiCore.Catalogs.GetContent(BimPlus.Sdk.Api.Catalogs.BaseContentType.Country);
-            if (list != null && list.Count > 0)
-            {
-                BaseContentDtoDataGrid.Focus();
-                BaseContentDtoList = list;
-                SelectedObject = BaseContentDtoList[0];
-            }
-        }
-
-        private void GetTypeData_Click(object sender, RoutedEventArgs e)
-        {
-            ContentType.Content = "Type";
-
-            BaseContentDtoDataGrid.Visibility = Visibility.Visible;
-            DtoCatalogDataGrid.Visibility = Visibility.Collapsed;
-
-            List<BaseContentDto> list = _integrationBase.ApiCore.Catalogs.GetContent(BimPlus.Sdk.Api.Catalogs.BaseContentType.Type);
-            if (list != null && list.Count > 0)
-            {
-                BaseContentDtoDataGrid.Focus();
-                BaseContentDtoList = list;
-                SelectedObject = BaseContentDtoList[0];
-            }
-        }
-
-        private void GetCatalogData_Click(object sender, RoutedEventArgs e)
-        {
-            ContentType.Content = "Catalog";
-
-            BaseContentDtoDataGrid.Visibility = Visibility.Collapsed;
-            DtoCatalogDataGrid.Visibility = Visibility.Visible;
-
-            List<DtoCatalog> list = _integrationBase.ApiCore.Catalogs.GetAll();
-            if (list != null && list.Count > 0)
-            {
-                List<CatalogClass> catalogList = new List<CatalogClass>();
-                foreach (DtoCatalog catalog in list)
-                {
-                    CatalogClass catalogClass = new CatalogClass();
-                    if (catalog.Norms != null && catalog.Norms.Count > 0)
-                    {
-                        string content = "";
-                        for (int i = 0; i < catalog.Norms.Count; i++)
-                        {
-                            if (string.IsNullOrEmpty(content))
-                                content = catalog.Norms[i].Name;
-                            else
-                                content = string.Format("{0}{1}{2}", content, ";", catalog.Norms[i].Name);
-                        }
-                        catalogClass.Norms = content;
-                    }
-
-                    if (catalog.Countries != null && catalog.Countries.Count > 0)
-                    {
-                        string content = "";
-                        for (int i = 0; i < catalog.Countries.Count; i++)
-                        {
-                            if (string.IsNullOrEmpty(content))
-                                content = catalog.Countries[i].Name;
-                            else
-                                content = string.Format("{0}{1}{2}", content, ";", catalog.Countries[i].Name);
-                        }
-                        catalogClass.Countries = content;
-                    }
-
-                    if (catalog.CatalogType != null)
-                    {
-                        catalogClass.Name = catalog.Name;
-                    }
-
-                    if (!string.IsNullOrEmpty(catalog.Description))
-                        catalogClass.Description = catalog.Description;
-
-                    catalogClass.Id = catalog.Id;
-
-                    catalogList.Add(catalogClass);
-                }
-
-                CatalogClassList = catalogList;
-                if (CatalogClassList.Count > 0)
-                {
-                    bool focused = DtoCatalogDataGrid.Focus();
-                    SelectedObject = CatalogClassList[0];
-                }
-            }
+            NotifyPropertyChanged("Norm");
         }
     }
 
-    /// <summary>
-    /// Catalog wrapper class.
-    /// </summary>
-    public class CatalogClass
+    public class CatalogGroup //: INotifyPropertyChanged
     {
-        public string Norms { get; set; }
+        //public event PropertyChangedEventHandler PropertyChanged;
 
-        public string Countries { get; set; }
-
-        public Guid? Id { get; set; }
-
+        public Guid Id { get; set; }
         public string Name { get; set; }
-
         public string Description { get; set; }
 
-        public string Localization { get; set; }
+        //protected void OnPropertyChanged(string name = null)
+        //{
+        //    PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(name));
+        //}
+    }
+
+    public class CatalogProperty
+    {
+        public Guid Id { get; set; }
+        public string Name { get; set; }
+        public object AttributeValue { get; set; }
     }
 }
