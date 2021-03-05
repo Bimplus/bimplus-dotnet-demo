@@ -8,7 +8,7 @@
              
     xmlns:sys="clr-namespace:System;assembly=mscorlib"
              
-    d:DesignHeight="300" d:DesignWidth="300">
+    d:DesignHeight="493.978" d:DesignWidth="322.742">
 
     <UserControl.Resources>
 
@@ -25,7 +25,7 @@
             <sys:Double x:Key="ButtonWidth">150</sys:Double>
 
         </ResourceDictionary>
-        
+
     </UserControl.Resources>
 
     <Grid>
@@ -43,11 +43,16 @@
         <Grid Grid.Column="2">
             <StackPanel Orientation="Vertical">
                 <Label Content="Road" HorizontalAlignment="Center"/>
-
-                <Button Name="CreateAxis" Content="Create Axis" IsEnabled="{Binding ButtonsEnabled}" HorizontalAlignment="Center" ToolTip="Create road axis"
+                <Button x:Name="CreateAlignment" Content="Create Alignment" IsEnabled="{Binding ButtonsEnabled}" HorizontalAlignment="Center" ToolTip="Create road alignment"
+                    Margin="10,7" Height="{StaticResource ButtonHeight}" Width="{StaticResource ButtonWidth}"
+                    Click="CreateAlignment_OnClick"/>
+                <Button Name="RevisionAlignment" Content="Alignment revision" IsEnabled="{Binding ButtonsEnabled}" HorizontalAlignment="Center" ToolTip="Create road alignment"
                     Margin="{StaticResource VerticalMargin}" Height="{StaticResource ButtonHeight}" Width="{StaticResource ButtonWidth}"
+                    Click="RevisionAlignment_OnClick"/>
+                <Button x:Name="CreateAxis" Content="Create Cadics Axis" IsEnabled="{Binding ButtonsEnabled}" HorizontalAlignment="Center" ToolTip="Create road axis"
+                    Margin="10,7" Height="{StaticResource ButtonHeight}" Width="{StaticResource ButtonWidth}"
                     Click="CreateAxis_Click"/>
-            
+
                 <Label Content="StructuralAnalysis" HorizontalAlignment="Center"/>
 
                 <Button Name="CreateNodes" Content="Create Nodes" IsEnabled="{Binding ButtonsEnabled}" HorizontalAlignment="Center" ToolTip="Create Nodes"
@@ -75,7 +80,7 @@
                 <Button Name="ElementAssembly" Content="Create ElementAssemblies" IsEnabled="{Binding ButtonsEnabled}" HorizontalAlignment="Center" ToolTip="Create ElementAssemblies"
                     Margin="{StaticResource VerticalMargin}" Height="{StaticResource ButtonHeight}" Width="{StaticResource ButtonWidth}"
                     Click="ElementAssembly_Click"/>
-                
+
                 <Label Content="Clean up" HorizontalAlignment="Center"/>
 
                 <Button Name="DeleteModels" Content="Delete Models" IsEnabled="{Binding ButtonsEnabled}" HorizontalAlignment="Center" ToolTip="Delete Models"
@@ -84,6 +89,6 @@
 
             </StackPanel>
         </Grid>
-        
+
     </Grid>
 </local:NotifyPropertyChangedUserControl>

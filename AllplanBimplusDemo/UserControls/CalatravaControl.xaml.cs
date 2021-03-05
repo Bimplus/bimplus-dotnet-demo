@@ -23,6 +23,8 @@ using Nemetschek.NUtilLibrary;
 using BimPlus.Sdk.Data.DbCore.Steel;
 using BimPlus.Sdk.Data.CSG;
 using BimPlus.Sdk.Data.DbCore.Connection;
+using BimPlus.Sdk.Data.GeometryTemplates;
+using Newtonsoft.Json;
 
 namespace AllplanBimplusDemo.UserControls
 {
@@ -106,11 +108,12 @@ namespace AllplanBimplusDemo.UserControls
 
         #region private methods
 
-        private DtoDivision GetBimRoadModel()
+        private DtoDivision GetBimRoadModel(string modelName = null)
         {
             DtoDivision model = null;
 
-            string modelName = _bimRoadName;
+            if (modelName == null)
+                modelName= _bimRoadName;
 
             ProgressWindow.Text = "Get BimRoad model.";
             ProgressWindow.Show();
@@ -244,74 +247,74 @@ namespace AllplanBimplusDemo.UserControls
             axis.Division = model.Id;
             axis.LogParentID = _integrationBase.CurrentProject.Id;
 
-            // Try to create a dummy 3D path for the axis.
-            axis.Mesh = new DbGeometry
-            {
-                Edges = 4,
-                Radius = 200,
-                Color = (uint)Color.Lime.ToArgb(),
-                Vertices = new List<double>()
-            };
+            //// Try to create a dummy 3D path for the axis.
+            //axis.Mesh = new DbGeometry
+            //{
+            //    Edges = 4,
+            //    Radius = 200,
+            //    Color = (uint)Color.Lime.ToArgb(),
+            //    Vertices = new List<double>()
+            //};
 
-            // Move axis to origin.
-            double? offsetX = null;
-            double? offsetY = null;
-            foreach (Road.HorizontalAlignment alignment in axis.HorizontalAlignments)
-            {
-                foreach (Road.HorizontalElement element in alignment.Elements)
-                {
-                    if (!offsetX.HasValue || offsetX.Value > element.StartX)
-                        offsetX = element.StartX;
-                    if (!offsetY.HasValue || offsetY.Value > element.StartY)
-                        offsetY = element.StartY;
-                }
-            }
+            //// Move axis to origin.
+            //double? offsetX = null;
+            //double? offsetY = null;
+            //foreach (Road.HorizontalAlignment alignment in axis.HorizontalAlignments)
+            //{
+            //    foreach (Road.HorizontalElement element in alignment.Elements)
+            //    {
+            //        if (!offsetX.HasValue || offsetX.Value > element.StartX)
+            //            offsetX = element.StartX;
+            //        if (!offsetY.HasValue || offsetY.Value > element.StartY)
+            //            offsetY = element.StartY;
+            //    }
+            //}
 
-            // Create a dummy path line.
-            foreach (Road.HorizontalAlignment alignment in axis.HorizontalAlignments)
-            {
-                foreach (Road.HorizontalElement element in alignment.Elements)
-                {
-                    axis.Mesh.Vertices.Add(element.StartX - offsetX.GetValueOrDefault()); // X
-                    axis.Mesh.Vertices.Add(element.StartY - offsetY.GetValueOrDefault()); // Y
-                    axis.Mesh.Vertices.Add(0);                                            // Z
-                }
-            }
+            //// Create a dummy path line.
+            //foreach (Road.HorizontalAlignment alignment in axis.HorizontalAlignments)
+            //{
+            //    foreach (Road.HorizontalElement element in alignment.Elements)
+            //    {
+            //        axis.Mesh.Vertices.Add(element.StartX - offsetX.GetValueOrDefault()); // X
+            //        axis.Mesh.Vertices.Add(element.StartY - offsetY.GetValueOrDefault()); // Y
+            //        axis.Mesh.Vertices.Add(0);                                            // Z
+            //    }
+            //}
 
-            // Dummy CrossSection as ChildGeometyObject.
-            CElementPoint p0 = new CElementPoint(0,
-                axis.HorizontalAlignments[0].Elements[0].StartX - offsetX.GetValueOrDefault(),
-                axis.HorizontalAlignments[0].Elements[0].StartY - offsetY.GetValueOrDefault()
-            );
+            //// Dummy CrossSection as ChildGeometyObject.
+            //CElementPoint p0 = new CElementPoint(0,
+            //    axis.HorizontalAlignments[0].Elements[0].StartX - offsetX.GetValueOrDefault(),
+            //    axis.HorizontalAlignments[0].Elements[0].StartY - offsetY.GetValueOrDefault()
+            //);
 
-            CBaseElementPolyeder polyeder = new CBaseElementPolyeder();
-            polyeder.point.Add(p0);
-            polyeder.point.Add(new CElementPoint(p0.X, p0.Y + 1000, p0.Z + 1000));
-            polyeder.point.Add(new CElementPoint(p0.X, p0.Y - 1000, p0.Z + 1000));
-            polyeder.point.Add(new CElementPoint(p0.X, p0.Y + 5000, p0.Z + 2000));
-            polyeder.point.Add(new CElementPoint(p0.X, p0.Y - 5000, p0.Z + 2000));
-            polyeder.point.Add(new CElementPoint(p0.X, p0.Y + 5000, p0.Z + 2800));
-            polyeder.point.Add(new CElementPoint(p0.X, p0.Y - 5000, p0.Z + 2800));
+            //CBaseElementPolyeder polyeder = new CBaseElementPolyeder();
+            //polyeder.point.Add(p0);
+            //polyeder.point.Add(new CElementPoint(p0.X, p0.Y + 1000, p0.Z + 1000));
+            //polyeder.point.Add(new CElementPoint(p0.X, p0.Y - 1000, p0.Z + 1000));
+            //polyeder.point.Add(new CElementPoint(p0.X, p0.Y + 5000, p0.Z + 2000));
+            //polyeder.point.Add(new CElementPoint(p0.X, p0.Y - 5000, p0.Z + 2000));
+            //polyeder.point.Add(new CElementPoint(p0.X, p0.Y + 5000, p0.Z + 2800));
+            //polyeder.point.Add(new CElementPoint(p0.X, p0.Y - 5000, p0.Z + 2800));
 
-            CElementFace face = new CElementFace
-            {
-                polyeder.AppendEdge(1, 2),
-                polyeder.AppendEdge(2, 4),
-                polyeder.AppendEdge(4, 6),
-                polyeder.AppendEdge(6, 7),
-                polyeder.AppendEdge(7, 5),
-                polyeder.AppendEdge(5, 3),
-                polyeder.AppendEdge(3, 1)
-            };
-            polyeder.face.Add(face);
-            polyeder.SetSpecialColor((uint)Color.BlueViolet.ToArgb());
+            //CElementFace face = new CElementFace
+            //{
+            //    polyeder.AppendEdge(1, 2),
+            //    polyeder.AppendEdge(2, 4),
+            //    polyeder.AppendEdge(4, 6),
+            //    polyeder.AppendEdge(6, 7),
+            //    polyeder.AppendEdge(7, 5),
+            //    polyeder.AppendEdge(5, 3),
+            //    polyeder.AppendEdge(3, 1)
+            //};
+            //polyeder.face.Add(face);
+            //polyeder.SetSpecialColor((uint)Color.BlueViolet.ToArgb());
 
-            // Add crossSection as Child of Axis object.
-            axis.AddChild(new ChildGeometryObject
-            {
-                Division = model.Id,
-                BytePolyeder = polyeder
-            });
+            //// Add crossSection as Child of Axis object.
+            //axis.AddChild(new ChildGeometryObject
+            //{
+            //    Division = model.Id,
+            //    BytePolyeder = polyeder
+            //});
 
             // Post object to Bimplus.
             DtObject result = _integrationBase.ApiCore.DtObjects.PostObject(axis);
@@ -419,12 +422,133 @@ namespace AllplanBimplusDemo.UserControls
 
         #endregion private methods
 
-        #region button events
+        #region Alignments / Axis
+
+        /// <summary>
+        /// Creates a new model 'Alignments' with an alignment including
+        /// horizontal and vertical alignments.
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void CreateAlignment_OnClick(object sender, RoutedEventArgs e)
+        {
+            DtoDivision model = GetBimRoadModel("Alignments");
+            if (model?.TopologyDivisionId == null)
+                return;
+
+            ProgressWindow.Text = "Create Nhance alignment.";
+            ProgressWindow.Show();
+            try
+            {
+                string alignmentName = "AL-12";
+                List<Alignment> alignments =
+                    _integrationBase.ApiCore.DtObjects.GetObjects<Alignment>(model.TopologyDivisionId.Value, false,
+                        false, true);
+
+                var alignment = alignments?.FirstOrDefault(a => a.Name == alignmentName);
+                if (alignment != null)
+                {
+                    MessageBox.Show("Alignment AL-12 already exists");
+                    return;
+                }
+
+                alignment = new Alignment
+                {
+                    Parent = model.TopologyDivisionId.Value,
+                    Name = alignmentName,
+                    Division = model.Id,
+                    LogParentID = model.ProjectId,
+                    HorizontalAlignment =
+                        JsonConvert.DeserializeObject<Road.HorizontalAlignment>(
+                            Properties.Resources.horizontalAlignment),
+                    VerticalAlignment =
+                        JsonConvert.DeserializeObject<Road.VerticalAlignment>(Properties.Resources.verticalAlignment)
+                };
+
+                // Create axis in Bimplus.
+                DtObject result = _integrationBase.ApiCore.DtObjects.PostObject(alignment);
+
+                if (result == null || result.Id == Guid.Empty)
+                {
+                    MessageBoxHelper.ShowInformation("Could not create Alignment object.", _parentWindow);
+                }
+                else
+                {
+                    _integrationBase.ApiCore.Projects.ConvertGeometry(model.ProjectId);
+                }
+
+                NavigateToControl();
+            }
+            finally
+            {
+                //ProgressWindow.Hide();
+            }
+        }
+
+        /// <summary>
+        /// creates a new revision for 'Alignments' model and
+        /// changes the alignment 'AL-12'
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void RevisionAlignment_OnClick(object sender, RoutedEventArgs e)
+        {
+            DtoDivision model = GetBimRoadModel("Alignments");
+            if (model?.TopologyDivisionId == null)
+                return;
+
+            ProgressWindow.Text = "Create Nhance alignment.";
+            ProgressWindow.Show();
+            try
+            {
+                string alignmentName = "AL-12";
+                List<Alignment> alignments =
+                    _integrationBase.ApiCore.DtObjects.GetObjects<Alignment>(model.TopologyDivisionId.Value, false,
+                        false, true);
+
+                var alignment = alignments?.FirstOrDefault(a => a.Name == alignmentName);
+                if (alignment == null)
+                {
+                    MessageBoxHelper.ShowInformation("Please create at first a Nhance Aligment.", _parentWindow);
+                    return;
+                }
+
+                if (model.Revisions.Count() > 1)
+                {
+                    MessageBoxHelper.ShowInformation("Revision is already created.", _parentWindow);
+                    return;
+                }
+
+                // create new Revision
+                _integrationBase.ApiCore.Divisions.CreateRevision(model.Id, "new Revision", "update Alignment AL-12");
+
+                // modify horizontal/vertical alignment
+                // TODO: direct assignment doesn't work correct. Must be deleted first!
+                alignment.DeleteProperty(TableNames.contentAttributes,Road.VerticalAlignment.IfcVerticalAlignment.ToString());
+                alignment.DeleteProperty(TableNames.contentAttributes,Road.HorizontalAlignment.IfcHorizontalAlignment.ToString());
+                    
+                alignment.HorizontalAlignment = JsonConvert.DeserializeObject<Road.HorizontalAlignment>(
+                    Properties.Resources.horizontalAlignmentRev2);
+                alignment.VerticalAlignment = JsonConvert.DeserializeObject<Road.VerticalAlignment>(
+                    Properties.Resources.verticalAlignmentRev2);
+                alignment.LogParentID = model.ProjectId;
+
+                // update alignment on BimPlus
+                if (_integrationBase.ApiCore.DtObjects.PutObject(alignment) == HttpStatusCode.OK)
+                    _integrationBase.ApiCore.Projects.ConvertGeometry(model.ProjectId);
+
+                NavigateToControl();
+            }
+            finally
+            {
+                //ProgressWindow.Hide();
+            }
+        }
 
         private void CreateAxis_Click(object sender, RoutedEventArgs e)
         {
             DtoDivision model = GetBimRoadModel();
-            if (model == null)
+            if (model?.TopologyDivisionId == null)
                 return;
 
             ProgressWindow.Text = "Create road axis.";
@@ -458,6 +582,12 @@ namespace AllplanBimplusDemo.UserControls
                 //ProgressWindow.Hide();
             }
         }
+
+#endregion
+
+#region StructuralAnalysis
+
+        
 
         private void CreateNodes_Click(object sender, RoutedEventArgs e)
         {
@@ -1583,9 +1713,14 @@ namespace AllplanBimplusDemo.UserControls
                 bool deleted = _integrationBase.ApiCore.Divisions.DeleteDtoDivision(model.Id);
             }
 
+            model = GetModelByName("Alignments");
+            if (model != null)
+            {
+                bool deleted = _integrationBase.ApiCore.Divisions.DeleteDtoDivision(model.Id);
+            }
             NavigateToControl();
         }
 
-        #endregion button events
+        #endregion StructuralAnalysis
     }
 }

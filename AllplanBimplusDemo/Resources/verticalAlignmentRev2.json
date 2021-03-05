@@ -1,0 +1,62 @@
+{
+	"Elements": [{
+			"type": "Line",
+			"StartStation": 1.1641532182693481E-07,
+			"StartElevation": 238556.30171904204,
+			"Slope": 0.015413437368460564,
+			"ProjectedLength": 43296.950112829887
+		},
+		{
+			"type": "Line",
+			"StartStation": 43296.9501129463,
+			"StartElevation": 239223.65654785151,
+			"Slope": 0.020000000000036367,
+			"ProjectedLength": 304.80000000012808
+		},
+		{
+			"type": "Parabola",
+			"R": 497839.99999997043,
+			"EndStation": 73472.150112946416,
+			"EndElevation": 240723.27254785155,
+			"IPElevation": 239528.45654785153,
+			"IPStation": 58536.950112946426,
+			"StartStation": 43601.750112946444,
+			"StartElevation": 239229.75254785156,
+			"Slope": 0.019999999999997936,
+			"ProjectedLength": 29870.399999999972
+		},
+		{
+			"type": "Line",
+			"StartStation": 73472.150112946416,
+			"StartElevation": 240723.27254785152,
+			"Slope": 0.080000000000000238,
+			"ProjectedLength": 4876.7999999998892
+		},
+		{
+			"type": "Parabola",
+			"R": -369445.67375753418,
+			"EndStation": 124068.95011294633,
+			"EndElevation": 241942.02361535904,
+			"IPElevation": 242942.21654785151,
+			"IPStation": 101208.95011294633,
+			"StartStation": 78348.950112946317,
+			"StartElevation": 241113.41654785146,
+			"Slope": 0.080000000000001986,
+			"ProjectedLength": 45720.000000000015
+		},
+		{
+			"type": "Line",
+			"StartStation": 124068.95011294633,
+			"StartElevation": 241942.02361535904,
+			"Slope": -0.043752971675084761,
+			"ProjectedLength": 6879.5381048405916
+		},
+		{
+			"type": "Line",
+			"StartStation": 130948.48821778691,
+			"StartElevation": 241641.02337952028,
+			"Slope": -0.051345046087249928,
+			"ProjectedLength": 6252.289213456788
+		}
+	]
+}

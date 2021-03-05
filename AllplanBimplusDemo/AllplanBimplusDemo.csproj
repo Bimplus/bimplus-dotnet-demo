@@ -9,7 +9,7 @@
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>AllplanBimplusDemo</RootNamespace>
     <AssemblyName>AllplanBimplusDemo</AssemblyName>
-    <TargetFrameworkVersion>v4.8</TargetFrameworkVersion>
+    <TargetFrameworkVersion>v4.7.2</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <ProjectTypeGuids>{60dc8134-eba5-43b8-bcc9-bb4bc16c2548};{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}</ProjectTypeGuids>
     <WarningLevel>4</WarningLevel>
@@ -30,59 +30,77 @@
     <ApplicationManifest>app.manifest</ApplicationManifest>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="BimPlus.Client, Version=2018.0.0.0, Culture=neutral, PublicKeyToken=f8c5355fc4a4c88a, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\SDK\BimPlus.Client.dll</HintPath>
+    <Reference Include="BimPlus.Client, Version=2021.0.0.0, Culture=neutral, PublicKeyToken=f8c5355fc4a4c88a, processorArchitecture=MSIL">
+      <HintPath>packages\ALLPLAN.BIF.2021.0.1\lib\BimPlus.Client.dll</HintPath>
     </Reference>
-    <Reference Include="BimPlus.Client.Api, Version=2018.0.0.0, Culture=neutral, PublicKeyToken=f8c5355fc4a4c88a, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\SDK\BimPlus.Client.Api.dll</HintPath>
+    <Reference Include="BimPlus.Client.Api, Version=2021.0.0.0, Culture=neutral, PublicKeyToken=f8c5355fc4a4c88a, processorArchitecture=MSIL">
+      <HintPath>packages\ALLPLAN.BIF.2021.0.1\lib\BimPlus.Client.Api.dll</HintPath>
     </Reference>
-    <Reference Include="BimPlus.Client.Integration, Version=2018.0.0.0, Culture=neutral, PublicKeyToken=f8c5355fc4a4c88a, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\SDK\BimPlus.Client.Integration.dll</HintPath>
+    <Reference Include="BimPlus.Client.Integration, Version=2021.0.0.0, Culture=neutral, PublicKeyToken=f8c5355fc4a4c88a, processorArchitecture=MSIL">
+      <HintPath>packages\ALLPLAN.BIF.2021.0.1\lib\BimPlus.Client.Integration.dll</HintPath>
     </Reference>
-    <Reference Include="BimPlus.Client.WebControls, Version=2018.0.0.0, Culture=neutral, PublicKeyToken=f8c5355fc4a4c88a, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\SDK\BimPlus.Client.WebControls.dll</HintPath>
+    <Reference Include="BimPlus.Client.WebControls, Version=2021.0.0.0, Culture=neutral, PublicKeyToken=f8c5355fc4a4c88a, processorArchitecture=MSIL">
+      <HintPath>packages\ALLPLAN.BIF.2021.0.1\lib\BimPlus.Client.WebControls.dll</HintPath>
     </Reference>
-    <Reference Include="BimPlus.LightCaseClient, Version=2018.0.0.0, Culture=neutral, PublicKeyToken=f8c5355fc4a4c88a, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\SDK\BimPlus.LightCaseClient.dll</HintPath>
+    <Reference Include="BimPlus.LightCaseClient, Version=2021.0.0.0, Culture=neutral, PublicKeyToken=f8c5355fc4a4c88a, processorArchitecture=MSIL">
+      <HintPath>packages\ALLPLAN.BIF.2021.0.1\lib\BimPlus.LightCaseClient.dll</HintPath>
     </Reference>
-    <Reference Include="BimPlus.Sdk.Api, Version=2018.0.0.0, Culture=neutral, PublicKeyToken=f8c5355fc4a4c88a, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\SDK\BimPlus.Sdk.Api.dll</HintPath>
+    <Reference Include="BimPlus.Sdk.Api, Version=2021.0.0.0, Culture=neutral, PublicKeyToken=f8c5355fc4a4c88a, processorArchitecture=MSIL">
+      <HintPath>packages\ALLPLAN.BIF.2021.0.1\lib\BimPlus.Sdk.Api.dll</HintPath>
     </Reference>
-    <Reference Include="BimPlus.Sdk.Data, Version=2018.0.0.0, Culture=neutral, PublicKeyToken=f8c5355fc4a4c88a, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\SDK\BimPlus.Sdk.Data.dll</HintPath>
+    <Reference Include="BimPlus.Sdk.Data, Version=2021.0.0.0, Culture=neutral, PublicKeyToken=f8c5355fc4a4c88a, processorArchitecture=MSIL">
+      <HintPath>packages\ALLPLAN.BIF.2021.0.1\lib\BimPlus.Sdk.Data.dll</HintPath>
     </Reference>
-    <Reference Include="BimPlus.Sdk.Data.Definitions, Version=2018.0.0.0, Culture=neutral, PublicKeyToken=f8c5355fc4a4c88a, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\SDK\BimPlus.Sdk.Data.Definitions.dll</HintPath>
+    <Reference Include="BimPlus.Sdk.Data.Definitions, Version=2021.0.0.0, Culture=neutral, PublicKeyToken=f8c5355fc4a4c88a, processorArchitecture=MSIL">
+      <HintPath>packages\ALLPLAN.BIF.2021.0.1\lib\BimPlus.Sdk.Data.Definitions.dll</HintPath>
     </Reference>
-    <Reference Include="BimPlus.Sdk.IfcData, Version=2018.0.0.0, Culture=neutral, PublicKeyToken=f8c5355fc4a4c88a, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\SDK\BimPlus.Sdk.IfcData.dll</HintPath>
+    <Reference Include="BimPlus.Sdk.IfcData, Version=2021.0.0.0, Culture=neutral, PublicKeyToken=f8c5355fc4a4c88a, processorArchitecture=MSIL">
+      <HintPath>packages\ALLPLAN.BIF.2021.0.1\lib\BimPlus.Sdk.IfcData.dll</HintPath>
     </Reference>
-    <Reference Include="BimPlus.Sdk.Utilities, Version=2018.0.0.0, Culture=neutral, PublicKeyToken=f8c5355fc4a4c88a, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\SDK\BimPlus.Sdk.Utilities.dll</HintPath>
+    <Reference Include="BimPlus.Sdk.Utilities, Version=2021.0.0.0, Culture=neutral, PublicKeyToken=f8c5355fc4a4c88a, processorArchitecture=MSIL">
+      <HintPath>packages\ALLPLAN.BIF.2021.0.1\lib\BimPlus.Sdk.Utilities.dll</HintPath>
+    </Reference>
+    <Reference Include="EO.Base, Version=20.2.34.0, Culture=neutral, PublicKeyToken=e92353a6bf73fffc, processorArchitecture=MSIL">
+      <HintPath>packages\EO.WebBrowser.20.2.34\lib\EO.Base.dll</HintPath>
+    </Reference>
+    <Reference Include="EO.Web, Version=20.2.34.0, Culture=neutral, PublicKeyToken=e92353a6bf73fffc, processorArchitecture=MSIL">
+      <HintPath>packages\EO.Web.20.2.34\lib\EO.Web.dll</HintPath>
+    </Reference>
+    <Reference Include="EO.WebBrowser, Version=20.2.34.0, Culture=neutral, PublicKeyToken=e92353a6bf73fffc, processorArchitecture=MSIL">
+      <HintPath>packages\EO.WebBrowser.20.2.34\lib\EO.WebBrowser.dll</HintPath>
+    </Reference>
+    <Reference Include="EO.WebBrowser.Wpf, Version=20.2.34.0, Culture=neutral, PublicKeyToken=e92353a6bf73fffc, processorArchitecture=MSIL">
+      <HintPath>packages\EO.WebBrowser.Wpf.20.2.34\lib\EO.WebBrowser.Wpf.dll</HintPath>
+    </Reference>
+    <Reference Include="EO.WebEngine, Version=20.2.34.0, Culture=neutral, PublicKeyToken=e92353a6bf73fffc, processorArchitecture=MSIL">
+      <HintPath>packages\EO.WebBrowser.20.2.34\lib\EO.WebEngine.dll</HintPath>
     </Reference>
     <Reference Include="IdeaRS.OpenModel, Version=10.1.0.2, Culture=neutral, PublicKeyToken=b195254c3273d5c1, processorArchitecture=MSIL">
       <HintPath>packages\IdeaStatiCa.OpenModel.10.1.0.2\lib\net40\IdeaRS.OpenModel.dll</HintPath>
     </Reference>
+    <Reference Include="Microsoft.AspNet.SignalR.Client, Version=2.4.1.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>packages\Microsoft.AspNet.SignalR.Client.2.4.1\lib\net45\Microsoft.AspNet.SignalR.Client.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.SqlServer.Types, Version=10.0.0.0, Culture=neutral, PublicKeyToken=89845dcd8080cc91, processorArchitecture=MSIL">
+      <HintPath>packages\Microsoft.SqlServer.Types.10.50.1600.1\lib\Net20\Microsoft.SqlServer.Types.dll</HintPath>
+    </Reference>
     <Reference Include="Newtonsoft.Json, Version=12.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
       <HintPath>packages\Newtonsoft.Json.12.0.2\lib\net45\Newtonsoft.Json.dll</HintPath>
     </Reference>
-    <Reference Include="PPAttribPictureType3, Version=2017.0.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\SDK\PPAttribPictureType3.dll</HintPath>
+    <Reference Include="PPAttribPictureType3, Version=2021.0.0.0, Culture=neutral, PublicKeyToken=f8c5355fc4a4c88a, processorArchitecture=MSIL">
+      <HintPath>packages\ALLPLAN.BIF.2021.0.1\lib\PPAttribPictureType3.dll</HintPath>
+    </Reference>
+    <Reference Include="PPAttribPictureType7, Version=2021.0.0.0, Culture=neutral, PublicKeyToken=f8c5355fc4a4c88a, processorArchitecture=MSIL">
+      <HintPath>packages\ALLPLAN.BIF.2021.0.1\lib\PPAttribPictureType7.dll</HintPath>
+    </Reference>
+    <Reference Include="protobuf-net, Version=2.0.0.668, Culture=neutral, PublicKeyToken=257b51d87d2e4d67, processorArchitecture=MSIL">
+      <HintPath>packages\protobuf-net.2.0.0.668\lib\net40\protobuf-net.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Data" />
     <Reference Include="System.Drawing" />
+    <Reference Include="System.Net.Http.WebRequest" />
+    <Reference Include="System.Web" />
     <Reference Include="System.Windows.Forms" />
     <Reference Include="System.Xml" />
     <Reference Include="Microsoft.CSharp" />
@@ -242,6 +260,10 @@
       <LastGenOutput>Settings.Designer.cs</LastGenOutput>
     </None>
     <AppDesigner Include="Properties\" />
+    <None Include="Resources\horizontalAlignment.json" />
+    <None Include="Resources\horizontalAlignmentRev2.json" />
+    <None Include="Resources\verticalAlignment.json" />
+    <None Include="Resources\verticalAlignmentRev2.json" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
@@ -256,8 +278,8 @@
   <Import Project="..\IdeaStatiCa.Codes\IdeaStatiCa.Codes.projitems" Label="Shared" />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
-    <PostBuildEvent>cd ..\..\..\SDK
-xcopy /Y "eowp.exe" "$(TargetDir)"</PostBuildEvent>
+    <PostBuildEvent>
+    </PostBuildEvent>
   </PropertyGroup>
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

@@ -25,6 +25,15 @@ namespace AllplanBimplusDemo
     /// </summary>
     public partial class MainWindow : Window, INotifyPropertyChanged
     {
+        #region private and internal member
+
+        private readonly StreamWriter _streamWriter;
+        private readonly Guid _testApplicationId = new Guid("5F43560D-9B0C-4F3C-85CB-B5721D098F7B");
+
+        private readonly IntegrationBase _integrationBase;
+
+        #endregion private and internal member
+
         public MainWindow()
         {
             InitializeComponent();
@@ -38,7 +47,6 @@ namespace AllplanBimplusDemo
             SystemEvents.UserPreferenceChanged += SystemEvents_UserPreferenceChanged;
 
             // Logging
-
             string loggingPath = Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData) + @"\Nemetschek\bim+";
 
             if (!Directory.Exists(loggingPath))
@@ -72,9 +80,8 @@ namespace AllplanBimplusDemo
                 }
             }
 
-            Guid clientId = LoginSettings.GetClientId();
-
-            _integrationBase = new IntegrationBase(clientId, _testApplicationId, _streamWriter)
+            // because of UseSignalRCore it's necessary to add reference to Microsoft.AspNet.SignalR.Client.
+            _integrationBase = new IntegrationBase(_testApplicationId, _streamWriter)
             {
                 UseSignalRCore = true,
                 SignalRAppCode = "AllplanBimplusDemo",
@@ -127,16 +134,6 @@ namespace AllplanBimplusDemo
         private string _cultureName = "";
 
         #endregion SystemEvents
-
-        #region private and internal member
-
-        private readonly StreamWriter _streamWriter;
-        private readonly Guid _testApplicationId = new Guid("5F43560D-9B0C-4F3C-85CB-B5721D098F7B");
-        //private readonly Guid _testApplicationId = new Guid("c25706f5-e296-fa1b-9459-a9a25d1d01ac"); // Excel
-
-        private readonly IntegrationBase _integrationBase;
-
-        #endregion private and internal member
 
         #region INotifyPropertyChanged
 

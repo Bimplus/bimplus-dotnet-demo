@@ -124,4 +124,16 @@
   <data name="cadicsData" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\cadicsData.xml;System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;Windows-1252</value>
   </data>
+  <data name="horizontalAlignment" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\horizontalAlignment.json;System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="horizontalAlignmentRev2" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\horizontalAlignmentRev2.json;System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="verticalAlignment" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\verticalAlignment.json;System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="verticalAlignmentRev2" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\verticalAlignmentRev2.json;System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
 </root>
