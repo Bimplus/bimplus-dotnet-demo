@@ -17,6 +17,8 @@ using System.Net;
 using System.Runtime.CompilerServices;
 using System.Windows;
 using System.Windows.Controls;
+using BimPlus.Sdk.Data.DbCore.Analysis;
+using BimPlus.Sdk.Data.StructuralLoadResource;
 
 namespace AllplanBimplusDemo
 {
@@ -81,12 +83,13 @@ namespace AllplanBimplusDemo
             }
 
             // because of UseSignalRCore it's necessary to add reference to Microsoft.AspNet.SignalR.Client.
-            _integrationBase = new IntegrationBase(_testApplicationId, _streamWriter)
-            {
-                UseSignalRCore = true,
-                SignalRAppCode = "AllplanBimplusDemo",
-                SignalRLogFileName = "AllplanBimplusDemo"
-            };
+            _integrationBase = new IntegrationBase(_testApplicationId, _streamWriter);
+
+            //{
+            //    UseSignalRCore = true,
+            //    SignalRAppCode = "AllplanBimplusDemo",
+            //    SignalRLogFileName = "AllplanBimplusDemo"
+            //};
 
             // Connect with remember me.
             bool ok = _integrationBase.ConnectWithRememberMeAndClientId();
@@ -104,7 +107,7 @@ namespace AllplanBimplusDemo
             _integrationBase.TranslationCultureInfo = CultureInfo.CreateSpecificCulture("en-GB");
             //_integrationBase.TranslationCultureInfo = CultureInfo.CreateSpecificCulture("de-DE");
 
-            BimPlusUserControl.EnableCache = true;
+            //BimPlusUserControl.EnableCache = true;
 
             _applicationSettings = new ApplicationSettings();
             _applicationSettings.SetLogger(_integrationBase.Logger);
@@ -201,6 +204,7 @@ namespace AllplanBimplusDemo
 
             _integrationBase.EventHandlerCore.ProjectChanged += EventHandlerCore_ProjectChanged;
             _integrationBase.EventHandlerCore.Unauthorized += EventHandlerCore_Unauthorized;
+            _integrationBase.EventHandlerCore.ObjectSelected += EventHandlerCore_ObjectSelected;
         }
 
         private void ShowDisabledControls()
@@ -394,6 +398,7 @@ namespace AllplanBimplusDemo
             {
                 _integrationBase.EventHandlerCore.ProjectChanged -= EventHandlerCore_ProjectChanged;
                 _integrationBase.EventHandlerCore.Unauthorized -= EventHandlerCore_Unauthorized;
+                _integrationBase.EventHandlerCore.ObjectSelected -= EventHandlerCore_ObjectSelected;
                 ShowDisabledControls();
                 DisposeOldBimPlusUserControl();
                 CheckViewExist();
@@ -689,9 +694,34 @@ namespace AllplanBimplusDemo
             CheckViewExist();
         }
 
+        private void EventHandlerCore_ObjectSelected(object sender, BimPlusEventArgs e)
+        {
+            var id = e?.Id;
+            if (!id.HasValue || id == Guid.Empty)
+                return;
+
+            var objAttributes = _integrationBase.ApiCore.DtObjects.GetObject(id.Value);
+
+            // Geometry Tests
+            var glb = _integrationBase.ApiCore.DtObjects.GetGlbGeometry(id.Value);
+            if (glb != null)
+            {
+                string path = @"d:\temp"; //\MyTest.glb";
+                DirectoryInfo info = new DirectoryInfo(@"c:\temp");
+                if (!info.Exists)
+                    info.Create();
+
+                string filepath = Path.Combine(path, "MyTest.glb");
+                File.WriteAllBytes(filepath, glb);
+
+                Process.Start(filepath);
+            }
+
+        }
+
         #endregion CsgModel
 
-        #region Calatrava
+#region Calatrava
 
         private void CalatravaObjects_Click(object sender, RoutedEventArgs e)
         {

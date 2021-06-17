@@ -108,7 +108,7 @@ namespace AllplanBimplusDemo.UserControls
 
         #region private methods
 
-        private DtoDivision GetBimRoadModel(string modelName = null)
+        private DtoDivision GetBimRoadModel(string modelName = null, bool createTopologyDivision = true)
         {
             DtoDivision model = null;
 
@@ -119,7 +119,8 @@ namespace AllplanBimplusDemo.UserControls
             ProgressWindow.Show();
             try
             {
-                model = _integrationBase.ApiCore.Divisions.GetProjectDivisions(_integrationBase.CurrentProject.Id)?.Find(x => x.Name == modelName);
+                model = _integrationBase.ApiCore.Divisions.GetProjectDivisions(_integrationBase.CurrentProject.Id)
+                    ?.Find(x => x.Name == modelName);
 
                 bool existModel = model != null;
                 if (model == null)
@@ -132,28 +133,22 @@ namespace AllplanBimplusDemo.UserControls
                         });
                 }
 
-                if (model != null)
-                {
-                    if (!existModel || model.TopologyDivisionId == null)
-                    {
-                        // Create main root TopologyDivision node.
-                        DtObject topologyDivision = _integrationBase.ApiCore.DtObjects.PostObject(new TopologyDivision
-                        {
-                            Name = "RootNode",
-                            Division = model.Id,
-                            Parent = _integrationBase.CurrentProject.Id
-                        });
+                if (model == null)
+                    return null;
 
-                        if (topologyDivision == null || topologyDivision.Id == Guid.Empty)
-                        {
-                            MessageBoxHelper.ShowInformation("Could not create TopologyDivision object.", _parentWindow);
-                            model = null;
-                        }
-                        else
-                        {
-                            model.TopologyDivisionId = topologyDivision.Id;
-                            model = _integrationBase.ApiCore.Divisions.Update(model);
-                        }
+                if (createTopologyDivision && model.TopologyDivisionId == null)
+                {
+                    // Create main root TopologyDivision node.
+                    DtObject topologyDivision = _integrationBase.ApiCore.DtObjects.PostObject(new TopologyDivision
+                    {
+                        Name = "RootNode",
+                        Division = model.Id,
+                        Parent = _integrationBase.CurrentProject.Id
+                    });
+
+                    if (topologyDivision == null || topologyDivision.Id == Guid.Empty)
+                    {
+                        MessageBoxHelper.ShowInformation("Could not create TopologyDivision object.", _parentWindow);
                     }
                 }
             }
@@ -432,9 +427,12 @@ namespace AllplanBimplusDemo.UserControls
         /// <param name="e"></param>
         private void CreateAlignment_OnClick(object sender, RoutedEventArgs e)
         {
-            DtoDivision model = GetBimRoadModel("Alignments");
-            if (model?.TopologyDivisionId == null)
+            DtoDivision model = GetBimRoadModel("Alignments", false);
+            if (model.TopologyDivisionId.GetValueOrDefault(Guid.Empty) != Guid.Empty)
+            {
+                MessageBox.Show("Alignment modeldata already exist");
                 return;
+            }
 
             ProgressWindow.Text = "Create Nhance alignment.";
             ProgressWindow.Show();
@@ -452,21 +450,39 @@ namespace AllplanBimplusDemo.UserControls
                     return;
                 }
 
-                alignment = new Alignment
+                var modelData = new TopologyDivision
                 {
-                    Parent = model.TopologyDivisionId.Value,
-                    Name = alignmentName,
+                    Name = "Terrain and Alignments",
                     Division = model.Id,
-                    LogParentID = model.ProjectId,
-                    HorizontalAlignment =
-                        JsonConvert.DeserializeObject<Road.HorizontalAlignment>(
-                            Properties.Resources.horizontalAlignment),
-                    VerticalAlignment =
-                        JsonConvert.DeserializeObject<Road.VerticalAlignment>(Properties.Resources.verticalAlignment)
+                    Parent = _integrationBase.CurrentProject.Id,
+                    Children = new List<DtObject>(1)
+                    {
+                        new Topology
+                        {
+                            Name = "AL-12",
+                            Division = model.Id,
+                            LogParentID = model.ProjectId,
+                            Children = new List<DtObject>(1)
+                            {
+                                new Alignment
+                                {
+                                    Parent = model.TopologyDivisionId.Value,
+                                    Name = alignmentName,
+                                    Division = model.Id,
+                                    LogParentID = model.ProjectId,
+                                    HorizontalAlignment =
+                                        JsonConvert.DeserializeObject<Road.HorizontalAlignment>(
+                                            Properties.Resources.horizontalAlignment),
+                                    VerticalAlignment =
+                                        JsonConvert.DeserializeObject<Road.VerticalAlignment>(Properties.Resources.verticalAlignment)
+                                }
+                            }
+                        }
+                    }
                 };
 
-                // Create axis in Bimplus.
-                DtObject result = _integrationBase.ApiCore.DtObjects.PostObject(alignment);
+                // Create modeldata in Bimplus.
+                DtObject result = _integrationBase.ApiCore.DtObjects.PostObject(modelData);
 
                 if (result == null || result.Id == Guid.Empty)
                 {
@@ -493,7 +509,7 @@ namespace AllplanBimplusDemo.UserControls
         /// <param name="e"></param>
         private void RevisionAlignment_OnClick(object sender, RoutedEventArgs e)
         {
-            DtoDivision model = GetBimRoadModel("Alignments");
+            DtoDivision model = GetBimRoadModel("Alignments", false);
             if (model?.TopologyDivisionId == null)
                 return;
 

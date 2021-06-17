@@ -15,6 +15,8 @@
     <WarningLevel>4</WarningLevel>
     <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
     <TargetFrameworkProfile />
+    <NuGetPackageImportStamp>
+    </NuGetPackageImportStamp>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <PlatformTarget>AnyCPU</PlatformTarget>
@@ -31,49 +33,34 @@
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="BimPlus.Client, Version=2021.0.0.0, Culture=neutral, PublicKeyToken=f8c5355fc4a4c88a, processorArchitecture=MSIL">
-      <HintPath>packages\ALLPLAN.BIF.2021.0.1\lib\BimPlus.Client.dll</HintPath>
+      <HintPath>packages\ALLPLAN.BIF.2021.0.2\lib\BimPlus.Client.dll</HintPath>
     </Reference>
     <Reference Include="BimPlus.Client.Api, Version=2021.0.0.0, Culture=neutral, PublicKeyToken=f8c5355fc4a4c88a, processorArchitecture=MSIL">
-      <HintPath>packages\ALLPLAN.BIF.2021.0.1\lib\BimPlus.Client.Api.dll</HintPath>
+      <HintPath>packages\ALLPLAN.BIF.2021.0.2\lib\BimPlus.Client.Api.dll</HintPath>
     </Reference>
     <Reference Include="BimPlus.Client.Integration, Version=2021.0.0.0, Culture=neutral, PublicKeyToken=f8c5355fc4a4c88a, processorArchitecture=MSIL">
-      <HintPath>packages\ALLPLAN.BIF.2021.0.1\lib\BimPlus.Client.Integration.dll</HintPath>
+      <HintPath>packages\ALLPLAN.BIF.2021.0.2\lib\BimPlus.Client.Integration.dll</HintPath>
     </Reference>
     <Reference Include="BimPlus.Client.WebControls, Version=2021.0.0.0, Culture=neutral, PublicKeyToken=f8c5355fc4a4c88a, processorArchitecture=MSIL">
-      <HintPath>packages\ALLPLAN.BIF.2021.0.1\lib\BimPlus.Client.WebControls.dll</HintPath>
+      <HintPath>packages\ALLPLAN.BIF.2021.0.2\lib\BimPlus.Client.WebControls.dll</HintPath>
     </Reference>
     <Reference Include="BimPlus.LightCaseClient, Version=2021.0.0.0, Culture=neutral, PublicKeyToken=f8c5355fc4a4c88a, processorArchitecture=MSIL">
-      <HintPath>packages\ALLPLAN.BIF.2021.0.1\lib\BimPlus.LightCaseClient.dll</HintPath>
+      <HintPath>packages\ALLPLAN.BIF.2021.0.2\lib\BimPlus.LightCaseClient.dll</HintPath>
     </Reference>
     <Reference Include="BimPlus.Sdk.Api, Version=2021.0.0.0, Culture=neutral, PublicKeyToken=f8c5355fc4a4c88a, processorArchitecture=MSIL">
-      <HintPath>packages\ALLPLAN.BIF.2021.0.1\lib\BimPlus.Sdk.Api.dll</HintPath>
+      <HintPath>packages\ALLPLAN.BIF.2021.0.2\lib\BimPlus.Sdk.Api.dll</HintPath>
     </Reference>
     <Reference Include="BimPlus.Sdk.Data, Version=2021.0.0.0, Culture=neutral, PublicKeyToken=f8c5355fc4a4c88a, processorArchitecture=MSIL">
-      <HintPath>packages\ALLPLAN.BIF.2021.0.1\lib\BimPlus.Sdk.Data.dll</HintPath>
+      <HintPath>packages\ALLPLAN.BIF.2021.0.2\lib\BimPlus.Sdk.Data.dll</HintPath>
     </Reference>
     <Reference Include="BimPlus.Sdk.Data.Definitions, Version=2021.0.0.0, Culture=neutral, PublicKeyToken=f8c5355fc4a4c88a, processorArchitecture=MSIL">
-      <HintPath>packages\ALLPLAN.BIF.2021.0.1\lib\BimPlus.Sdk.Data.Definitions.dll</HintPath>
+      <HintPath>packages\ALLPLAN.BIF.2021.0.2\lib\BimPlus.Sdk.Data.Definitions.dll</HintPath>
     </Reference>
     <Reference Include="BimPlus.Sdk.IfcData, Version=2021.0.0.0, Culture=neutral, PublicKeyToken=f8c5355fc4a4c88a, processorArchitecture=MSIL">
-      <HintPath>packages\ALLPLAN.BIF.2021.0.1\lib\BimPlus.Sdk.IfcData.dll</HintPath>
+      <HintPath>packages\ALLPLAN.BIF.2021.0.2\lib\BimPlus.Sdk.IfcData.dll</HintPath>
     </Reference>
     <Reference Include="BimPlus.Sdk.Utilities, Version=2021.0.0.0, Culture=neutral, PublicKeyToken=f8c5355fc4a4c88a, processorArchitecture=MSIL">
-      <HintPath>packages\ALLPLAN.BIF.2021.0.1\lib\BimPlus.Sdk.Utilities.dll</HintPath>
-    </Reference>
-    <Reference Include="EO.Base, Version=20.2.34.0, Culture=neutral, PublicKeyToken=e92353a6bf73fffc, processorArchitecture=MSIL">
-      <HintPath>packages\EO.WebBrowser.20.2.34\lib\EO.Base.dll</HintPath>
-    </Reference>
-    <Reference Include="EO.Web, Version=20.2.34.0, Culture=neutral, PublicKeyToken=e92353a6bf73fffc, processorArchitecture=MSIL">
-      <HintPath>packages\EO.Web.20.2.34\lib\EO.Web.dll</HintPath>
-    </Reference>
-    <Reference Include="EO.WebBrowser, Version=20.2.34.0, Culture=neutral, PublicKeyToken=e92353a6bf73fffc, processorArchitecture=MSIL">
-      <HintPath>packages\EO.WebBrowser.20.2.34\lib\EO.WebBrowser.dll</HintPath>
-    </Reference>
-    <Reference Include="EO.WebBrowser.Wpf, Version=20.2.34.0, Culture=neutral, PublicKeyToken=e92353a6bf73fffc, processorArchitecture=MSIL">
-      <HintPath>packages\EO.WebBrowser.Wpf.20.2.34\lib\EO.WebBrowser.Wpf.dll</HintPath>
-    </Reference>
-    <Reference Include="EO.WebEngine, Version=20.2.34.0, Culture=neutral, PublicKeyToken=e92353a6bf73fffc, processorArchitecture=MSIL">
-      <HintPath>packages\EO.WebBrowser.20.2.34\lib\EO.WebEngine.dll</HintPath>
+      <HintPath>packages\ALLPLAN.BIF.2021.0.2\lib\BimPlus.Sdk.Utilities.dll</HintPath>
     </Reference>
     <Reference Include="IdeaRS.OpenModel, Version=10.1.0.2, Culture=neutral, PublicKeyToken=b195254c3273d5c1, processorArchitecture=MSIL">
       <HintPath>packages\IdeaStatiCa.OpenModel.10.1.0.2\lib\net40\IdeaRS.OpenModel.dll</HintPath>
@@ -84,14 +71,23 @@
     <Reference Include="Microsoft.SqlServer.Types, Version=10.0.0.0, Culture=neutral, PublicKeyToken=89845dcd8080cc91, processorArchitecture=MSIL">
       <HintPath>packages\Microsoft.SqlServer.Types.10.50.1600.1\lib\Net20\Microsoft.SqlServer.Types.dll</HintPath>
     </Reference>
+    <Reference Include="Microsoft.Web.WebView2.Core, Version=1.0.864.35, Culture=neutral, PublicKeyToken=2a8ab48044d2601e, processorArchitecture=MSIL">
+      <HintPath>packages\Microsoft.Web.WebView2.1.0.864.35\lib\net45\Microsoft.Web.WebView2.Core.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.Web.WebView2.WinForms, Version=1.0.864.35, Culture=neutral, PublicKeyToken=2a8ab48044d2601e, processorArchitecture=MSIL">
+      <HintPath>packages\Microsoft.Web.WebView2.1.0.864.35\lib\net45\Microsoft.Web.WebView2.WinForms.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.Web.WebView2.Wpf, Version=1.0.864.35, Culture=neutral, PublicKeyToken=2a8ab48044d2601e, processorArchitecture=MSIL">
+      <HintPath>packages\Microsoft.Web.WebView2.1.0.864.35\lib\net45\Microsoft.Web.WebView2.Wpf.dll</HintPath>
+    </Reference>
     <Reference Include="Newtonsoft.Json, Version=12.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
       <HintPath>packages\Newtonsoft.Json.12.0.2\lib\net45\Newtonsoft.Json.dll</HintPath>
     </Reference>
     <Reference Include="PPAttribPictureType3, Version=2021.0.0.0, Culture=neutral, PublicKeyToken=f8c5355fc4a4c88a, processorArchitecture=MSIL">
-      <HintPath>packages\ALLPLAN.BIF.2021.0.1\lib\PPAttribPictureType3.dll</HintPath>
+      <HintPath>packages\ALLPLAN.BIF.2021.0.2\lib\PPAttribPictureType3.dll</HintPath>
     </Reference>
     <Reference Include="PPAttribPictureType7, Version=2021.0.0.0, Culture=neutral, PublicKeyToken=f8c5355fc4a4c88a, processorArchitecture=MSIL">
-      <HintPath>packages\ALLPLAN.BIF.2021.0.1\lib\PPAttribPictureType7.dll</HintPath>
+      <HintPath>packages\ALLPLAN.BIF.2021.0.2\lib\PPAttribPictureType7.dll</HintPath>
     </Reference>
     <Reference Include="protobuf-net, Version=2.0.0.668, Culture=neutral, PublicKeyToken=257b51d87d2e4d67, processorArchitecture=MSIL">
       <HintPath>packages\protobuf-net.2.0.0.668\lib\net40\protobuf-net.dll</HintPath>
@@ -281,6 +277,15 @@
     <PostBuildEvent>
     </PostBuildEvent>
   </PropertyGroup>
+  <Import Project="packages\Microsoft.Web.WebView2.1.0.864.35\build\Microsoft.Web.WebView2.targets" Condition="Exists('packages\Microsoft.Web.WebView2.1.0.864.35\build\Microsoft.Web.WebView2.targets')" />
+  <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">
+    <PropertyGroup>
+      <ErrorText>Dieses Projekt verweist auf mindestens ein NuGet-Paket, das auf diesem Computer fehlt. Verwenden Sie die Wiederherstellung von NuGet-Paketen, um die fehlenden Dateien herunterzuladen. Weitere Informationen finden Sie unter "http://go.microsoft.com/fwlink/?LinkID=322105". Die fehlende Datei ist "{0}".</ErrorText>
+    </PropertyGroup>
+    <Error Condition="!Exists('packages\Microsoft.Web.WebView2.1.0.864.35\build\Microsoft.Web.WebView2.targets')" Text="$([System.String]::Format('$(ErrorText)', 'packages\Microsoft.Web.WebView2.1.0.864.35\build\Microsoft.Web.WebView2.targets'))" />
+    <Error Condition="!Exists('packages\ALLPLAN.BIF.2021.0.2\build\ALLPLAN.BIF.targets')" Text="$([System.String]::Format('$(ErrorText)', 'packages\ALLPLAN.BIF.2021.0.2\build\ALLPLAN.BIF.targets'))" />
+  </Target>
+  <Import Project="packages\ALLPLAN.BIF.2021.0.2\build\ALLPLAN.BIF.targets" Condition="Exists('packages\ALLPLAN.BIF.2021.0.2\build\ALLPLAN.BIF.targets')" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.
   <Target Name="BeforeBuild">
