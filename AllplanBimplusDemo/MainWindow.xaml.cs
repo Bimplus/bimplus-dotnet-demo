@@ -706,7 +706,7 @@ namespace AllplanBimplusDemo
             var glb = _integrationBase.ApiCore.DtObjects.GetGlbGeometry(id.Value);
             if (glb != null)
             {
-                string path = @"d:\temp"; //\MyTest.glb";
+                string path = @"c:\temp"; //\MyTest.glb";
                 DirectoryInfo info = new DirectoryInfo(@"c:\temp");
                 if (!info.Exists)
                     info.Create();
