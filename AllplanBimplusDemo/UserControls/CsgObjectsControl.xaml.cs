@@ -31,8 +31,11 @@ using IdeaRS.OpenModel.CrossSection;
 using IdeaRS.OpenModel.Geometry3D;
 using IdeaRS.OpenModel.Model;
 using IdeaRS.OpenModel.Result;
-using IOM.SteelFrame;
+using IOM.GeneratorExample;
 using Point = System.Drawing.Point;
+using IdeaRS.Connections.Commands;
+using WM = System.Windows.Media.Media3D;
+using CI;
 
 // ReSharper disable IdentifierTypo
 // ReSharper disable RedundantExtendsListEntry
@@ -725,7 +728,9 @@ namespace AllplanBimplusDemo.UserControls
                 NavigateToControl();
             }
         }
+        #endregion button events
 
+        #region IdeaStatica
         /// <summary>
         /// Import 'IdeaStatica' TestData into BimPlus
         /// </summary>
@@ -743,7 +748,7 @@ namespace AllplanBimplusDemo.UserControls
             try
             {
                 // create IOM and results
-                OpenModel example = Example.CreateIOM();
+                OpenModel example = SteelFrameExample.CreateIOM();
                 OpenModelResult result = Helpers.GetResults();
 
                 var nodes = _integrationBase.ApiCore.DtObjects.GetObjects<StructuralPointConnection>(
@@ -951,8 +956,8 @@ namespace AllplanBimplusDemo.UserControls
             try
             {
                 // create IOM and results
-                OpenModel example = Example.CreateIOM();
-                //OpenModelResult result = Helpers.GetResults();
+                OpenModel example = SteelFrameExample.CreateIOM();
+                OpenModelResult result = Helpers.GetResults();
 
                 var assemblies = _integrationBase.ApiCore.DtObjects.GetObjects<ElementAssembly>(
                     model.TopologyDivisionId.GetValueOrDefault(), false, false, true);
@@ -992,8 +997,12 @@ namespace AllplanBimplusDemo.UserControls
                         }
                     };
 
+                    // create plates
                     foreach (var p in idCon.Plates)
                     {
+                        var rotation = -Math.PI / 2;
+                        var direction = CreateFromLCS(p.AxisX, p.AxisY, p.AxisZ, out rotation);
+                        rotation = -Math.PI / 2;
                         var plate = new SteelPlate
                         {
                             Name = p.Name,
@@ -1007,7 +1016,7 @@ namespace AllplanBimplusDemo.UserControls
                                 {
                                     new Path
                                     {
-                                        Rotation = -Math.PI/2,
+                                        Rotation = rotation,
                                         Geometry = new List<CsgGeoElement>(2)
                                         {
                                             new StartPolygon
@@ -1015,15 +1024,11 @@ namespace AllplanBimplusDemo.UserControls
                                                 Point = new List<double>{0, 0, 0}
                                             },
                                             new Line
-                                            {
-                                                Point = (p.Name == "P1") // TODO: check direction of Path
-                                                    ? new List<double>{p.Thickness * 1000F * p.AxisX.X,
-                                                                       p.Thickness * 1000F * p.AxisX.Y,
-                                                                       p.Thickness * 1000F * p.AxisX.Z}
-                                                    : new List<double>{p.Thickness * 1000F * p.AxisZ.X,
-                                                                       p.Thickness * 1000F * p.AxisZ.Y,
-                                                                       p.Thickness * 1000F * p.AxisZ.Z 
-                                                }
+                                            { 
+                                                //Point = new List<double> { p.Thickness * 1000F * direction.DirectionX, p.Thickness * 1000F * direction.DirectionY,p.Thickness * 1000F * direction.DirectionZ}
+                                                Point = new List<double>{ p.Thickness * 1000F * (Math.Abs(p.AxisX.Z) + Math.Abs(p.AxisY.X) + Math.Abs(p.AxisZ.Y))/3F,
+                                                                          p.Thickness * 1000F * (Math.Abs(p.AxisX.Y) + Math.Abs(p.AxisY.Z) + Math.Abs(p.AxisZ.X))/3F,
+                                                                          p.Thickness * 1000F * (Math.Abs(p.AxisX.X) + Math.Abs(p.AxisY.Y) + Math.Abs(p.AxisZ.Z))/3F }
                                             }
                                         }
                                     },
@@ -1062,6 +1067,46 @@ namespace AllplanBimplusDemo.UserControls
                         connection.ConnectionElement.Children.Add(plate);
                     }
 
+                    // add cuts
+                    foreach (var cut in idCon.CutBeamByBeams)
+                    {
+                        Point3D cuttingPos = null;
+                        Vector3D vx = null, vy = null, vz = null;
+                        // TODO: find reference to cutted beam !!
+                        if (cut.CuttingObject.TypeName.Equals("PlateData"))
+                        {
+                            var p = cut.CuttingObject.Element as IdeaRS.OpenModel.Connection.PlateData;
+                            cuttingPos = p.Origin;
+                            vx = p.AxisX;
+                            vy = p.AxisY;
+                            vz = p.AxisZ;
+                        }
+
+                        if (cuttingPos == null || vx == null || vy == null || vz == null)
+                            continue;
+
+                        var direction = CreateFromLCS(vx, vy, vz, out double rotation);
+                        var poly = new CBaseElementPolyeder();
+                        poly.point.Add(new CElementPoint(cuttingPos.X * 1000F, cuttingPos.Y * 1000F, cuttingPos.Z * 1000F));
+                        poly.point.Add(new CElementPoint(cuttingPos.X * 1000F + direction.DirectionX, cuttingPos.Y * 1000F + direction.DirectionY, cuttingPos.Z * 1000F + direction.DirectionZ));
+                        poly.edge.Add(new CElementEdge(1, 2));
+   
+
+                        if (connectionIds.TryGetValue(cut.ModifiedObject.Id, out Guid parent) == false)
+                            parent = connection.ElementIds[0];
+
+                        var cutPlane = new PolygonOpening
+                        {
+                            Name = "Cut",
+                            Parent = parent,
+                            Division = model.Id,
+                            LogParentID = _integrationBase.CurrentProject.Id,
+                            BytePolyeder = poly
+                        };
+                        connection.ConnectionElement.Children.Add(cutPlane);
+                    }
+
+                    // create bolts and openings
                     foreach (var bGrid in idCon.BoltGrids)
                     {
                         foreach (var bolt in bGrid.Positions)
@@ -1087,6 +1132,8 @@ namespace AllplanBimplusDemo.UserControls
                             var json = Newtonsoft.Json.JsonConvert.SerializeObject(fastener);
                             connection.ConnectionElement.Children.Add(fastener);
 
+                            var t1 = 100F * bGrid.AxisX.X + 100F * bGrid.AxisX.Y + 100F * bGrid.AxisX.Z;
+                            var t2 = bGrid.BoreHole * 100F * bGrid.AxisX.X + 100F * bGrid.AxisX.Y + 100F * bGrid.AxisX.Z;
                             var opening = new Opening
                             {
                                 Name = bGrid.Standard,
@@ -1101,8 +1148,11 @@ namespace AllplanBimplusDemo.UserControls
                                         new Path {
                                             Geometry = new List<CsgGeoElement>
                                             {
-                                                new StartPolygon {Point = new List<double> {0, 0, 0}},
-                                                new Line {Point = new List<double> { 100F * bGrid.AxisX.X, 100F * bGrid.AxisX.Y, 100F * bGrid.AxisX.Z}}
+                                                new StartPolygon {Point = new List<double> {0, -40, 0}},
+                                                //new Line {Point = new List<double> { 100F * bGrid.AxisX.X, 100F * bGrid.AxisX.Y, 100F * bGrid.AxisX.Z}},
+                                                new Line {Point = new List<double> { 100F * (bGrid.AxisX.Z + bGrid.AxisY.X + bGrid.AxisZ.Y)/3F,
+                                                                                     100F * (bGrid.AxisX.Y + bGrid.AxisY.Z + bGrid.AxisZ.X)/3F,
+                                                                                     100F * (bGrid.AxisX.X + bGrid.AxisY.Y+ bGrid.AxisZ.Z)/3F}}
                                             },
                                             CrossSection = "RD16"
                                         }
@@ -1123,10 +1173,42 @@ namespace AllplanBimplusDemo.UserControls
                         }
                     }
 
-                    foreach (var weld in idCon.Welds)
+                    // create welds
+                    foreach (var w in idCon.Welds)
                     {
-                        ; // TODO create Weld objects
+                        Guid parent = connection.ElementIds[0];
+                        foreach (var t in w.ConnectedPartIds)
+                        {
+                            if (connectionIds.ContainsKey(Convert.ToInt32(t)))
+                                parent = connectionIds[Convert.ToInt32(t)];
+                        }
+
+                        var weld = new Weld
+                        {
+                            Name = $"W{w.Id}",
+                            Parent = parent,
+                            Division = model.Id,
+                            LogParentID = _integrationBase.CurrentProject.Id,
+                            CsgTree = new DtoCsgTree
+                            {
+                                Color = (uint)Color.DarkBlue.ToArgb(),
+                                Elements = new List<CsgElement>(1)
+                                    {
+                                        new Path {
+                                            Geometry = new List<CsgGeoElement>
+                                            {
+                                                new StartPolygon {Point = new List<double> {w.Start.X * 1000F, w.Start.Y * 1000F, w.Start.Z * 1000F}},
+                                                new Line {Point = new List<double> { w.End.X * 1000F, w.End.Y * 1000F, w.End.Z * 1000F}},
+                                            },
+                                            CrossSection = "RD8"
+                                        }
+                                    }
+                            }
+                        };
+                        //weld.AddProperty(TableNames.tabAttribConstObjInstObj, "ConnectionChild-Element", parent);
+                        connection.ConnectionElement.Children.Add(weld);
                     }
+
                     string jsonString = JsonConvert.SerializeObject(connection);
                     connection = _integrationBase.ApiCore.DtoConnection.CreateConnection(model.ProjectId, connection);
                     if (connection == null || connection.Id == Guid.Empty)
@@ -1148,6 +1230,164 @@ namespace AllplanBimplusDemo.UserControls
             }
         }
 
-        #endregion button events
+        private static CI.Geometry3D.Vector3D CreateFromLCS(Vector3D axisX, Vector3D axisY, Vector3D axisZ, out double rotation)
+        {
+            //rotation = -Math.PI / 2;
+            //CI.Geometry3D.Matrix44 matrix = new CI.Geometry3D.Matrix44(new CI.Geometry3D.Vector3D(axisX.X, axisX.Y, axisX.Z),
+            //                                                            new CI.Geometry3D.Vector3D(axisY.X, axisY.Y, axisY.Z),
+            //                                                            new CI.Geometry3D.Vector3D(axisZ.X, axisZ.Y, axisZ.Z));
+
+
+            //return matrix.TransformToGCS(new CI.Geometry3D.Vector3D(1, 0, 0));
+            double beta, gamma, betaEnd, gammaEnd;
+
+
+            GetDirVectorAngles(new System.Windows.Media.Media3D.Vector3D(axisZ.X, axisZ.Y, axisZ.Z), false, false, out beta, out gamma, out betaEnd, out gammaEnd);
+
+            var notRotadedMatrix = new CI.Geometry3D.Matrix44();
+            if (!gamma.IsZero())
+            {
+                // gamma pitch
+                notRotadedMatrix.Rotate(gamma, new CI.Geometry3D.Vector3D(0, 1, 0));
+            }
+
+            if (!beta.IsZero())
+            {
+                // beta direction
+                notRotadedMatrix.Rotate(beta, new CI.Geometry3D.Vector3D(0, 0, 1));
+            }
+
+            rotation = CI.Geometry3D.GeomOperation.GetClockwiseAngle(notRotadedMatrix.AxisY, new CI.Geometry3D.Vector3D(axisY.X, axisY.Y, axisY.Z), notRotadedMatrix.AxisX) - Math.PI / 2;
+
+            return new CI.Geometry3D.Vector3D(axisZ.X, axisZ.Y, axisZ.Z);
+            //return new CI.Geometry3D.Vector3D(0, 0, 1);
+        }
+
+        private static void GetDirVectorAngles(WM.Vector3D dirVector, bool IsContinuous, bool isInside, out double beta, out double gamma, out double betaFromEnd, out double gammaFromEnd)
+        {
+            beta = 0;
+            gamma = 0;
+            betaFromEnd = 0;
+            gammaFromEnd = 0;
+
+            bool isZeroX = dirVector.X.IsZero();
+            bool isZeroY = dirVector.Y.IsZero();
+            bool isZeroZ = dirVector.Z.IsZero();
+
+            if (isZeroX && isZeroY)
+            {
+                // parallel to global Z
+                if (dirVector.Z.IsGreater(0))
+                {
+                    gamma = -Math.PI*2;
+                    if (IsContinuous && !isInside)
+                    {
+                        gamma = Math.PI * 2;
+                    }
+                }
+                else
+                {
+                    gamma = Math.PI * 2;
+                    if (IsContinuous && !isInside)
+                    {
+                        gamma = -Math.PI * 2;
+                    }
+                }
+            }
+            else
+            {
+                if (isZeroY)
+                {
+                    // parallel to global X
+                    if (IsContinuous && !isInside)
+                    {
+                        if (dirVector.X.IsGreater(0))
+                        {
+                            beta = Math.PI;
+                            betaFromEnd = Math.PI;
+                        }
+                        else
+                        {
+                            beta = 0;// MathConstants.PI;
+                            betaFromEnd = 0;// MathConstants.PI;
+                        }
+                    }
+                    else
+                    {
+                        if (dirVector.X.IsGreater(0))
+                        {
+                            beta = 0;
+                            betaFromEnd = 0;
+                        }
+                        else
+                        {
+                            beta = Math.PI;
+                            betaFromEnd = Math.PI;
+                        }
+                    }
+
+                    if (IsContinuous && !isInside)
+                    {
+                        gamma = Math.Atan2(dirVector.Z, Math.Abs(dirVector.X));
+                        gammaFromEnd = gamma;
+                    }
+                    else
+                    {
+                        gamma = -Math.Atan2(dirVector.Z, Math.Abs(dirVector.X));
+                        gammaFromEnd = gamma;
+
+                    }
+                }
+                else if (isZeroX)
+                {
+                    // parallel to global X
+                    if (IsContinuous && !isInside)
+                    {
+                        if (dirVector.Y.IsGreater(0))
+                        {
+                            beta = Math.PI*2;
+                            betaFromEnd = Math.PI*2;
+                        }
+                        else
+                        {
+                            beta = -Math.PI*2;
+                            betaFromEnd = -Math.PI*2;
+                        }
+                    }
+                    else
+                    {
+                        if (dirVector.Y.IsGreater(0))
+                        {
+                            beta = Math.PI * 2;
+                            betaFromEnd = Math.PI * 2;
+                        }
+                        else
+                        {
+                            beta = -Math.PI * 2;
+                            betaFromEnd = -Math.PI * 2;
+                        }
+                    }
+
+                    gamma = -Math.Atan2(dirVector.Z, Math.Abs(dirVector.Y));
+                    gammaFromEnd = -Math.Atan2(dirVector.Z, Math.Abs(dirVector.Y));
+                }
+                else
+                {
+                    // parallel to no axis
+                    if (IsContinuous && !isInside)
+                    {
+                        dirVector.Negate();
+                    }
+                    beta = Math.Atan2(dirVector.Y, dirVector.X);
+                    betaFromEnd = beta;
+                    double lenInXY = Math.Sqrt(dirVector.Y * dirVector.Y + dirVector.X * dirVector.X);
+                    gamma = -Math.Atan2(dirVector.Z, lenInXY);
+                    gammaFromEnd = gamma;
+                }
+            }
+        }
+
+        #endregion IdeaStatica
+
     }
 }

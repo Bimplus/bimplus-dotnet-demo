@@ -130,6 +130,9 @@
   <data name="horizontalAlignmentRev2" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\horizontalAlignmentRev2.json;System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </data>
+  <data name="IOM_SteelFrame" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\IOM-SteelFrame.xmlR;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
   <data name="verticalAlignment" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\verticalAlignment.json;System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </data>

@@ -5,12 +5,13 @@ using IdeaRS.OpenModel.Geometry3D;
 using IdeaRS.OpenModel.Material;
 using IdeaRS.OpenModel.Model;
 using IdeaRS.OpenModel.Result;
+using System;
 using System.IO;
 using System.Linq;
 using System.Net;
 using System.Xml.Serialization;
 
-namespace IOM.SteelFrame
+namespace IOM.GeneratorExample
 {
 	/// <summary>
 	/// This class contains helper methods for creating objects. 
@@ -227,6 +228,8 @@ namespace IOM.SteelFrame
 		{
 			string rootDir = Directory.GetParent(Directory.GetCurrentDirectory()).Parent.FullName;
 			FileStream resultFile = new FileStream(rootDir + "\\..\\IdeaStatiCa.Codes\\SampleFiles\\IOM-SteelFrame.xmlR", FileMode.Open);
+			//string rootDir = AppDomain.CurrentDomain.BaseDirectory;
+			//FileStream resultFile = new FileStream(rootDir + "\\SampleFiles\\IOM-SteelFrame.xmlR", FileMode.Open);
 
 			XmlSerializer serializer = new XmlSerializer(typeof(OpenModelResult));
 			OpenModelResult result = serializer.Deserialize(resultFile) as OpenModelResult;

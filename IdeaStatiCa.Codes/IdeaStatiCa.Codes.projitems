@@ -35,7 +35,7 @@
     <None Include="$(MSBuildThisFileDirectory)SampleFiles\IOM-SteelFrame.xmlR" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="$(MSBuildThisFileDirectory)Example.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Helpers.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)SteelFrameExample.cs" />
   </ItemGroup>
 </Project>
