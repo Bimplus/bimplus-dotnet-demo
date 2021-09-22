@@ -1103,6 +1103,8 @@ namespace AllplanBimplusDemo.UserControls
                             LogParentID = _integrationBase.CurrentProject.Id,
                             BytePolyeder = poly
                         };
+                        cutPlane.AddProperty(TableNames.tabAttribConstObjInstObj, "ConnectionChild-Element", parent);
+
                         connection.ConnectionElement.Children.Add(cutPlane);
                     }
 
