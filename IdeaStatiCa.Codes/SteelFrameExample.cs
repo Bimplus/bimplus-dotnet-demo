@@ -253,22 +253,22 @@ namespace IOM.GeneratorExample
             };
 
             (openModel.Connections[0].Plates ?? (openModel.Connections[0].Plates = new List<IdeaRS.OpenModel.Connection.PlateData>())).Add(plateData2);
-            //add weld between memeber 2 and plate 2 - stiffener
+            //add weld between member 2 and plate 2 - stiffener
             IdeaRS.OpenModel.Connection.WeldData weldData = new IdeaRS.OpenModel.Connection.WeldData()
             {
                 Id = 31,
                 ConnectedPartIds = new List<string>() { plateData2.OriginalModelId, beam2Data.OriginalModelId },
                 Start = new IdeaRS.OpenModel.Geometry3D.Point3D()
                 {
-                    X = -2,
-                    Y = 2.995,
-                    Z = 2.76
+                    X = -1.897,
+                    Y = 2.98,
+                    Z = 2.77
                 },
                 End = new IdeaRS.OpenModel.Geometry3D.Point3D()
                 {
-                    X = -2,
+                    X = -1.897,
                     Y = 2.88,
-                    Z = 2.76
+                    Z = 2.77
                 },
                 Thickness = 0.004,
                 WeldType = IdeaRS.OpenModel.Connection.WeldType.DoubleFillet,
@@ -283,14 +283,14 @@ namespace IOM.GeneratorExample
                 Start = new IdeaRS.OpenModel.Geometry3D.Point3D()
                 {
                     X = -2.103,
-                    Y = 2.90,
-                    Z = 2.76
+                    Y = 2.88,
+                    Z = 2.77
                 },
                 End = new IdeaRS.OpenModel.Geometry3D.Point3D()
                 {
                     X = -2.103,
-                    Y = 3,
-                    Z = 2.76
+                    Y = 2.98,
+                    Z = 2.77
                 },
                 Thickness = 0.004,
                 WeldType = IdeaRS.OpenModel.Connection.WeldType.DoubleFillet,
@@ -304,15 +304,15 @@ namespace IOM.GeneratorExample
                 ConnectedPartIds = new List<string>() { plateData2.OriginalModelId, beam2Data.OriginalModelId },
                 Start = new IdeaRS.OpenModel.Geometry3D.Point3D()
                 {
-                    X = -1.897,
-                    Y = 2.90,
-                    Z = 2.76
+                    X = -2.092,
+                    Y = 2.995,
+                    Z = 2.77
                 },
                 End = new IdeaRS.OpenModel.Geometry3D.Point3D()
                 {
-                    X = -1.897,
-                    Y = 3,
-                    Z = 2.76
+                    X = -1.908,
+                    Y = 2.995,
+                    Z = 2.77
                 },
                 Thickness = 0.004,
                 WeldType = IdeaRS.OpenModel.Connection.WeldType.DoubleFillet,
@@ -362,15 +362,15 @@ namespace IOM.GeneratorExample
                 ConnectedPartIds = new List<string>() { plateData3.OriginalModelId, beam2Data.OriginalModelId },
                 Start = new IdeaRS.OpenModel.Geometry3D.Point3D()
                 {
-                    X = -2,
+                    X = -2.092,
                     Y = 2.995,
-                    Z = 3.11
+                    Z = 3.12
                 },
                 End = new IdeaRS.OpenModel.Geometry3D.Point3D()
                 {
-                    X = -2,
-                    Y = 2.88,
-                    Z = 3.11
+                    X = -1.917,
+                    Y = 2.995,
+                    Z = 3.12
                 },
                 Thickness = 0.004,
                 WeldType = IdeaRS.OpenModel.Connection.WeldType.DoubleFillet,
@@ -385,14 +385,14 @@ namespace IOM.GeneratorExample
                 Start = new IdeaRS.OpenModel.Geometry3D.Point3D()
                 {
                     X = -2.103,
-                    Y = 2.90,
-                    Z = 3.11
+                    Y = 2.88,
+                    Z = 3.12
                 },
                 End = new IdeaRS.OpenModel.Geometry3D.Point3D()
                 {
                     X = -2.103,
-                    Y = 3,
-                    Z = 3.11
+                    Y = 2.985,
+                    Z = 3.12
                 },
                 Thickness = 0.004,
                 WeldType = IdeaRS.OpenModel.Connection.WeldType.DoubleFillet,
@@ -407,14 +407,14 @@ namespace IOM.GeneratorExample
                 Start = new IdeaRS.OpenModel.Geometry3D.Point3D()
                 {
                     X = -1.897,
-                    Y = 2.90,
-                    Z = 3.11
+                    Y = 2.985,
+                    Z = 3.12
                 },
                 End = new IdeaRS.OpenModel.Geometry3D.Point3D()
                 {
                     X = -1.897,
-                    Y = 3,
-                    Z = 3.11
+                    Y = 2.88,
+                    Z = 3.12
                 },
                 Thickness = 0.004,
                 WeldType = IdeaRS.OpenModel.Connection.WeldType.DoubleFillet,
@@ -464,15 +464,15 @@ namespace IOM.GeneratorExample
                 ConnectedPartIds = new List<string>() { plateData4.OriginalModelId, beam2Data.OriginalModelId },
                 Start = new IdeaRS.OpenModel.Geometry3D.Point3D()
                 {
-                    X = -2,
+                    X = -1.90,
                     Y = 3.005,
-                    Z = 2.76
+                    Z = 2.77
                 },
                 End = new IdeaRS.OpenModel.Geometry3D.Point3D()
                 {
-                    X = -2,
+                    X = -1.90,
                     Y = 3.12,
-                    Z = 2.76
+                    Z = 2.77
                 },
                 Thickness = 0.004,
                 WeldType = IdeaRS.OpenModel.Connection.WeldType.DoubleFillet,
@@ -487,14 +487,14 @@ namespace IOM.GeneratorExample
                 Start = new IdeaRS.OpenModel.Geometry3D.Point3D()
                 {
                     X = -2.103,
-                    Y = 3.0,
-                    Z = 2.76
+                    Y = 3.01,
+                    Z = 2.77
                 },
                 End = new IdeaRS.OpenModel.Geometry3D.Point3D()
                 {
                     X = -2.103,
-                    Y = 3.1,
-                    Z = 2.76
+                    Y = 3.12,
+                    Z = 2.77
                 },
                 Thickness = 0.004,
                 WeldType = IdeaRS.OpenModel.Connection.WeldType.DoubleFillet,
@@ -508,15 +508,15 @@ namespace IOM.GeneratorExample
                 ConnectedPartIds = new List<string>() { plateData4.OriginalModelId, beam2Data.OriginalModelId },
                 Start = new IdeaRS.OpenModel.Geometry3D.Point3D()
                 {
-                    X = -1.897,
-                    Y = 3.1,
-                    Z = 2.76
+                    X = -1.908,
+                    Y = 3.005,
+                    Z = 2.77
                 },
                 End = new IdeaRS.OpenModel.Geometry3D.Point3D()
                 {
-                    X = -1.897,
-                    Y = 3.1,
-                    Z = 2.9
+                    X = -2.092,
+                    Y = 3.005,
+                    Z = 2.77
                 },
                 Thickness = 0.004,
                 WeldType = IdeaRS.OpenModel.Connection.WeldType.DoubleFillet,
@@ -566,15 +566,15 @@ namespace IOM.GeneratorExample
                 ConnectedPartIds = new List<string>() { plateData5.OriginalModelId, beam2Data.OriginalModelId },
                 Start = new IdeaRS.OpenModel.Geometry3D.Point3D()
                 {
-                    X = -2,
+                    X = -2.087,
                     Y = 3.005,
-                    Z = 3.11
+                    Z = 3.12
                 },
                 End = new IdeaRS.OpenModel.Geometry3D.Point3D()
                 {
-                    X = -2,
+                    X = -1.917,
                     Y = 3.005,
-                    Z = 3.2
+                    Z = 3.12
                 },
                 Thickness = 0.004,
                 WeldType = IdeaRS.OpenModel.Connection.WeldType.DoubleFillet,
@@ -589,14 +589,14 @@ namespace IOM.GeneratorExample
                 Start = new IdeaRS.OpenModel.Geometry3D.Point3D()
                 {
                     X = -2.103,
-                    Y = 3.10,
-                    Z = 3.11
+                    Y = 3.015,
+                    Z = 3.12
                 },
                 End = new IdeaRS.OpenModel.Geometry3D.Point3D()
                 {
                     X = -2.103,
-                    Y = 3.10,
-                    Z = 3.2
+                    Y = 3.12,
+                    Z = 3.12
                 },
                 Thickness = 0.004,
                 WeldType = IdeaRS.OpenModel.Connection.WeldType.DoubleFillet,
@@ -611,14 +611,14 @@ namespace IOM.GeneratorExample
                 Start = new IdeaRS.OpenModel.Geometry3D.Point3D()
                 {
                     X = -1.897,
-                    Y = 3.10,
-                    Z = 3.11
+                    Y = 3.015,
+                    Z = 3.12
                 },
                 End = new IdeaRS.OpenModel.Geometry3D.Point3D()
                 {
                     X = -1.897,
-                    Y = 3.10,
-                    Z = 3.2
+                    Y = 3.12,
+                    Z = 3.12
                 },
                 Thickness = 0.004,
                 WeldType = IdeaRS.OpenModel.Connection.WeldType.DoubleFillet,
