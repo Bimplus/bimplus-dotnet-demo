@@ -1,0 +1,34 @@
+﻿<UserControl x:Class="BimPlusDemo.UserControls.ObjectFilter"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:local="clr-namespace:BimPlusDemo.UserControls"
+             xmlns:resx="clr-namespace:BimPlusDemo.Properties"
+             mc:Ignorable="d" 
+             d:DesignHeight="450" d:DesignWidth="150">
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition/>
+        </Grid.RowDefinitions>
+
+        <Label Grid.Row="0" Name="Label" Content="Attributes" FontWeight="Bold" />
+        <StackPanel Grid.Row="1" Orientation="Vertical">
+        <Label Grid.Row="1">Element-Types</Label>
+            <DataGrid Grid.Row="1"  Name="ObjectTypesList" CanUserAddRows="False" Height="Auto" MinHeight="100"
+                  ItemsSource="{Binding DataGridDataList}" SelectedItem="{Binding SelectedObject, Mode=TwoWay}"
+                  IsReadOnly="True"/>
+        </StackPanel>
+        <StackPanel Grid.Row="2" Orientation="Vertical">
+        <Label Grid.Row="2">ObjectList</Label>
+            <Button Grid.Row="2"></Button>
+        <DataGrid Grid.Row="2"  Name="ObjectsDataGrid" CanUserAddRows="False" Height="Auto" MinHeight="100"
+                  ItemsSource="{Binding DataGridDataList}" SelectedItem="{Binding SelectedObject, Mode=TwoWay}"
+                  IsReadOnly="True"/>
+        </StackPanel>
+
+    </Grid>
+</UserControl>
