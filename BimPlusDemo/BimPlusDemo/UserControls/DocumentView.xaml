@@ -1,0 +1,17 @@
+﻿<UserControl x:Class="BimPlusDemo.UserControls.DocumentView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:local="clr-namespace:BimPlusDemo.UserControls"
+             mc:Ignorable="d" 
+             d:DesignHeight="450" d:DesignWidth="150">
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition/>
+        </Grid.RowDefinitions>
+        <Label Grid.Row="0" Content="Documents" FontWeight="Bold" />
+        <TreeView Grid.Row="1" x:Name="Documents" MouseRightButtonDown="Documents_OnMouseRightButtonDown" SelectedItemChanged="Documents_OnSelectedItemChanged"/>
+    </Grid>
+</UserControl>

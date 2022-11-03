@@ -1,0 +1,23 @@
+﻿<UserControl x:Class="BimPlusDemo.UserControls.UsersView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:local="clr-namespace:BimPlusDemo.UserControls"
+             mc:Ignorable="d" 
+             d:DesignHeight="450" d:DesignWidth="150">
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition/>
+        </Grid.RowDefinitions>
+        <Label Grid.Row="0" Content="UsersView" FontWeight="Bold" />
+        <Button Grid.Row="0"  DockPanel.Dock="Right" Width="20" Margin="0,0,20,0" HorizontalAlignment="Right" Click="AddMember">
+            <Image Source="../Images/add.png" ToolTip="Add Member to this Project"/>
+        </Button>
+        <Button Grid.Row="0" DockPanel.Dock="Right" Width="20" HorizontalAlignment="Right"  Click="RemoveMember">
+            <Image Source="../Images/Red-Minus.png" ToolTip="Remove selected Member from this Project"/>
+        </Button>
+        <TreeView Grid.Row="1" x:Name="UsersCtrl" SelectedItemChanged="UsersCtrl_OnSelectedItemChanged" />
+    </Grid>
+</UserControl>

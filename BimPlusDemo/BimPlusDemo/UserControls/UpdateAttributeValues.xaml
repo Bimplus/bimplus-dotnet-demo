@@ -1,0 +1,89 @@
+﻿<UserControl x:Class="BimPlusDemo.UserControls.UpdateAttributeValues"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:local="clr-namespace:BimPlusDemo.UserControls"
+             xmlns:controls="clr-namespace:BimPlusDemo.Controls"
+             xmlns:system="clr-namespace:System;assembly=mscorlib"
+             mc:Ignorable="d" 
+             d:DesignHeight="450" d:DesignWidth="150">
+
+    <UserControl.Resources>
+        <ResourceDictionary>
+            <Thickness x:Key="controlMargin">3,11,3,11</Thickness>
+            <Thickness x:Key="labelMargin">7,2,7,2</Thickness>
+            <Thickness x:Key="listBoxMargin">11,2,11,2</Thickness>
+            <system:Double x:Key="templateLabelWidth">180</system:Double>
+            <system:Double x:Key="testCheckBox">null</system:Double>
+
+            <ContextMenu x:Key="TreeViewContextMenu">
+                <MenuItem Header="Expand groups" IsEnabled="{Binding HasTreeViewItems}" Click="Expand_Click" />
+                <MenuItem Header="Collaps groups" IsEnabled="{Binding HasTreeViewItems}" Click="Collaps_Click" />
+            </ContextMenu>
+
+            <DataTemplate x:Key="HeaderTextBoxTemplate">
+                <StackPanel x:Name="TextBoxTemplateStackPanel" Orientation="Horizontal" Loaded="DataTemplate_Loaded" >
+                    <Label Content="{Binding Name}" Margin="2" Width="{StaticResource templateLabelWidth}"/>
+                    <TextBox x:Name="TextBox" Text="{Binding Value, Mode=TwoWay}" IsEnabled="{Binding IsChangeable}" Margin="2" Width="250"/>
+                    <Label Content="{Binding Unit}" Margin="2"/>
+                </StackPanel>
+            </DataTemplate>
+
+            <DataTemplate x:Key="DateTimeTextBoxTemplate">
+                <StackPanel Orientation="Horizontal" Loaded="DataTemplate_Loaded" >
+                    <Label Content="{Binding Name}" Margin="2" Width="{StaticResource templateLabelWidth}"/>
+                    <controls:DateTimeTextBox x:Name="DateTimeTextBox" DateTimeValue="{Binding DateTime, Mode=TwoWay}" IsEnabled="{Binding IsChangeable}" Margin="2" Width="250"/>
+                    <Label Content="{Binding Unit}" Margin="2"/>
+                </StackPanel>
+            </DataTemplate>
+
+            <DataTemplate x:Key="DoubleTextBoxTemplate">
+                <StackPanel Orientation="Horizontal" Loaded="DataTemplate_Loaded" >
+                    <Label Content="{Binding Name}" Margin="2" Width="{StaticResource templateLabelWidth}"/>
+                    <controls:DoubleTextBox x:Name="DoubleTextBox" DoubleValue="{Binding Double, Mode=TwoWay}" IsEnabled="{Binding IsChangeable}" Margin="2" Width="250"/>
+                    <Label Content="{Binding Unit}" Margin="2"/>
+                </StackPanel>
+            </DataTemplate>
+
+            <DataTemplate x:Key="Int32TextBoxTemplate">
+                <StackPanel Orientation="Horizontal" Loaded="DataTemplate_Loaded" >
+                    <Label Content="{Binding Name}" Margin="2" Width="{StaticResource templateLabelWidth}"/>
+                    <controls:IntegerTextBox x:Name="IntegerTextBox" IntValue="{Binding Int, Mode=TwoWay}"  IsEnabled="{Binding IsChangeable}" Margin="2" Width="250"/>
+                    <Label Content="{Binding Unit}" Margin="2"/>
+                </StackPanel>
+            </DataTemplate>
+
+            <DataTemplate x:Key="BooleanTemplate">
+                <StackPanel Orientation="Horizontal" Loaded="DataTemplate_Loaded" >
+                    <Label Content="{Binding Name}" Margin="2" Width="{StaticResource templateLabelWidth}"/>
+                    <CheckBox Name="CheckBox" Content="{Binding Name, Mode=OneWay}" IsChecked="{Binding Value, Mode=TwoWay}" IsEnabled="{Binding IsChangeable}"
+                        Margin="2,7,0,0" Width="250" KeyDown="CheckBox_KeyDown" IsThreeState="True">
+                    </CheckBox>
+                </StackPanel>
+            </DataTemplate>
+
+            <DataTemplate x:Key="EnumComboBoxTemplate">
+                <StackPanel Orientation="Horizontal" Loaded="DataTemplate_Loaded" >
+                    <Label Content="{Binding Name}" Margin="2" Width="{StaticResource templateLabelWidth}"/>
+                    <ComboBox x:Name="EnumComboBox" ItemsSource="{Binding Items}" SelectedItem="{Binding Value, Mode=TwoWay}"
+                          IsEnabled="{Binding IsChangeable}" Margin="2" Width="250" KeyDown="EnumComboBoxTemplate_KeyDown"/>
+                    <Label Content="{Binding Unit}" Margin="2"/>
+                </StackPanel>
+            </DataTemplate>
+
+        </ResourceDictionary>
+    </UserControl.Resources>
+
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+        </Grid.RowDefinitions>
+       <StackPanel Grid.Row="0" Orientation="Horizontal">
+            <TreeView Name="AttributeTreeView" FontSize="12" ContextMenu="{StaticResource TreeViewContextMenu}"
+                      ScrollViewer.VerticalScrollBarVisibility="Auto" HorizontalContentAlignment="Center" 
+                      KeyDown="AttributeTreeView_KeyDown" IsTabStop="False"/>
+        </StackPanel>
+
+</Grid>
+</UserControl>
