@@ -294,8 +294,6 @@
     <Resource Include="Images\Red-Minus.png" />
     <Resource Include="Images\save.png" />
     <Resource Include="Images\Stirrup.png" />
-    <Resource Include="Images\TB_active_fg_all_passive_128.png" />
-    <Resource Include="Images\undo.png" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Import Project="..\packages\Microsoft.Web.WebView2.1.0.1210.39\build\Microsoft.Web.WebView2.targets" Condition="Exists('..\packages\Microsoft.Web.WebView2.1.0.1210.39\build\Microsoft.Web.WebView2.targets')" />
