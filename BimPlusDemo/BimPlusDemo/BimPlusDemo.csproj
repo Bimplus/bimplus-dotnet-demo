@@ -37,32 +37,32 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="BimPlus.Client, Version=2023.0.2.0, Culture=neutral, PublicKeyToken=f8c5355fc4a4c88a, processorArchitecture=MSIL">
-      <HintPath>..\packages\Allplan.BIF.Core.2023.0.2\lib\net48\BimPlus.Client.dll</HintPath>
+    <Reference Include="BimPlus.Client, Version=2023.0.3.0, Culture=neutral, PublicKeyToken=f8c5355fc4a4c88a, processorArchitecture=MSIL">
+      <HintPath>..\packages\Allplan.BIF.Core.2023.0.3\lib\net48\BimPlus.Client.dll</HintPath>
     </Reference>
-    <Reference Include="BimPlus.Client.Integration, Version=2023.0.2.0, Culture=neutral, PublicKeyToken=f8c5355fc4a4c88a, processorArchitecture=MSIL">
-      <HintPath>..\packages\Allplan.BIF.WebControls.2023.0.2\lib\net48\BimPlus.Client.Integration.dll</HintPath>
+    <Reference Include="BimPlus.Client.Integration, Version=2023.0.3.0, Culture=neutral, PublicKeyToken=f8c5355fc4a4c88a, processorArchitecture=MSIL">
+      <HintPath>..\packages\Allplan.BIF.WebControls.2023.0.3\lib\net48\BimPlus.Client.Integration.dll</HintPath>
     </Reference>
-    <Reference Include="BimPlus.Client.WebControls, Version=2023.0.2.0, Culture=neutral, PublicKeyToken=f8c5355fc4a4c88a, processorArchitecture=MSIL">
-      <HintPath>..\packages\Allplan.BIF.WebControls.2023.0.2\lib\net48\BimPlus.Client.WebControls.dll</HintPath>
+    <Reference Include="BimPlus.Client.WebControls, Version=2023.0.3.0, Culture=neutral, PublicKeyToken=f8c5355fc4a4c88a, processorArchitecture=MSIL">
+      <HintPath>..\packages\Allplan.BIF.WebControls.2023.0.3\lib\net48\BimPlus.Client.WebControls.dll</HintPath>
     </Reference>
-    <Reference Include="BimPlus.LightCaseClient, Version=2023.0.2.0, Culture=neutral, PublicKeyToken=f8c5355fc4a4c88a, processorArchitecture=MSIL">
-      <HintPath>..\packages\Allplan.BIF.Core.2023.0.2\lib\net48\BimPlus.LightCaseClient.dll</HintPath>
+    <Reference Include="BimPlus.LightCaseClient, Version=2023.0.3.0, Culture=neutral, PublicKeyToken=f8c5355fc4a4c88a, processorArchitecture=MSIL">
+      <HintPath>..\packages\Allplan.BIF.Core.2023.0.3\lib\net48\BimPlus.LightCaseClient.dll</HintPath>
     </Reference>
-    <Reference Include="BimPlus.Sdk.Api, Version=2023.0.2.0, Culture=neutral, PublicKeyToken=f8c5355fc4a4c88a, processorArchitecture=MSIL">
-      <HintPath>..\packages\Allplan.BIF.Core.2023.0.2\lib\net48\BimPlus.Sdk.Api.dll</HintPath>
+    <Reference Include="BimPlus.Sdk.Api, Version=2023.0.3.0, Culture=neutral, PublicKeyToken=f8c5355fc4a4c88a, processorArchitecture=MSIL">
+      <HintPath>..\packages\Allplan.BIF.Core.2023.0.3\lib\net48\BimPlus.Sdk.Api.dll</HintPath>
     </Reference>
-    <Reference Include="BimPlus.Sdk.Data, Version=2023.0.2.0, Culture=neutral, PublicKeyToken=f8c5355fc4a4c88a, processorArchitecture=MSIL">
-      <HintPath>..\packages\Allplan.BIF.Core.2023.0.2\lib\net48\BimPlus.Sdk.Data.dll</HintPath>
+    <Reference Include="BimPlus.Sdk.Data, Version=2023.0.3.0, Culture=neutral, PublicKeyToken=f8c5355fc4a4c88a, processorArchitecture=MSIL">
+      <HintPath>..\packages\Allplan.BIF.Core.2023.0.3\lib\net48\BimPlus.Sdk.Data.dll</HintPath>
     </Reference>
-    <Reference Include="BimPlus.Sdk.Data.Definitions, Version=2023.0.2.0, Culture=neutral, PublicKeyToken=f8c5355fc4a4c88a, processorArchitecture=MSIL">
-      <HintPath>..\packages\Allplan.BIF.Core.2023.0.2\lib\net48\BimPlus.Sdk.Data.Definitions.dll</HintPath>
+    <Reference Include="BimPlus.Sdk.Data.Definitions, Version=2023.0.3.0, Culture=neutral, PublicKeyToken=f8c5355fc4a4c88a, processorArchitecture=MSIL">
+      <HintPath>..\packages\Allplan.BIF.Core.2023.0.3\lib\net48\BimPlus.Sdk.Data.Definitions.dll</HintPath>
     </Reference>
-    <Reference Include="BimPlus.Sdk.IfcData, Version=2023.0.2.0, Culture=neutral, PublicKeyToken=f8c5355fc4a4c88a, processorArchitecture=MSIL">
-      <HintPath>..\packages\Allplan.BIF.Core.2023.0.2\lib\net48\BimPlus.Sdk.IfcData.dll</HintPath>
+    <Reference Include="BimPlus.Sdk.IfcData, Version=2023.0.3.0, Culture=neutral, PublicKeyToken=f8c5355fc4a4c88a, processorArchitecture=MSIL">
+      <HintPath>..\packages\Allplan.BIF.Core.2023.0.3\lib\net48\BimPlus.Sdk.IfcData.dll</HintPath>
     </Reference>
-    <Reference Include="BimPlus.Sdk.Utilities, Version=2023.0.2.0, Culture=neutral, PublicKeyToken=f8c5355fc4a4c88a, processorArchitecture=MSIL">
-      <HintPath>..\packages\Allplan.BIF.Core.2023.0.2\lib\net48\BimPlus.Sdk.Utilities.dll</HintPath>
+    <Reference Include="BimPlus.Sdk.Utilities, Version=2023.0.3.0, Culture=neutral, PublicKeyToken=f8c5355fc4a4c88a, processorArchitecture=MSIL">
+      <HintPath>..\packages\Allplan.BIF.Core.2023.0.3\lib\net48\BimPlus.Sdk.Utilities.dll</HintPath>
     </Reference>
     <Reference Include="log4net, Version=2.0.14.0, Culture=neutral, PublicKeyToken=669e0ddf0bb1aa2a, processorArchitecture=MSIL">
       <HintPath>..\packages\log4net.2.0.14\lib\net45\log4net.dll</HintPath>
@@ -82,14 +82,14 @@
     <Reference Include="Microsoft.Win32.Registry, Version=5.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
       <HintPath>..\packages\Microsoft.Win32.Registry.5.0.0\lib\net461\Microsoft.Win32.Registry.dll</HintPath>
     </Reference>
-    <Reference Include="Newtonsoft.Json, Version=12.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
-      <HintPath>..\packages\Newtonsoft.Json.12.0.2\lib\net45\Newtonsoft.Json.dll</HintPath>
+    <Reference Include="Newtonsoft.Json, Version=13.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
+      <HintPath>..\packages\Newtonsoft.Json.13.0.1\lib\net45\Newtonsoft.Json.dll</HintPath>
     </Reference>
-    <Reference Include="PPAttribPictureType3, Version=2023.0.2.0, Culture=neutral, PublicKeyToken=f8c5355fc4a4c88a, processorArchitecture=MSIL">
-      <HintPath>..\packages\Allplan.BIF.Core.2023.0.2\lib\net48\PPAttribPictureType3.dll</HintPath>
+    <Reference Include="PPAttribPictureType3, Version=2023.0.3.0, Culture=neutral, PublicKeyToken=f8c5355fc4a4c88a, processorArchitecture=MSIL">
+      <HintPath>..\packages\Allplan.BIF.Core.2023.0.3\lib\net48\PPAttribPictureType3.dll</HintPath>
     </Reference>
-    <Reference Include="PPAttribPictureType7, Version=2023.0.2.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\Allplan.BIF.Core.2023.0.2\lib\net48\PPAttribPictureType7.dll</HintPath>
+    <Reference Include="PPAttribPictureType7, Version=2023.0.3.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\Allplan.BIF.Core.2023.0.3\lib\net48\PPAttribPictureType7.dll</HintPath>
     </Reference>
     <Reference Include="protobuf-net, Version=3.0.0.0, Culture=neutral, PublicKeyToken=257b51d87d2e4d67, processorArchitecture=MSIL">
       <HintPath>..\packages\protobuf-net.3.0.101\lib\net461\protobuf-net.dll</HintPath>
@@ -153,6 +153,9 @@
     <Compile Include="Properties\Annotations.cs" />
     <Compile Include="UserControls\AttributeView.xaml.cs" />
     <Compile Include="UserControls\BaseQuantitiesView.xaml.cs" />
+    <Compile Include="UserControls\BimPlusCatalogs.xaml.cs">
+      <DependentUpon>BimPlusCatalogs.xaml</DependentUpon>
+    </Compile>
     <Compile Include="UserControls\DivisionsView.xaml.cs" />
     <Compile Include="UserControls\DocumentView.xaml.cs" />
     <Compile Include="UserControls\GeometryView.xaml.cs" />
@@ -190,6 +193,10 @@
     <Page Include="UserControls\BaseQuantitiesView.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
+    </Page>
+    <Page Include="UserControls\BimPlusCatalogs.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="UserControls\DivisionsView.xaml">
       <Generator>MSBuild:Compile</Generator>
@@ -267,7 +274,9 @@
   <ItemGroup>
     <None Include="App.config" />
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <Resource Include="Images\catalog.png" />
+  </ItemGroup>
   <ItemGroup>
     <Resource Include="Images\Contour.png" />
   </ItemGroup>

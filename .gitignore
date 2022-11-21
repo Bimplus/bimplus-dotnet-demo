@@ -47,6 +47,9 @@ _ReSharper*/
 #Project files
 [Bb]uild/
 
+#Packages
+[Pp]ackages/
+
 #Temporary files
 *~
 *.swp

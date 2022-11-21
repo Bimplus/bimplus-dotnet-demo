@@ -14,7 +14,6 @@ using BimPlus.Sdk.Data.DbCore;
 using BimPlus.Sdk.Data.TenantDto;
 using BimPlus.Sdk.Utilities.V2;
 using BimPlusDemo.Annotations;
-using BimplusDemo.Classes;
 using BimPlusDemo.Controls;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;

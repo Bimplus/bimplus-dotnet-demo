@@ -118,5 +118,17 @@ namespace BimPlusDemo
             EnabledContent = "Quantities";
         }
 
+        /// <summary>
+        /// Show BimPlus catalogs
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void Catalogs_OnClick(object sender, RoutedEventArgs e)
+        {
+            var catalogsControl = new BimPlusCatalogs();
+            catalogsControl.LoadContent(_intBase, this);
+
+            catalogsControl.Show();
+        }
     }
 }

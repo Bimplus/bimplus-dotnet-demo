@@ -1,0 +1,141 @@
+﻿<Window x:Class="BimPlusDemo.UserControls.BimPlusCatalogs"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:system="clr-namespace:System;assembly=mscorlib"
+        mc:Ignorable="d"
+        Title="Catalogs" Height="450" Width="796" Loaded="CatalogControl_Loaded">
+
+    <Window.Resources>
+        <ResourceDictionary>
+            <LinearGradientBrush x:Key="VerticalSplitBrush"  StartPoint="0,0" EndPoint="1,0">
+                <GradientStop Color="DarkGray" Offset="0" />
+                <GradientStop Color="White" Offset="0.30" />
+                <GradientStop Color="White" Offset="0.70" />
+                <GradientStop Color="DarkGray" Offset="1" />
+            </LinearGradientBrush>
+
+            <Thickness x:Key="VerticalMargin">7,7,7,7</Thickness>
+            <system:Double x:Key="ButtonHeight">24</system:Double>
+            <system:Double x:Key="ButtonWidth">150</system:Double>
+
+        </ResourceDictionary>
+    </Window.Resources>
+
+    <Grid>
+        <TabControl>
+            <TabItem Header="CrossSection"  Loaded="CrossSections_OnLoaded">
+                <DockPanel>
+                    <Grid Background="#FFE5E5E5">
+                        <!--<Grid.RowDefinitions>
+                            <RowDefinition/>
+                            <RowDefinition Height="Auto"/>
+                        </Grid.RowDefinitions>-->
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="Auto" MinWidth="200"/>
+                            <ColumnDefinition Width="Auto" MinWidth="200"/>
+                            <ColumnDefinition Width="Auto" MinWidth="200"/>
+                        </Grid.ColumnDefinitions>
+                        <StackPanel Grid.Column="0" Grid.RowSpan="2">
+                            <Label>Norms:</Label>
+                            <ComboBox Name="CbxCrossSectionNorms" SelectionChanged="CrossSectionFilterChanged" Margin="2,0,5,0" />
+                            <Label>Forms:</Label>
+                            <DataGrid Name="CbxForms" MaxHeight="150" MaxWidth="610" Margin="2,0,5,0"
+                                      ItemsSource="{Binding Forms}" SelectedItem="{Binding SelectedForm, Mode=TwoWay}"/>
+                            <Label>Shapes:</Label>
+                            <DataGrid Name="CrossSectionDataGrid" Margin="2,0,5,0" AutoGenerateColumns="False"
+                                  CanUserAddRows="False" Height="Auto" MinHeight="180" MinWidth="200" MaxHeight="480"
+                                  ItemsSource="{Binding Shapes}" SelectedItem="{Binding SelectedShape, Mode=TwoWay}"
+                                  HorizontalGridLinesBrush="LightGray" VerticalGridLinesBrush="LightGray" Background="White" 
+                                  VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Visible" VerticalAlignment="Stretch" DockPanel.Dock="Bottom">
+                                <DataGrid.Columns>
+                                    <DataGridTextColumn Header="Name" Binding="{Binding Name}"/>
+                                    <DataGridTextColumn Header="Description" Binding="{Binding Description}"/>
+                                </DataGrid.Columns>
+                            </DataGrid>
+                        </StackPanel>
+                        <GridSplitter Width="5" Grid.Column="0" Grid.RowSpan="2"/>
+                        <StackPanel Grid.Column="1" Grid.RowSpan="2">
+                            <Label>CrossSections:</Label>
+                            <DataGrid Width="108" Margin="5,0,2,2" Name="CrossSectionItemDataGrid"
+                                  CanUserAddRows="False" Height="Auto" MinHeight="180" MinWidth="200" MaxHeight="700"
+                                  ItemsSource="{Binding CrossSectionItems}" SelectedItem="{Binding SelectedCrossSection, Mode=TwoWay}"
+                                  HorizontalGridLinesBrush="LightGray" VerticalGridLinesBrush="LightGray" Background="White" 
+                                  VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Visible">
+                                <!--<DataGrid.Columns>
+                                <DataGridTextColumn Header="Name" Binding="{Binding Name}"/>
+                                <DataGridTextColumn Header="Description" Binding="{Binding Description}"/>
+                                <DataGridTextColumn Header="Id" Binding="{Binding Id}"/>
+                            </DataGrid.Columns>-->
+                            </DataGrid>
+                        </StackPanel>
+                        <GridSplitter Width="5" Grid.Column="1" Grid.RowSpan="2"/>
+                        <StackPanel Grid.Column="2" Grid.RowSpan="2">
+                            <Label>Properties:</Label>
+                            <DataGrid Name="CrossSectionPropertiesDataGrid"  Margin="0,0,4,0"
+                                  CanUserAddRows="False" Height="Auto" MinHeight="180" MinWidth="250" MaxHeight="700"
+                                  ItemsSource="{Binding CrossSectionProperties}" SelectedItem="{Binding SelectedCrossSectionProperty, Mode=TwoWay}"
+                                  HorizontalGridLinesBrush="LightGray" VerticalGridLinesBrush="LightGray" Background="White" 
+                                  VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Visible">
+                            </DataGrid>
+                        </StackPanel>
+                    </Grid>
+                </DockPanel>
+            </TabItem>
+            <TabItem Header="Material" Loaded="Materials_OnLoaded">
+                <DockPanel>
+                    <Grid Background="#FFE5E5E5">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="Auto" MinWidth="200"/>
+                            <ColumnDefinition Width="Auto" MinWidth="200"/>
+                            <ColumnDefinition Width="Auto" MinWidth="200"/>
+                        </Grid.ColumnDefinitions>
+                        <StackPanel Grid.Column="0">
+                            <Label>Norms:</Label>
+                            <ComboBox Name="CbxMaterialNorms" SelectionChanged="MaterialFilterChanged" Margin="0,0,5,0" />
+                            <Label>Countries:</Label>
+                            <ComboBox Name="CbxMaterialCountries" SelectionChanged="MaterialFilterChanged" Margin="0,0,5,0"/>
+                            <Label>Catalogs:</Label>
+                            <DataGrid Name="MaterialDataGrid" Margin="0,0,2,0" AutoGenerateColumns="False"
+                                  CanUserAddRows="False" Height="Auto" MinHeight="180" MinWidth="200" MaxHeight="600"
+                                  ItemsSource="{Binding MaterialCatalogs}" SelectedItem="{Binding SelectedMaterialCatalog, Mode=TwoWay}"
+                                  HorizontalGridLinesBrush="LightGray" VerticalGridLinesBrush="LightGray" Background="White" 
+                                  VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Visible" VerticalAlignment="Stretch" DockPanel.Dock="Bottom">
+                                <DataGrid.Columns>
+                                    <DataGridTextColumn Header="Name" Binding="{Binding Name}"/>
+                                    <DataGridTextColumn Header="Description" Binding="{Binding Description}"/>
+                                </DataGrid.Columns>
+                            </DataGrid>
+                        </StackPanel>
+                        <GridSplitter Width="5" Grid.Column="0" VerticalAlignment="Stretch"/>
+                        <StackPanel Grid.Column="1">
+                            <Label>MaterialItems:</Label>
+                            <DataGrid  Margin="5,0,2,2" Name="MaterialItemDataGrid"
+                                  CanUserAddRows="False" Height="Auto" MinHeight="180" MinWidth="200" MaxHeight="700"
+                                  ItemsSource="{Binding MaterialItems}" SelectedItem="{Binding SelectedMaterialItem, Mode=TwoWay}"
+                                  HorizontalGridLinesBrush="LightGray" VerticalGridLinesBrush="LightGray" Background="White" 
+                                  VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Visible">
+                                <!--<DataGrid.Columns>
+                                <DataGridTextColumn Header="Name" Binding="{Binding Name}"/>
+                                <DataGridTextColumn Header="Description" Binding="{Binding Description}"/>
+                                <DataGridTextColumn Header="Id" Binding="{Binding Id}"/>
+                            </DataGrid.Columns>-->
+                            </DataGrid>
+                        </StackPanel>
+                        <GridSplitter Width="5" Grid.Column="1" VerticalAlignment="Stretch"/>
+                        <StackPanel Grid.Column="2">
+                            <Label>Properties:</Label>
+                            <DataGrid Name="MaterialPropertiesDataGrid"  Margin="0,0,4,0"
+                                  CanUserAddRows="False" Height="Auto" MinHeight="180" MinWidth="250" MaxHeight="700"
+                                  ItemsSource="{Binding MaterialProperties}" SelectedItem="{Binding SelectedMaterialProperty, Mode=TwoWay}"
+                                  HorizontalGridLinesBrush="LightGray" VerticalGridLinesBrush="LightGray" Background="White" 
+                                  VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Visible">
+                            </DataGrid>
+                        </StackPanel>
+                    </Grid>
+                </DockPanel>
+            </TabItem>
+        </TabControl>
+    </Grid>
+</Window>

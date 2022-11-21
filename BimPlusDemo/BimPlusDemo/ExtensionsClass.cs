@@ -1,10 +1,4 @@
-﻿using BimPlus.Client.Integration;
-using BimPlus.Sdk.Data.DbCore;
-using BimPlus.Sdk.Data.TenantDto;
-using BimPlus.Sdk.IfcData;
-using Newtonsoft.Json;
-using Newtonsoft.Json.Linq;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
@@ -13,9 +7,14 @@ using System.Text;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Media;
-using BimPlusDemo.UserControls;
+using BimPlus.Client.Integration;
+using BimPlus.Sdk.Data.DbCore;
+using BimPlus.Sdk.Data.TenantDto;
+using BimPlus.Sdk.IfcData;
+using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
 
-namespace BimplusDemo.Classes
+namespace BimPlusDemo
 {
     public static class ExtensionsClass
     {

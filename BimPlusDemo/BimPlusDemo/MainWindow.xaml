@@ -33,7 +33,7 @@
                     <RibbonRadioButton GroupName="Content" Name="Documents" LargeImageSource="Images\copy.png" Click="ShowDocuments_OnClick" IsEnabled="{Binding ProjectSelected}" ToolTip="Show Project documents." />
                     <!--<RibbonButton SmallImageSource="Images/add.png" Click="AddDocuments_OnClick" ToolTip="add Document." IsEnabled="{Binding DocumentsSelected}"/>-->
                 </RibbonGroup>
-                <RibbonGroup Header="UsersView" IsEnabled="{Binding ProjectSelected}">
+                <RibbonGroup Header="Users" IsEnabled="{Binding ProjectSelected}">
                     <RibbonRadioButton GroupName="Content" Name="Users" LargeImageSource="Images/personal.png" Click="Users_OnClick" />
                     <!--<RibbonButton SmallImageSource="Images/add.png" Click="AddMember_OnClick" ToolTip="add/invite User" IsEnabled="{Binding UsersSelected}" />-->
                 </RibbonGroup>
@@ -52,6 +52,11 @@
                 <RibbonGroup Header="Attribute services">
                     <RibbonRadioButton  GroupName="Content" Label="Attributes" LargeImageSource="Images/Property.png" Click="Attributes_Click" ToolTip="Show/Edit Object properties."/>
                     <RibbonRadioButton  GroupName="Content" Label="Quantity take-off" LargeImageSource="Images/qto.png" Click="BaseQuantities" ToolTip="Quantity take-off calculations."/>
+                </RibbonGroup>
+            </RibbonTab>
+            <RibbonTab Header="Catalogs" IsEnabled="{Binding ButtonsEnabled}">
+                <RibbonGroup Header="Catalogs">
+                <RibbonButton LargeImageSource="Images/catalog.png" Click="Catalogs_OnClick"></RibbonButton>
                 </RibbonGroup>
             </RibbonTab>
         </Ribbon>

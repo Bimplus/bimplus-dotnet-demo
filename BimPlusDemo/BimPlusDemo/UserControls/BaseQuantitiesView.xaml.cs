@@ -8,7 +8,6 @@ using System.Windows;
 using System.Windows.Controls;
 using BimPlus.Client;
 using BimPlus.Client.Integration;
-using BimPlus.LightCaseClient;
 using BimPlus.Sdk.Data.Content;
 using BimPlus.Sdk.Data.TenantDto;
 using BimPlusDemo.Annotations;
@@ -71,7 +70,6 @@ namespace BimPlusDemo.UserControls
 
             try
             {
-                var serviceUrl = $"{IntBase.ServerName}/v2/{IntBase.CurrentTeam.Slug}/services/BaseQuantities";
                 var serviceData = new DtoServices
                 {
                     BaseQuantities = new QtoService
@@ -81,9 +79,10 @@ namespace BimPlusDemo.UserControls
                         Quantities = quantities
                     }
                 };
+
                 Dictionary<Guid, Dictionary<Guid, object>> results =
-                    GenericProxies.RestPost<Dictionary<Guid, Dictionary<Guid, object>>, DtoServices>(serviceUrl,
-                        serviceData, IntBase.ClientConfiguration);
+                    IntBase.ApiCore.Services.ExecuteService<Dictionary<Guid, Dictionary<Guid, object>>>(
+                        "BaseQuantities", serviceData);
 
                 if (results == null || results.Count == 0)
                 {
