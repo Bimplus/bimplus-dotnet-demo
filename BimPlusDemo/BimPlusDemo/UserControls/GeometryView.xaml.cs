@@ -5,13 +5,16 @@ using System.Windows;
 using System.Windows.Controls;
 using BimPlus.Client;
 using BimPlus.Client.Integration;
+using BimPlus.Sdk.Api;
 using BimPlus.Sdk.Data.DbCore;
 using BimPlus.Sdk.Data.DbCore.Help;
 using BimPlus.Sdk.Data.DbCore.Reinforcement;
 using BimPlus.Sdk.Data.DbCore.Space;
 using BimPlus.Sdk.Data.DbCore.Steel;
 using BimPlus.Sdk.Data.DbCore.Structure;
+using BimPlus.Sdk.Data.Road;
 using BimPlus.Sdk.Data.TenantDto;
+using BimPlus.Sdk.Utilities.V2;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 
@@ -23,7 +26,6 @@ namespace BimPlusDemo.UserControls
     public partial class GeometryView
     {
         public DtoDivision Model { get; set; }
-        public IntegrationBase IntBase { get; set; }
         private JObject ResourceData { get; set; }
         public string ElementName { get; set; } = "";
 
@@ -56,13 +58,12 @@ namespace BimPlusDemo.UserControls
             DataContext = this;
         }
 
-        public GeometryView(IntegrationBase intBase, DtoDivision model, string title, string name)
+        public GeometryView(DtoDivision model, string title, string name)
         {
             InitializeComponent();
             DataContext = this;
             Label.Content = title;
             ElementName = name;
-            IntBase = intBase;
             Model = model;
             var resourceData = Properties.Resources.ResourceManager.GetObject(title)?.ToString();
             var tooltip = Properties.Resources.ResourceManager.GetObject($"{title}Tooltip")?.ToString();
@@ -94,7 +95,7 @@ namespace BimPlusDemo.UserControls
             }
 
             // check if this node already exist.
-            var topology = IntBase.ApiCore.Objects.GetTopology(DivisionTopologyId);
+            var topology = MainWindow.IntBase.ApiCore.Objects.GetTopology(DivisionTopologyId);
             var node = topology?.Children.FirstOrDefault(x => x.Name == (string) Label.Content);
             if (node != null)
             {
@@ -102,7 +103,7 @@ namespace BimPlusDemo.UserControls
                         MessageBoxButton.YesNo) == MessageBoxResult.No)
                     return;
                 // remove existing TopologyNode including all child objects.
-                IntBase.ApiCore.DtObjects.DeleteObject(node.Id);
+                MainWindow.IntBase.ApiCore.DtObjects.DeleteObject(node.Id);
             }
 
             if (ResourceData != null)
@@ -122,14 +123,99 @@ namespace BimPlusDemo.UserControls
             };
 
             // post to BimPlus server.
-            if (IntBase.ApiCore.DtObjects.PostObject(topItem) == null)
+            if (MainWindow.IntBase.ApiCore.DtObjects.PostObject(topItem) == null)
                 MessageBox.Show("could not create geometry object.");
             else
-                IntBase.ApiCore.Projects.ConvertGeometry(Model.ProjectId);
+                MainWindow.IntBase.ApiCore.Projects.ConvertGeometry(Model.ProjectId);
 
-            IntBase.EventHandlerCore.OnExportStarted(this,
+            MainWindow.IntBase.EventHandlerCore.OnExportStarted(this,
                 new BimPlusEventArgs {Id = Model.Id, Value = "ModelChanged"});
         }
+
+        private Alignment PostAlignment(DtoDivision model, string horAlignment)
+        {
+            var alignment = new Alignment
+            {
+                Parent = model.TopologyDivisionId,
+                Division = model.Id,
+                LogParentID = model.ProjectId,
+                HorizontalAlignment = JsonConvert.DeserializeObject<BimPlus.Sdk.Data.Road.HorizontalAlignment>(horAlignment),
+                Superelevation = new Superelevations
+                {
+                    Elements = new List<SuperelevationItem>
+                    {
+                        new SuperelevationItem
+                        {
+                            StartStation = 0,
+                            Lane = LaneType.LeftOutsideShoulder,
+                            Superelevation = -5
+                        },
+                        new SuperelevationItem
+                        {
+                            StartStation = 0,
+                            Lane = LaneType.LeftOutsideLane,
+                            Superelevation = -2
+                        },
+                        new SuperelevationItem
+                        {
+                            StartStation = 0,
+                            Lane = LaneType.RightOutsideShoulder,
+                            Superelevation = 5
+                        },
+                        new SuperelevationItem
+                        {
+                            StartStation =  0,
+                            Lane = LaneType.RightOutsideLane,
+                            Superelevation = 2
+                        },
+                        new SuperelevationItem
+                        {
+                            StartStation = 670,
+                            Lane = LaneType.LeftOutsideShoulder,
+                            Superelevation = -2
+                        },
+                        new SuperelevationItem
+                        {
+                            StartStation = 670,
+                            Lane = LaneType.LeftOutsideLane,
+                            Superelevation = -1
+                        },
+                        new SuperelevationItem
+                        {
+                            StartStation = 852.6,
+                            Lane = LaneType.RightOutsideShoulder,
+                            Superelevation = 3
+                        },
+                        new SuperelevationItem
+                        {
+                            StartStation = 852.6,
+                            Lane = LaneType.RightOutsideLane,
+                            Superelevation = 3
+                        }
+                    }
+                }
+            };
+
+            try
+            {
+
+                // post object to BIM+
+                var result = MainWindow.IntBase.ApiCore.DtObjects.PostObject(alignment);
+                MessageBox.Show("alignment " + result?.Id + " created:-)");
+
+                if (result == null || result.Id == Guid.Empty)
+                    return null;
+
+                // Test: try to read concrete axis object from BimPlus server
+                return MainWindow.IntBase.ApiCore.DtObjects.GetObject(result.Id, ObjectRequestProperties.InternalValues) as Alignment;
+            }
+            catch (Exception e)
+            {
+                MessageBox.Show(e.Message);
+                throw;
+            }
+        }
+
     }
 }
 

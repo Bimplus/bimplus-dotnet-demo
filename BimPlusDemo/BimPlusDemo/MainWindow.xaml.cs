@@ -24,23 +24,22 @@ namespace BimPlusDemo
         //private static readonly ILog Logger = LogManager.GetLogger(typeof(MainWindow));
 
         private static readonly Guid TestApplicationId = new Guid("7B8E7315-7F69-40DB-B340-03782B8BCB12");
-        private readonly IntegrationBase _intBase;
+        private static readonly IntegrationBase _intBase = new IntegrationBase(TestApplicationId, GetStreamWriter())
+        {
+            UseSignalRCore = true,
+            SignalRAppCode = $"BimPlusClient-{TestApplicationId}.SignalRCore",
+            SignalRLogFileName = $"BimPlusDemo-{TestApplicationId}",
+            SignalREnableUIMessages = true
+        };
+
         private readonly WebViewer _webViewer;
-        private readonly List<Guid> _selectedObjects;
+        private static readonly List<Guid> _selectedObjects = new List<Guid>();
 
         public MainWindow()
         {
             InitializeComponent();
 
             DataContext = this;
-            _selectedObjects = new List<Guid>();
-            _intBase = new IntegrationBase(TestApplicationId, GetStreamWriter() )
-            {
-                UseSignalRCore = true,
-                SignalRAppCode = $"BimPlusClient-{TestApplicationId}.SignalRCore",
-                SignalRLogFileName = $"BimPlusDemo-{TestApplicationId}",
-                SignalREnableUIMessages = true
-            };
 
             if (_intBase.ConnectWithRememberMeAndClientId())
             {
@@ -100,7 +99,7 @@ namespace BimPlusDemo
         }
 
         #region logging
-        StreamWriter GetStreamWriter()
+        static StreamWriter GetStreamWriter()
         {
             string loggingPath = $"{Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData)}//BimPlusDemo";
             if (!Directory.Exists(loggingPath))
@@ -314,7 +313,9 @@ private void EventHandlerCoreOnObjectsSelected(object sender, BimPlusEventArgs e
             EnabledContent = "";
         }
 
-        public List<Guid> SelectedObjects => _selectedObjects;
+ 
+        public static List<Guid> SelectedObjects => _selectedObjects;
+        public static IntegrationBase IntBase => _intBase;
 
     }
 }

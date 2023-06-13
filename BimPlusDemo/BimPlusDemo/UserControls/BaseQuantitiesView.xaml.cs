@@ -23,7 +23,7 @@ namespace BimPlusDemo.UserControls
         public List<DtoDivision> Divisions { get; set; }
         public DataTable Results { get; set; }
 
- 
+
         public BaseQuantitiesView(IntegrationBase integrationBase)
         {
             DataContext = this;
@@ -44,6 +44,16 @@ namespace BimPlusDemo.UserControls
             Divisions = IntBase.ApiCore.Divisions.GetProjectDivisions(IntBase.CurrentProject.Id);
             ModelCmb.ItemsSource = Divisions;
             ModelCmb.DisplayMemberPath = "Name";
+
+
+            if (MainWindow.SelectedObjects.Count > 0)
+            {
+                SelectDivision.Visibility = Visibility.Collapsed;
+            }
+            else
+            {
+                Selected.Visibility = Visibility.Collapsed;
+            }
         }
 
         /// <summary>
@@ -52,6 +62,80 @@ namespace BimPlusDemo.UserControls
         /// <param name="sender"></param>
         /// <param name="e"></param>
         private void Calculate_OnClick(object sender, RoutedEventArgs e)
+        {
+            if (MainWindow.SelectedObjects.Count > 0)
+                CalculateProperties();
+            else
+                FillBaseQuantities();
+        }
+
+        private void CalculateProperties()
+        {
+            var selection =
+                IntBase.ApiCore.Objects.CreateSelection(IntBase.CurrentProject.Id, MainWindow.SelectedObjects, true);
+
+            try
+            {
+                var serviceData = new DtoServices
+                {
+                    BaseQuantities = new QtoService
+                    {
+                        ProjectId = IntBase.CurrentProject.Id,
+                        //DivisionId = div.Id,
+                        //Quantities = quantities
+                    }
+                };
+
+                Dictionary<Guid, Dictionary<Guid, object>> results =
+                    IntBase.ApiCore.Services.ExecuteService<Dictionary<Guid, Dictionary<Guid, object>>>(
+                        "BaseQuantities", serviceData);
+
+                if (results == null || results.Count == 0)
+                {
+                    MessageBox.Show("nothing calculated.");
+                    return;
+                }
+
+                if (Results == null)
+                {
+                    Results = new DataTable("calulated quantities");
+                    Results.Columns.Add("Id", typeof(Guid));
+                    Results.PrimaryKey = new[] { Results.Columns["Id"] };
+                }
+                else
+                    Results.Clear();
+                foreach (var kvp in results)
+                {
+                    var attribute = IntBase.ApiCore.Attributes.Get(kvp.Key);
+                    if (attribute == null) continue;
+                    Results.Columns.Add(attribute.Name, FreeAttribTypeConverter.GuidToType(attribute.FreeAttribType));
+                    var elements = kvp.Value;
+                    foreach (var element in elements)
+                    {
+                        var row = Results.Rows.Find(element.Key);
+                        if (row == null)
+                        {
+                            row = Results.NewRow();
+                            row["Id"] = element.Key;
+                            row[attribute.Name] = element.Value;
+                            Results.Rows.Add(row);
+                        }
+                        else
+                            row[attribute.Name] = element.Value;
+                    }
+                }
+
+                CalculatedProperties.DataContext = Results;
+                CalculatedProperties.Visibility = Visibility.Visible;
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex);
+                MessageBox.Show("nothing calculated.");
+            }
+        }
+
+        private void FillBaseQuantities()
         {
             var div = ModelCmb.SelectedItem as DtoDivision;
             var quantities = Qto.SelectedItems.Cast<BaseQuantities>().ToList();
@@ -94,7 +178,7 @@ namespace BimPlusDemo.UserControls
                 {
                     Results = new DataTable("calulated quantities");
                     Results.Columns.Add("Id", typeof(Guid));
-                    Results.PrimaryKey = new[] {Results.Columns["Id"]};
+                    Results.PrimaryKey = new[] { Results.Columns["Id"] };
                 }
                 else
                     Results.Clear();
@@ -115,7 +199,7 @@ namespace BimPlusDemo.UserControls
                             Results.Rows.Add(row);
                         }
                         else
-                           row[attribute.Name] = element.Value;
+                            row[attribute.Name] = element.Value;
                     }
                 }
 

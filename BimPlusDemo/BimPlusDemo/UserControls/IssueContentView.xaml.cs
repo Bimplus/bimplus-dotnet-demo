@@ -127,7 +127,7 @@ namespace BimPlusDemo.UserControls
                 new DtoShortIssue { IssueName = "new Issue" });
             if (issue == null)
                 return;
-            _integrationBase.ApiCore.Issues.AddSelectedObjects(issue.Id, _main.SelectedObjects);
+            //_integrationBase.ApiCore.Issues.AddSelectedObjects(issue.Id, _main.SelectedObjects);
 
             // TODO: Helper.WriteToPng returns black image from ContentControl.
             //var stream = Helper.WriteToPng(ContentControl, "issueThumbnail.png");

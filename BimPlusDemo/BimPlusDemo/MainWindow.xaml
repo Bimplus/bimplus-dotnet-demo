@@ -59,6 +59,20 @@
                 <RibbonButton LargeImageSource="Images/catalog.png" Click="Catalogs_OnClick"></RibbonButton>
                 </RibbonGroup>
             </RibbonTab>
+            <RibbonTab Header="StructuralAnalysis" IsEnabled="{Binding ProjectSelected}">
+                <RibbonGroup Header="StructuralItems">
+                    <RibbonButton Name="Nodes" ToolTip="create Nodes" Click="Nodes_OnClick" LargeImageSource="Images\nodes.PNG"/>
+                    <RibbonButton Name="CurveMember" ToolTip="create CurveMember" Click="CurveMember_OnClick_OnClick" LargeImageSource="Images\Curvemember.PNG"/>
+                    <RibbonButton Name="SurfaceMember" ToolTip="create SurfaceMember" Content="Nodes" Click="SurfaceMember_OnClick" LargeImageSource="Images\SurfaceMember.PNG"/>
+                </RibbonGroup>
+                <RibbonGroup Header="StructuralAction">
+                    <RibbonButton Name="Loads" ToolTip="create Loads" Click="Loads_OnClick" LargeImageSource="Images\Loads.PNG"/>
+                    <RibbonButton Name="Results" ToolTip="create Results" Click="Results_OnClick" />
+                </RibbonGroup>
+                <RibbonGroup Header="ElementAssemblies">
+                    <RibbonButton Name="Assemblies" ToolTip="create Assemblies" Click="Assemblies_OnClick" LargeImageSource="Images\Profile.png"/>
+                </RibbonGroup>
+            </RibbonTab>
         </Ribbon>
 
         <Grid Grid.Row="1">

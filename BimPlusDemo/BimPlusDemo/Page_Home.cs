@@ -5,6 +5,7 @@ using System.Windows;
 using System.Windows.Controls.Ribbon;
 using System.Windows.Media.Imaging;
 using BimPlus.Client.WebControls.WPF;
+using BimPlus.Sdk.Data.DbCore.Steel;
 using BimPlusDemo.UserControls;
 using Microsoft.Win32;
 
@@ -43,7 +44,12 @@ namespace BimPlusDemo
                 myBitmapImage.DecodePixelWidth = 200;
                 myBitmapImage.EndInit();
                 ThumbnailIcon.LargeImageSource = myBitmapImage;
+
+                var elements = _intBase.ApiCore.Projects.GetProjectElementTypes(_intBase.CurrentProject.Id);
+                var steelplates = _intBase.ApiCore.DtObjects.GetObjects<SteelPlate>(_intBase.CurrentProject.Id);
             }
+
+            
             catch (Exception)
             {
                 // ignored

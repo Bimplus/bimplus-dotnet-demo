@@ -52,7 +52,7 @@ namespace BimPlusDemo
                 return;
 
             DisposeContentControl();
-            var geometryView = new GeometryView(_intBase, model, "Stirrup", "3x10");
+            var geometryView = new GeometryView(model, "Stirrup", "3x10");
             ContentControl.Content = geometryView;
             EnabledContent = "Geometry";
 
@@ -65,7 +65,7 @@ namespace BimPlusDemo
                 return;
 
             DisposeContentControl();
-            var geometryView = new GeometryView(_intBase, model, "Profile", "IPE200");
+            var geometryView = new GeometryView( model, "Profile", "IPE200");
             ContentControl.Content = geometryView;
             EnabledContent = "Geometry";
         }
@@ -77,7 +77,7 @@ namespace BimPlusDemo
                 return;
 
             DisposeContentControl();
-            var geometryView = new GeometryView(_intBase, model, "Contour", "ParametricObject");
+            var geometryView = new GeometryView( model, "Contour", "ParametricObject");
             ContentControl.Content = geometryView;
             EnabledContent = "Geometry";
         }
@@ -88,7 +88,7 @@ namespace BimPlusDemo
                 return;
 
             DisposeContentControl();
-            var geometryView = new GeometryView(_intBase, model, "Mesh",  "Building A");
+            var geometryView = new GeometryView(model, "Mesh",  "Building A");
             ContentControl.Content = geometryView;
             EnabledContent = "Geometry";
         }
