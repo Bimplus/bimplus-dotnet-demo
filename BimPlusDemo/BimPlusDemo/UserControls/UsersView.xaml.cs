@@ -84,8 +84,7 @@ namespace BimPlusDemo.UserControls
             try
             {
                 var serviceUrl = $"{IntBase.ServerName}/v2/{IntBase.TeamSlug}/projects/{IntBase.CurrentProject.Id}/members";
-                GenericProxies.RestDelete<HttpStatusCode, DtoUserAddition>(serviceUrl, Convert(member),
-                    IntBase.ClientConfiguration);
+                IntBase.ClientConnection.RestDelete<HttpStatusCode, DtoUserAddition>(serviceUrl, Convert(member));
                 UsersCtrl.Items.Remove(selected);
             }
             catch (WebException ex)
@@ -111,7 +110,7 @@ namespace BimPlusDemo.UserControls
             DtoUser user = null;
             try
             {
-                user = GenericProxies.RestGet<DtoUser>(serviceUrl, IntBase.ClientConfiguration);
+                user = IntBase.ClientConnection.RestGet<DtoUser>(serviceUrl);
             }
             catch (WebException ex)
             {
@@ -130,7 +129,7 @@ namespace BimPlusDemo.UserControls
                         UserGroups = new List<DtoGroupInfo>(1) { new DtoGroupInfo { Id = new Guid("b3908bd5-3173-4da9-8f56-3a950d4bba3f") } }
                     };
                     serviceUrl = $"{IntBase.ServerName}/v2/{IntBase.TeamSlug}/projects/{projectId}/members";
-                    var prjUser = GenericProxies.RestPost<DtoUserAddition, DtoUserAddition>(serviceUrl, userAdd, IntBase.ClientConfiguration);
+                    var prjUser = IntBase.ClientConnection.RestPost<DtoUserAddition, DtoUserAddition>(serviceUrl, userAdd);
                     if (prjUser != null)
                     {
                         UsersCtrl.Items.Add(TreeViewMember(Convert(prjUser)));

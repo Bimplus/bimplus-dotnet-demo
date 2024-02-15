@@ -8,6 +8,7 @@ using System.Runtime.CompilerServices;
 using System.Windows;
 using System.Windows.Controls;
 using BimPlus.Client.Integration;
+using BimPlus.LightCaseClient;
 using BimPlus.Sdk.Data.Content;
 using BimPlus.Sdk.Data.TenantDto;
 // ReSharper disable RedundantArgumentDefaultValue
@@ -49,8 +50,7 @@ namespace BimPlusDemo.UserControls
                             $"{_integrationBase.ServerName}/v2/content/crosssectiondefinitions/{catalog.Id}";
                         try
                         {
-                            var cd = BimPlus.LightCaseClient.GenericProxies.RestGet<DtoCrossSectionDefinition>(
-                                serviceUrl, _integrationBase.ClientConfiguration);
+                            var cd = _integrationBase.ClientConnection.RestGet<DtoCrossSectionDefinition>(serviceUrl);
                             if (cd?.Shapes == null || cd.Shapes?.Count == 0)
                                 break;
                             foreach (var shape in cd.Shapes)

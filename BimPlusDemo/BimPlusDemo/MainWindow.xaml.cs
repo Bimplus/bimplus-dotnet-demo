@@ -4,6 +4,7 @@ using System.ComponentModel;
 using System.IO;
 using System.Net;
 using System.Runtime.CompilerServices;
+using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Media.Imaging;
@@ -41,7 +42,7 @@ namespace BimPlusDemo
 
             DataContext = this;
 
-            if (_intBase.ConnectWithRememberMeAndClientId())
+            if (_intBase.ConnectWithRememberMe())
             {
                 Login.SmallImageSource =
                     new BitmapImage(new Uri(@"/BimPlusDemo;component/Images/logout.png", UriKind.Relative));
@@ -141,7 +142,7 @@ private void EventHandlerCoreOnObjectsSelected(object sender, BimPlusEventArgs e
 
         #endregion
 
-        public bool IsLoggedIn => _intBase.ClientConfiguration.AuthorizationAccessToken != Guid.Empty;
+        public bool IsLoggedIn => !string.IsNullOrEmpty(_intBase.ClientConnection.AuthorizationAccessToken);
 
         public Guid ProjectId => _intBase?.CurrentProject.Id ?? Guid.Empty;
 
@@ -217,7 +218,7 @@ private void EventHandlerCoreOnObjectsSelected(object sender, BimPlusEventArgs e
         #endregion EventsHandler
 
 
-        private void Login_OnClick(object sender, RoutedEventArgs e)
+        private async void Login_OnClick(object sender, RoutedEventArgs e)
         {
             if (!(sender is RibbonButton login)) return;
 
@@ -236,7 +237,7 @@ private void EventHandlerCoreOnObjectsSelected(object sender, BimPlusEventArgs e
                 }
             }
 
-            _intBase.ConnectWithLoginDialog();
+            var result = await _intBase.ConnectAsync(this);
             if (IsLoggedIn)
             {
                 login.Label = _intBase.UserName;
