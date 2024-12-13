@@ -5,10 +5,12 @@ using System.Linq;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Documents;
 using System.Windows.Input;
 using System.Windows.Media.Imaging;
 using BimPlus.Client;
 using BimPlus.Client.Integration;
+using BimPlus.Sdk.Data.DbCore.Structure;
 using BimPlus.Sdk.Data.Notification;
 using BimPlus.Sdk.Data.TenantDto;
 using BimPlusDemo.Commands;
@@ -67,6 +69,25 @@ namespace BimPlusDemo.UserControls
             treeViewItem.Items.Add(new TreeViewItem { Header = $"Created by {model.CreatedByUser.Email}" });
             treeViewItem.Items.Add(new TreeViewItem { Header = $"last modified at {model.Changed}" });
             treeViewItem.Items.Add(new TreeViewItem { Header = $"Revisions: {model.Revisions?.Count() ?? 0}" });
+            if (!string.IsNullOrEmpty(model.ImportFileName) && !string.IsNullOrEmpty(model.Url))
+            {
+                var button = new Button { Content = model.ImportFileName, Tag = model.Id, ToolTip = "Download model."};
+                button.Click += (sender, args) =>
+                {
+                    var btn = sender as Button;
+                    if (!(btn?.Tag is Guid modelId)) return;
+                    var data = IntBase.ApiCore.Divisions.DownloadModelResource(modelId);
+                    if (data != null)
+                        Helper.Execute(data,btn.Content.ToString());
+                };
+                treeViewItem.Items.Add(new TreeViewItem { Header = button });
+                //Header = new Hyperlink(new Run("Download Model"))
+                //{
+                //    NavigateUri = new Uri(model.Url),
+                //    ToolTip = model.ImportFileName
+                //}
+                //});
+            }
             return treeViewItem;
 
         }

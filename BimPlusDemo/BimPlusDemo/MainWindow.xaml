@@ -61,7 +61,7 @@
             </RibbonTab>
             <RibbonTab Header="StructuralAnalysis" IsEnabled="{Binding ProjectSelected}">
                 <RibbonGroup Header="StructuralItems">
-                    <RibbonButton Name="Nodes" ToolTip="create Nodes" Click="Nodes_OnClick" LargeImageSource="Images\nodes.PNG"/>
+                    <RibbonButton Name="Nodes" ToolTip="create Nodes" Click="Nodes_OnClick" LargeImageSource="Images\pointsupport.png"/>
                     <RibbonButton Name="CurveMember" ToolTip="create CurveMember" Click="CurveMember_OnClick_OnClick" LargeImageSource="Images\Curvemember.PNG"/>
                     <RibbonButton Name="SurfaceMember" ToolTip="create SurfaceMember" Content="Nodes" Click="SurfaceMember_OnClick" LargeImageSource="Images\SurfaceMember.PNG"/>
                 </RibbonGroup>
@@ -84,7 +84,7 @@
 
             <ContentControl Grid.Column="0" Name="Viewer" IsEnabled="{Binding ProjectSelected}" SizeChanged="ContentControl_SizeChanged" />
             <GridSplitter Grid.Column="1"  Width="5" VerticalAlignment="Stretch" HorizontalAlignment="Center"></GridSplitter>
-            <ContentControl Grid.Column="2" Name="ContentControl"></ContentControl>
+            <ContentControl Grid.Column="2" Name="ContentControl" MinWidth="10"></ContentControl>
         </Grid>
 
 </Grid>

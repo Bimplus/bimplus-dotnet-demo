@@ -659,7 +659,7 @@ namespace BimPlusDemo
                 Name = "Wy1",
                 Division = model.Id,
                 LogParentID = model.ProjectId,
-                AppliedLoad = new StructuralLoadSingleForce { ForceY = -3000 },
+                AppliedLoad = new StructuralLoadSingleForce { ForceY = 3000 },
                 AssignedToStructuralItem = new List<RelConnectsStructuralActivity>(1)
                 {
                     new RelConnectsStructuralActivity
