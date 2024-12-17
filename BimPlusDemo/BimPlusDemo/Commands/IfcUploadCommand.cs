@@ -1,7 +1,4 @@
-﻿using System;
-using System.Threading;
-using System.Threading.Tasks;
-using System.Windows;
+﻿using System.Windows;
 using System.Windows.Input;
 using System.Windows.Threading;
 using BimPlusDemo.UserControls;
@@ -34,7 +31,7 @@ namespace BimPlusDemo.Commands
         /// <summary>
         /// Whether the DoDemoWorkCommand is enabled.
         /// </summary>
-        public bool CanExecute(object parameter)
+        public bool CanExecute(object? parameter)
         {
             return true;
         }
@@ -42,7 +39,7 @@ namespace BimPlusDemo.Commands
         /// <summary>
         /// Actions to take when CanExecute() changes.
         /// </summary>
-        public event EventHandler CanExecuteChanged
+        public event EventHandler? CanExecuteChanged
         {
             add => CommandManager.RequerySuggested += value;
             remove => CommandManager.RequerySuggested -= value;
@@ -51,7 +48,7 @@ namespace BimPlusDemo.Commands
         /// <summary>
         /// Executes the DoDemoWorkCommand
         /// </summary>
-        public void Execute(object parameter)
+        public void Execute(object? parameter)
         {
             if (parameter is double v)
             {

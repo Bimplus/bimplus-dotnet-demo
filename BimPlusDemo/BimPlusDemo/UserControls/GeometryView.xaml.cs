@@ -17,6 +17,7 @@ using BimPlus.Sdk.Data.TenantDto;
 using BimPlus.Sdk.Utilities.V2;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
+#pragma warning disable CS8618 // Non-nullable field must contain a non-null value when exiting constructor. Consider declaring as nullable.
 
 namespace BimPlusDemo.UserControls
 {
@@ -25,11 +26,11 @@ namespace BimPlusDemo.UserControls
     /// </summary>
     public partial class GeometryView
     {
-        public DtoDivision Model { get; set; }
-        private JObject ResourceData { get; set; }
+        public DtoDivision? Model { get; set; }
+        private JObject? ResourceData { get; set; }
         public string ElementName { get; set; } = "";
 
-        public Guid DivisionTopologyId => Model.TopologyDivisionId.GetValueOrDefault(Guid.Empty);
+        public Guid DivisionTopologyId => Model?.TopologyDivisionId.GetValueOrDefault(Guid.Empty) ?? Guid.Empty;
 
         /// <summary>
         /// generate some dummy objects, based on content type.
@@ -88,7 +89,7 @@ namespace BimPlusDemo.UserControls
                 ? (DtObject)DbObjectList.Create((string)control.Tag)
                 : Element;
 
-            if (Model == null || Model.TopologyDivisionId.GetValueOrDefault() == Guid.Empty)
+            if (Model?.TopologyDivisionId.GetValueOrDefault() == Guid.Empty)
             {
                 MessageBox.Show("Invalid ModelData.");
                 return;
@@ -110,14 +111,14 @@ namespace BimPlusDemo.UserControls
                 Helper.AddGeometry(element, ResourceData);
 
             element.Name = ElementName;
-            element.Division = Model.Id;
-            element.LogParentID = Model.ProjectId;
+            element.Division = Model?.Id;
+            element.LogParentID = Model?.ProjectId;
 
             var topItem = new TopologyItem
             {
-                Parent = Model.TopologyDivisionId,
-                Division = Model.Id,
-                LogParentID = Model.ProjectId,
+                Parent = Model?.TopologyDivisionId,
+                Division = Model?.Id,
+                LogParentID = Model?.ProjectId,
                 Name = Label.Content.ToString(),
                 Children = new List<DtObject>(1) {element}
             };
@@ -126,13 +127,13 @@ namespace BimPlusDemo.UserControls
             if (MainWindow.IntBase.ApiCore.DtObjects.PostObject(topItem) == null)
                 MessageBox.Show("could not create geometry object.");
             else
-                MainWindow.IntBase.ApiCore.Projects.ConvertGeometry(Model.ProjectId);
+                MainWindow.IntBase.ApiCore.Projects.ConvertGeometry(Model?.ProjectId ?? Guid.Empty);
 
             MainWindow.IntBase.EventHandlerCore.OnExportStarted(this,
-                new BimPlusEventArgs {Id = Model.Id, Value = "ModelChanged"});
+                new BimPlusEventArgs {Id = Model?.Id ?? Guid.Empty, Value = "ModelChanged"});
         }
 
-        private Alignment PostAlignment(DtoDivision model, string horAlignment)
+        private Alignment? PostAlignment(DtoDivision model, string horAlignment)
         {
             var alignment = new Alignment
             {

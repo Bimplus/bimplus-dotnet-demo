@@ -1,7 +1,5 @@
-﻿using System;
-using System.Diagnostics;
+﻿using System.Diagnostics;
 using System.IO;
-using System.Linq;
 using System.Windows;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
@@ -16,20 +14,27 @@ namespace BimPlusDemo
 {
     internal static class Helper
     {
-        public static void Execute(byte[] data, string name)
+        public static void Execute(byte[]? data, string name)
         {
             if (data == null)
                 return;
+            try
+            {
+                string path = @"c:\temp"; //\MyTest.glb";
+                DirectoryInfo info = new DirectoryInfo(path);
+                if (!info.Exists)
+                    info.Create();
 
-            string path = @"c:\temp"; //\MyTest.glb";
-            DirectoryInfo info = new DirectoryInfo(path);
-            if (!info.Exists)
-                info.Create();
+                string filepath = Path.Combine(path, name);
+                File.WriteAllBytes(filepath, data);
 
-            string filepath = Path.Combine(path, name);
-            File.WriteAllBytes(filepath, data);
-
-            Process.Start(filepath);
+                Process.Start(filepath);
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e);
+                MessageBox.Show(e.Message, "Error");
+            }
         }
 
         //public static string ConvertToBitmapSource(UIElement element)
@@ -118,7 +123,7 @@ namespace BimPlusDemo
                 {
                     case "csg":
                     {
-                        var csgTree = geo.First.ToObject<DtoCsgTree>();
+                        var csgTree = geo.First?.ToObject<DtoCsgTree>();
                         if (dtObject is RootElement element)
                             element.CsgTree = csgTree;
                         else
@@ -128,7 +133,7 @@ namespace BimPlusDemo
                     }
                     case "mesh":
                     {
-                        var mesh = geo.First.ToObject<DbGeometry>();
+                        var mesh = geo.First?.ToObject<DbGeometry>();
                         if (dtObject is RootElement element)
                             element.Mesh = mesh;
                         else

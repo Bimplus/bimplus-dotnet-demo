@@ -1,45 +1,38 @@
 ﻿<RibbonWindow x:Class="BimPlusDemo.MainWindow"
-              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
-              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-              xmlns:local="clr-namespace:BimPlusDemo"
-              xmlns:bimPlusDemo="clr-namespace:System.Windows.Controls;assembly=System.Windows.Controls.Ribbon"
-              mc:Ignorable="d"
-              Title="BimPlus DemoApplication" Height="450" Width="800">
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:BimPlusDemo"
+        mc:Ignorable="d"
+        Title="MainWindow" Height="450" Width="800">
     <Grid>
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto"/>
             <RowDefinition/>
         </Grid.RowDefinitions>
-
-        <Ribbon x:Name="RibbonWin"  SelectedIndex="0">
-            <!-- Login Pane, located at the right-hand side -->
+        <Ribbon x:Name="RibbonWin" SelectedIndex="0">
             <Ribbon.HelpPaneContent>
-                <RibbonButton Name="Login" Click="Login_OnClick" Label="Login" SmallImageSource="Images\login.png" ToolTip="Login to BimPlus."/>
-                <!--<Label/>-->
+                <RibbonButton Name="Login" Click="Login_OnClick"  Label="Login" SmallImageSource="Images/login.png"/>
             </Ribbon.HelpPaneContent>
-            <RibbonTab Header="Home" KeyTip="H">
-                <RibbonGroup x:Name="Project" Header="ProjectSelection" IsEnabled="{Binding ButtonsEnabled}">
+            <RibbonTab Header="Project" IsEnabled="{Binding IsLoggedIn}">
+                <RibbonGroup x:Name="Project" Header="ProjectSelection">
                     <RibbonButton LargeImageSource="Images\projekt_64.png" Click="ProjectSelection_OnClick" ToolTip="Select BimPlus project."/>
                     <RibbonButton Name="ProjectName"/>
                     <RibbonButton Name="Team"/>
-                    <RibbonButton Name="ThumbnailIcon" Label="Thumbnail" IsEnabled="{Binding ProjectSelected}" LargeImageSource="{Binding Thumbnail.Source}" Click="ThumbnailIcon_OnClick" ToolTip="Select Project thumbnail."/>
+                    <RibbonButton Name="ThumbnailIcon" Label="Thumbnail" IsEnabled="{Binding ProjectSelected}" LargeImageSource="{Binding Thumbnail}" Click="ThumbnailIcon_OnClick"  ToolTip="Select Project thumbnail."/>
                 </RibbonGroup>
                 <RibbonGroup x:Name="Models" Header="Models" IsEnabled="{Binding ProjectSelected}">
                     <RibbonRadioButton GroupName="Content" LargeImageSource="Images\home.png"  Click="Divisions_OnClick" ToolTip="Upload IfcModel to current Project." />
                 </RibbonGroup>
                 <RibbonGroup Header="Documents" IsEnabled="{Binding ProjectSelected}">
                     <RibbonRadioButton GroupName="Content" Name="Documents" LargeImageSource="Images\copy.png" Click="ShowDocuments_OnClick" IsEnabled="{Binding ProjectSelected}" ToolTip="Show Project documents." />
-                    <!--<RibbonButton SmallImageSource="Images/add.png" Click="AddDocuments_OnClick" ToolTip="add Document." IsEnabled="{Binding DocumentsSelected}"/>-->
                 </RibbonGroup>
                 <RibbonGroup Header="Users" IsEnabled="{Binding ProjectSelected}">
                     <RibbonRadioButton GroupName="Content" Name="Users" LargeImageSource="Images/personal.png" Click="Users_OnClick" />
-                    <!--<RibbonButton SmallImageSource="Images/add.png" Click="AddMember_OnClick" ToolTip="add/invite User" IsEnabled="{Binding UsersSelected}" />-->
                 </RibbonGroup>
                 <RibbonGroup Header="Issues" IsEnabled="{Binding ProjectSelected}">
                     <RibbonRadioButton GroupName="Content" Name="Tasks" LargeImageSource="Images/issues.png" Click="Tasks_OnClick" />
-                    <!--<RibbonButton SmallImageSource="Images/add.png" Click="CreateIssue_OnClick" ToolTip="Create Issue" IsEnabled="{Binding IssuesSelected}" />-->
                 </RibbonGroup>
             </RibbonTab>
             <RibbonTab Header="Interaction" IsEnabled="{Binding ProjectSelected}">
@@ -54,19 +47,19 @@
                     <RibbonRadioButton  GroupName="Content" Label="Quantity take-off" LargeImageSource="Images/qto.png" Click="BaseQuantities" ToolTip="Quantity take-off calculations."/>
                 </RibbonGroup>
             </RibbonTab>
-            <RibbonTab Header="Catalogs" IsEnabled="{Binding ButtonsEnabled}">
+            <RibbonTab Header="Catalogs" IsEnabled="{Binding IsLogedIn}">
                 <RibbonGroup Header="Catalogs">
-                <RibbonButton LargeImageSource="Images/catalog.png" Click="Catalogs_OnClick"></RibbonButton>
+                    <RibbonButton LargeImageSource="Images/catalog.png" Click="Catalogs_OnClick"></RibbonButton>
                 </RibbonGroup>
             </RibbonTab>
             <RibbonTab Header="StructuralAnalysis" IsEnabled="{Binding ProjectSelected}">
                 <RibbonGroup Header="StructuralItems">
                     <RibbonButton Name="Nodes" ToolTip="create Nodes" Click="Nodes_OnClick" LargeImageSource="Images\pointsupport.png"/>
-                    <RibbonButton Name="CurveMember" ToolTip="create CurveMember" Click="CurveMember_OnClick_OnClick" LargeImageSource="Images\Curvemember.PNG"/>
-                    <RibbonButton Name="SurfaceMember" ToolTip="create SurfaceMember" Content="Nodes" Click="SurfaceMember_OnClick" LargeImageSource="Images\SurfaceMember.PNG"/>
+                    <RibbonButton Name="CurveMember" ToolTip="create CurveMember" Click="CurveMember_OnClick_OnClick" LargeImageSource="Images\curveMember.PNG"/>
+                    <RibbonButton Name="SurfaceMember" ToolTip="create SurfaceMember" Content="Nodes" Click="SurfaceMember_OnClick" LargeImageSource="Images\surfaceMember.PNG"/>
                 </RibbonGroup>
                 <RibbonGroup Header="StructuralAction">
-                    <RibbonButton Name="Loads" ToolTip="create Loads" Click="Loads_OnClick" LargeImageSource="Images\Loads.PNG"/>
+                    <RibbonButton Name="Loads" ToolTip="create Loads" Click="Loads_OnClick" LargeImageSource="Images\loads.PNG"/>
                     <RibbonButton Name="Results" ToolTip="create Results" Click="Results_OnClick" />
                 </RibbonGroup>
                 <RibbonGroup Header="ElementAssemblies">
@@ -76,16 +69,17 @@
         </Ribbon>
 
         <Grid Grid.Row="1">
-            <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="*"/>
-                <ColumnDefinition Width="5"/>
-                <ColumnDefinition Width="Auto"/>
-            </Grid.ColumnDefinitions>
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="5"/>
+                    <ColumnDefinition Width="Auto"/>
+                </Grid.ColumnDefinitions>
 
-            <ContentControl Grid.Column="0" Name="Viewer" IsEnabled="{Binding ProjectSelected}" SizeChanged="ContentControl_SizeChanged" />
-            <GridSplitter Grid.Column="1"  Width="5" VerticalAlignment="Stretch" HorizontalAlignment="Center"></GridSplitter>
-            <ContentControl Grid.Column="2" Name="ContentControl" MinWidth="10"></ContentControl>
+                <ContentControl Name="Viewer"></ContentControl>
+                <GridSplitter Grid.Column="1" Width="5" VerticalAlignment="Stretch" HorizontalAlignment="Center"></GridSplitter>
+                <ContentControl Grid.Column="2" Name="ContentControl" MinWidth="10"></ContentControl>
+            </Grid>
         </Grid>
-
-</Grid>
+    </Grid>
 </RibbonWindow>

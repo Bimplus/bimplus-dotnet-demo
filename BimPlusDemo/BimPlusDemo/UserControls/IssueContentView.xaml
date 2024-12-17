@@ -20,7 +20,7 @@
         </Button>
         <Button Grid.Row="0" Name="BackToList" Visibility="Hidden" Width="25" Height="25" HorizontalAlignment="Right"
                 Click="BackToList_OnClick">
-            <Image Source="../Images/undo.png" />
+            <Image Source="../Images/undo.png"  ToolTip="Go back to IssueList."/>
         </Button>
         <ContentControl Grid.Row="1" Name="IssueList" Margin="5,5,5,5"/>
         <!--<GridSplitter Grid.Row="1" Width="5" VerticalAlignment="Stretch" HorizontalAlignment="Center" Background="AntiqueWhite"/>-->

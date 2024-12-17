@@ -1,7 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
+﻿
 using System.ComponentModel;
-using System.Linq;
 using System.Reflection;
 using System.Runtime.CompilerServices;
 using System.Windows;
@@ -13,6 +11,7 @@ using BimPlus.Sdk.Data.TenantDto;
 using BimPlus.Sdk.Utilities.V2;
 using BimPlusDemo.Annotations;
 using Newtonsoft.Json.Linq;
+#pragma warning disable CS8618 // Non-nullable field must contain a non-null value when exiting constructor. Consider declaring as nullable.
 
 namespace BimPlusDemo.UserControls
 {
@@ -22,26 +21,25 @@ namespace BimPlusDemo.UserControls
     /// </summary>
     public partial class GetAttributeValues : IDisposable, INotifyPropertyChanged
     {
-        private IntegrationBase IntBase { get; }
+        private IntegrationBase IntBase => MainWindow.IntBase;
         private readonly List<PropertyInfo> _dtoAttributDefinitionProperties;
 
-        public GetAttributeValues(IntegrationBase intBase)
+        public GetAttributeValues()
         {
             InitializeComponent();
             DataContext = this;
-            IntBase = intBase;  
             IntBase.EventHandlerCore.ObjectSelected += EventHandlerCoreOnObjectSelected;
              
             Type type = typeof(DtoAttributDefinition);
             _dtoAttributDefinitionProperties = type.GetProperties(BindingFlags.Public | BindingFlags.Instance).ToList();
         }
 
-        public DtObject SelectedObject
+        public DtObject? SelectedObject
         {
             get => _selectedObject;
             set { _selectedObject = value; OnPropertyChanged(); }
         }
-        private DtObject _selectedObject;
+        private DtObject? _selectedObject;
 
         /// <summary>
         ///  Property PsetCheckBoxIsChecked.
@@ -117,7 +115,7 @@ namespace BimPlusDemo.UserControls
             return true;
         }
 
-        private void EventHandlerCoreOnObjectSelected(object sender, BimPlusEventArgs e)
+        private void EventHandlerCoreOnObjectSelected(object sender, BimPlusEventArgs? e)
         {
             if (e == null || e.Id == Guid.Empty)
             {
@@ -181,7 +179,7 @@ namespace BimPlusDemo.UserControls
         {
             if (AttributeTreeView.Items.Count > 0)
             {
-                TreeViewItem rootItem = AttributeTreeView.Items[0] as TreeViewItem;
+                TreeViewItem? rootItem = AttributeTreeView.Items[0] as TreeViewItem;
                 if (rootItem == null) return;
                 foreach (object item in rootItem.Items)
                 {
@@ -221,16 +219,15 @@ namespace BimPlusDemo.UserControls
                 {
                     var attributeTreeViewItem = new TreeViewItem { FontSize = 13 };
 
-                    string header = null;
-                    string value = "null";
+                    string? header = null;
+                    string? value = "null";
                     string definitionValue = "";
 
-                    DtoAttributDefinition dtoAttributDefinition = null;
+                    DtoAttributDefinition? dtoAttributDefinition = null;
 
                     if (!AttributeDefinitionIsChecked)
                     {
-                        if (kvpAttribute.Value != null)
-                            value = kvpAttribute.Value.ToString();
+                        value = kvpAttribute.Value.ToString();
                         header = $"{kvpAttribute.Key} : {value}";
                     }
                     else
@@ -238,7 +235,7 @@ namespace BimPlusDemo.UserControls
                         if (kvpAttribute.Value is JObject jObject)
                         {
                             dtoAttributDefinition = jObject.ToObject<DtoAttributDefinition>();
-                            if (dtoAttributDefinition != null && dtoAttributDefinition.EnumDefinition == null)
+                            if (dtoAttributDefinition is { EnumDefinition: null })
                             {
                                 if (dtoAttributDefinition.Value != null)
                                     value = dtoAttributDefinition.Value.ToString();
@@ -272,10 +269,10 @@ namespace BimPlusDemo.UserControls
             //HasTreeViewItems = rootTreeViewItem.Items.Count > 0;
         }
 
-        public event PropertyChangedEventHandler PropertyChanged;
+        public event PropertyChangedEventHandler? PropertyChanged;
 
         [NotifyPropertyChangedInvocator]
-        protected virtual void OnPropertyChanged([CallerMemberName] string propertyName = null)
+        protected virtual void OnPropertyChanged([CallerMemberName] string? propertyName = null)
         {
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
         }

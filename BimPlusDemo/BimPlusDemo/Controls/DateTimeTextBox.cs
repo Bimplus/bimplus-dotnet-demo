@@ -45,9 +45,9 @@ namespace BimPlusDemo.Controls
                     new PropertyChangedCallback(
                         (s, a) =>
                         {
-                            DateTimeTextBox control = s as DateTimeTextBox;
-                            if (a != null)
-                                control.Text = control.ToText(a.NewValue as DateTime?);
+                            {
+                                if (s is DateTimeTextBox control) control.Text = control.ToText(a.NewValue as DateTime?);
+                            }
                         })));
 
         public DateTime? DateTimeValue
@@ -55,8 +55,8 @@ namespace BimPlusDemo.Controls
             get
             {
                 object value = GetValue(DateTimeProperty);
-                if (value != null && value is DateTime)
-                    return (DateTime)value;
+                if (value is DateTime time)
+                    return time;
                 else
                     return null;
             }
@@ -74,8 +74,6 @@ namespace BimPlusDemo.Controls
 
         private string ToText(DateTime? dateTimeValue)
         {
-            string result = null;
-
             if (dateTimeValue != null)
             {
                 DateTime dateTime = (DateTime)dateTimeValue;
@@ -83,9 +81,9 @@ namespace BimPlusDemo.Controls
                 CultureInfo cultureInfo = CultureInfo.CurrentCulture;
                 string shortDateFormat = cultureInfo.DateTimeFormat.ShortDatePattern;
 
-                result = dateTime.ToString(shortDateFormat);
+                return dateTime.ToString(shortDateFormat);
             }
-            return result;
+            return String.Empty;
         }
 
         #endregion private methods

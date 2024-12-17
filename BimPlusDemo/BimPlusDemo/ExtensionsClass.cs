@@ -1,7 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Diagnostics;
-using System.Linq;
+﻿using System.Diagnostics;
 using System.Reflection;
 using System.Text;
 using System.Windows;
@@ -93,7 +90,7 @@ namespace BimPlusDemo
                 return types;
         }
 
-        public static DependencyObject GetTypeObject(DependencyObject dependencyObject, Type type)
+        public static DependencyObject? GetTypeObject(DependencyObject? dependencyObject, Type? type)
         {
             if (dependencyObject != null && type != null)
             {
@@ -104,8 +101,8 @@ namespace BimPlusDemo
 
                 for (int i = 0; i < VisualTreeHelper.GetChildrenCount(dependencyObject); i++)
                 {
-                    DependencyObject child = VisualTreeHelper.GetChild(dependencyObject, i);
-                    DependencyObject result = GetTypeObject(child, type);
+                    DependencyObject? child = VisualTreeHelper.GetChild(dependencyObject, i);
+                    DependencyObject? result = GetTypeObject(child, type);
 
                     if (result == null)
                     {
@@ -121,7 +118,7 @@ namespace BimPlusDemo
             return null;
         }
 
-        public static string DtoAttributDefinitionToString(DtoAttributDefinition definition, List<PropertyInfo> dtoAttributDefinitionProperties)
+        public static string DtoAttributDefinitionToString(DtoAttributDefinition? definition, List<PropertyInfo> dtoAttributDefinitionProperties)
         {
             string result = "";
 
@@ -133,7 +130,7 @@ namespace BimPlusDemo
                 for (int i = 0; i < dtoAttributDefinitionProperties.Count; i++)
                 {
                     PropertyInfo propertyInfo = dtoAttributDefinitionProperties[i];
-                    object propertyValue = propertyInfo.GetValue(definition);
+                    object? propertyValue = propertyInfo.GetValue(definition);
                     if (propertyValue != null)
                     {
                         string output = "";
@@ -156,15 +153,15 @@ namespace BimPlusDemo
             return result;
         }
 
-        public static object GetEnumDefinitionValue(DtoAttributDefinition dtoAttributDefinition)
+        public static object GetEnumDefinitionValue(DtoAttributDefinition? dtoAttributDefinition)
         {
-            object result = null;
+            object? result = null;
 
-            if (!(dtoAttributDefinition.EnumDefinition is JObject jObject))
+            if (!(dtoAttributDefinition?.EnumDefinition is JObject jObject))
             {
-                if (dtoAttributDefinition.EnumDefinition is JArray jArray)
+                if (dtoAttributDefinition?.EnumDefinition is JArray jArray)
                 {
-                    List<string> jArrayAttributes =
+                    List<string>? jArrayAttributes =
                         JsonConvert.DeserializeObject(jArray.ToString(), typeof(List<string>)) as List<string>;
                     result = dtoAttributDefinition.Value;
                 }
@@ -175,15 +172,15 @@ namespace BimPlusDemo
                 {
                     if (dtoAttributDefinition.Value != null)
                     {
-                        object value = dtoAttributDefinition.Value;
+                        object? value = dtoAttributDefinition.Value;
                         Type type = value.GetType();
 
                         if (type == typeof(Int32) || type == typeof(Int64))
                         {
                             value = value.ToString();
 
-                            if (jObjectAttributes.ContainsKey(value))
-                                result = jObjectAttributes[value];
+                            if (value != null && jObjectAttributes.TryGetValue(value, out var attribute))
+                                result = attribute;
                         }
                         else if (type == typeof(bool))
                         {
@@ -198,7 +195,7 @@ namespace BimPlusDemo
                                 result = value;
                             else if (dtoAttributDefinition.DataType == typeof(Guid))
                             {
-                                string stringValue = value as string;
+                                string? stringValue = value as string;
                                 if (Guid.TryParse(stringValue, out var guid))
                                 {
                                     if (jObjectAttributes.ContainsKey(stringValue))
@@ -244,16 +241,16 @@ namespace BimPlusDemo
         /// <typeparam name="ChildItem"></typeparam>
         /// <param name="obj"></param>
         /// <returns></returns>
-        public static ChildItem FindVisualChild<ChildItem>(DependencyObject obj) where ChildItem : DependencyObject
+        public static ChildItem? FindVisualChild<ChildItem>(DependencyObject obj) where ChildItem : DependencyObject
         {
             for (int i = 0; i < VisualTreeHelper.GetChildrenCount(obj); i++)
             {
                 DependencyObject child = VisualTreeHelper.GetChild(obj, i);
-                if (child != null && child is ChildItem)
-                    return (ChildItem)child;
+                if (child is ChildItem ch)
+                    return ch;
                 else
                 {
-                    ChildItem childOfChild = FindVisualChild<ChildItem>(child);
+                    ChildItem? childOfChild = FindVisualChild<ChildItem>(child);
                     if (childOfChild != null)
                         return childOfChild;
                 }
@@ -329,43 +326,34 @@ namespace BimPlusDemo
         public static string GetDtObjectName(this DtObject dtObject)
         {
             string name = GetStringProperty(dtObject, TableNames.tabAttribGeneral, "Name");
-            return name != null ? name : GetStringProperty(dtObject, TableNames.tabAttribElement, "Name");
+            return name;
         }
 
         private static string GetStringProperty(this DtObject dtObject, string group, string property)
         {
-            DtoAttributesGroup table = PropertyTable(dtObject, group, false);
-            if (table == null)
-                return null;
-            else
-                return GetStringProperty(table, property);
+            DtoAttributesGroup? table = PropertyTable(dtObject, group, false);
+            return GetStringProperty(table, property);
         }
 
-        private static string GetStringProperty(DtoAttributesGroup group, string name)
+        private static string GetStringProperty(DtoAttributesGroup? group, string name)
         {
+            if (group == null) 
+                return string.Empty;
             name = name.ToLowerInvariant();
-            Object value;
-            group.TryGetValue(name, out value);
-            if (value is string)
-                return value.ToString();
-            else if (value is DtoAttributDefinition)
-            {
-                DtoAttributDefinition definition = value as DtoAttributDefinition;
-                if (definition != null && definition.Value is string)
-                    return definition.Value as string;
-            }
-            return null;
+            group.TryGetValue(name, out var value);
+            if (value is string s)
+                return s;
+            return value is DtoAttributDefinition { Value: string ds } ? ds : string.Empty;
         }
 
-        public static DtoAttributesGroup PropertyTable(DtObject dtObject, string tableName, bool createIfNotExist)
+        public static DtoAttributesGroup? PropertyTable(DtObject dtObject, string tableName, bool createIfNotExist)
         {
-            DtoAttributesGroup group;
             tableName = tableName.ToLowerInvariant();
-            dtObject.AttributeGroups.TryGetValue(tableName, out group);
+            dtObject.AttributeGroups.TryGetValue(tableName, out var group);
 
             if (group == null && (tableName == TableNames.tabAttribGeneral.ToLowerInvariant() || tableName == TableNames.tabAttribElement.ToLowerInvariant()))
             {
-                string key = dtObject.AttributeGroups.Keys.FirstOrDefault(k => k.IndexOf(tableName) == 0);
+                string? key = dtObject.AttributeGroups.Keys.FirstOrDefault(k => k.IndexOf(tableName, StringComparison.Ordinal) == 0);
                 if (!string.IsNullOrEmpty(key))
                     dtObject.AttributeGroups.TryGetValue(key, out group);
             }

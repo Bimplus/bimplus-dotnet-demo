@@ -1,18 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
+﻿
 using System.ComponentModel;
-using System.Linq;
-using System.Text;
-using System.Threading;
-using System.Threading.Tasks;
 using System.Windows;
-using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
 using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Shapes;
 using BimPlusDemo.Commands;
 
 namespace BimPlusDemo.UserControls
@@ -26,12 +15,12 @@ namespace BimPlusDemo.UserControls
 
         // Property variables
         private int _pProgress;
-        private string _pProgressMessage;
+        private string? _pProgressMessage;
         private int _pProgressMax;
 
         //Member variables
         private string _mProgressMessageTemplate;
-        private readonly string _mCancellationMessage;
+        private readonly string? _mCancellationMessage;
 
         #endregion
 
@@ -58,7 +47,7 @@ namespace BimPlusDemo.UserControls
         /// <summary>
         /// A cancellation token source for the background operations.
         /// </summary>
-        internal CancellationTokenSource TokenSource { get; set; }
+        internal CancellationTokenSource? TokenSource { get; set; }
 
         /// <summary>
         /// Whether the operation in progress has been cancelled.
@@ -126,7 +115,7 @@ namespace BimPlusDemo.UserControls
         /// <summary>
         /// The status message to be displayed in the View.
         /// </summary>
-        public string ProgressMessage
+        public string? ProgressMessage
         {
             get => _pProgressMessage;
 
@@ -181,7 +170,7 @@ namespace BimPlusDemo.UserControls
 
         }
 
-        internal void AssignMessage(string message)
+        internal void AssignMessage(string? message)
         {
             ProgressMessage = message;
         }
@@ -257,8 +246,8 @@ namespace BimPlusDemo.UserControls
 
         #endregion
 
-        public event PropertyChangingEventHandler PropertyChanging;
-        public event PropertyChangedEventHandler PropertyChanged;
+        public event PropertyChangingEventHandler? PropertyChanging;
+        public event PropertyChangedEventHandler? PropertyChanged;
         public event EventHandler WorkStarted;
         public event EventHandler WorkEnded;
 

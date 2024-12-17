@@ -61,9 +61,9 @@ namespace BimPlusDemo.Controls
                     new PropertyChangedCallback(
                         (s, a) =>
                         {
-                            IntegerTextBox control = s as IntegerTextBox;
-                            if (a != null)
-                                control.Text = control.ToText(a.NewValue as int?, true);
+                            {
+                                if (s is IntegerTextBox control) control.Text = control.ToText(a.NewValue as int?, true);
+                            }
                         })));
 
 
@@ -72,8 +72,8 @@ namespace BimPlusDemo.Controls
             get
             {
                 object value = GetValue(IntProperty);
-                if (value is int)
-                    return (int)value;
+                if (value is int iv)
+                    return iv;
                 else
                     return null;
             }
@@ -92,7 +92,7 @@ namespace BimPlusDemo.Controls
         private string ToText(int? intValue, bool withGroupSeparator)
         {
             if (intValue == null)
-                return null;
+                return string.Empty;
             double value = (double)intValue;
             var result = value.ToString(withGroupSeparator ? "N0" : "F0", CultureInfo);
             return result;

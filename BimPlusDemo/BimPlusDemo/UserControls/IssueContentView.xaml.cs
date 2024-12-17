@@ -1,21 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Drawing.Imaging;
+﻿using System.Drawing.Imaging;
 using System.IO;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
-using System.Windows.Shapes;
 using BimPlus.Client;
-using BimPlus.Client.Integration;
 using BimPlus.Client.WebControls.WPF;
 using BimPlus.Sdk.Data.TenantDto;
 
@@ -28,22 +15,17 @@ namespace BimPlusDemo.UserControls
     {
         #region private member      
 
-        private IntegrationBase _integrationBase;
-        private MainWindow _main;
+        private IssueListControl? _listControl;
+        private IssueDetailsControl? _detailsControl;
 
-        private IssueListControl _listControl;
-        private IssueDetailsControl _detailsControl;
-
-        private Guid ProjectId => _integrationBase?.CurrentProject?.Id ?? Guid.Empty;
-        //private TraceCodeTime _traceCodeTime;
+        private Guid ProjectId => MainWindow.IntBase.CurrentProject?.Id ?? Guid.Empty;
 
         #endregion private member
 
-        public IssueContentView(IntegrationBase integrationBase, MainWindow main)
+        public IssueContentView()
         {
             InitializeComponent();
-            LoadContent(integrationBase);
-            _main = main;
+            LoadContent();
         }
 
 
@@ -52,18 +34,16 @@ namespace BimPlusDemo.UserControls
         /// <summary>
         /// Load controls.
         /// </summary>
-        /// <param name="integrationBase"></param>
-        public void LoadContent(IntegrationBase integrationBase)
+        public void LoadContent()
         {
-            _integrationBase = integrationBase;
 
-            _integrationBase.EventHandlerCore.IssueViewSelected += EventHandlerCore_IssueViewSelected;
-            _integrationBase.EventHandlerCore.ProjectChanged += EventHandlerCore_ProjectChanged;
+            MainWindow.IntBase.EventHandlerCore.IssueViewSelected += EventHandlerCore_IssueViewSelected;
+            MainWindow.IntBase.EventHandlerCore.ProjectChanged += EventHandlerCore_ProjectChanged;
 
-            _listControl = new IssueListControl(integrationBase);
+            _listControl = new IssueListControl(MainWindow.IntBase);
             IssueList.Content = _listControl;
 
-            _detailsControl = new IssueDetailsControl(integrationBase);
+            _detailsControl = new IssueDetailsControl(MainWindow.IntBase);
             IssueDetails.Content = _detailsControl;
         }
 
@@ -72,17 +52,11 @@ namespace BimPlusDemo.UserControls
         /// </summary>
         public void UnloadContent()
         {
-            if (_listControl != null)
-                _listControl.Dispose();
+            _listControl?.Dispose();
+            _detailsControl?.Dispose();
 
-            if (_detailsControl != null)
-            {
-                //_detailsControl.LoadCompleted -= _detailsControl_LoadCompleted;
-                _detailsControl.Dispose();
-            }
-
-            _integrationBase.EventHandlerCore.IssueViewSelected -= EventHandlerCore_IssueViewSelected;
-            _integrationBase.EventHandlerCore.ProjectChanged -= EventHandlerCore_ProjectChanged;
+            MainWindow.IntBase.EventHandlerCore.IssueViewSelected -= EventHandlerCore_IssueViewSelected;
+            MainWindow.IntBase.EventHandlerCore.ProjectChanged -= EventHandlerCore_ProjectChanged;
         }
 
         #endregion public methods
@@ -96,17 +70,17 @@ namespace BimPlusDemo.UserControls
             CreateIssue.Visibility = Visibility.Hidden;
             IssueDetails.Visibility = Visibility.Visible;
             BackToList.Visibility = Visibility.Visible;
-            _detailsControl.NavigateToIssue(e.Id);
+            _detailsControl?.NavigateToIssue(e.Id);
         }
 
         private void EventHandlerCore_ProjectChanged(object sender, BimPlusEventArgs e)
         {
-            _listControl.NavigateToControl(e.Id);
+            _listControl?.NavigateToControl(e.Id);
 
-            _detailsControl.Dispose();
+            _detailsControl?.Dispose();
             _detailsControl = null;
 
-            _detailsControl = new IssueDetailsControl(_integrationBase);
+            _detailsControl = new IssueDetailsControl(MainWindow.IntBase);
             IssueDetails.Content = _detailsControl;
         }
 
@@ -123,7 +97,7 @@ namespace BimPlusDemo.UserControls
 
         private void CreateIssue_OnClick(object sender, RoutedEventArgs e)
         {
-            var issue = _integrationBase.ApiCore.Issues.PostProjectShortIssue(ProjectId,
+            var issue = MainWindow.IntBase.ApiCore.Issues.PostProjectShortIssue(ProjectId,
                 new DtoShortIssue { IssueName = "new Issue" });
             if (issue == null)
                 return;
@@ -137,7 +111,7 @@ namespace BimPlusDemo.UserControls
             using (BinaryReader br = new BinaryReader(ms))
             {
                 byte[] b = br.ReadBytes((int)ms.Length);
-                _integrationBase.ApiCore.Issues.PutIssueImage(issue.Id, b);
+                MainWindow.IntBase.ApiCore.Issues.PutIssueImage(issue.Id, b);
             }
 
             //Rectangle bounds = new Rectangle(){ Width = }

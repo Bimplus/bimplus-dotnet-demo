@@ -1,17 +1,17 @@
-﻿using BimPlus.Sdk.Data.DbCore.Analysis;
-using BimPlus.Sdk.Data.DbCore.Structure;
-using BimPlus.Sdk.Data.DbCore;
-using BimPlus.Sdk.Data.StructuralLoadResource;
-using System.Collections.Generic;
-using System.Linq;
+﻿using System.Drawing;
 using System.Windows;
 using BimPlus.Client;
-using BimPlus.Sdk.Data.DbCore.Connection;
-using BimPlus.Sdk.Data.TenantDto;
-using System;
-using System.Drawing;
 using BimPlus.Sdk.Data.CSG;
+using BimPlus.Sdk.Data.DbCore;
+using BimPlus.Sdk.Data.DbCore.Analysis;
+using BimPlus.Sdk.Data.DbCore.Connection;
 using BimPlus.Sdk.Data.DbCore.Steel;
+using BimPlus.Sdk.Data.DbCore.Structure;
+using BimPlus.Sdk.Data.StructuralLoadResource;
+using BimPlus.Sdk.Data.TenantDto;
+// ReSharper disable StringLiteralTypo
+// ReSharper disable ArrangeObjectCreationWhenTypeEvident
+// ReSharper disable IdentifierTypo
 
 namespace BimPlusDemo
 {
@@ -19,6 +19,7 @@ namespace BimPlusDemo
     {
         private void Nodes_OnClick(object sender, RoutedEventArgs e)
         {
+            DisposeContentControl();
             var model = SelectModel("StructuralAnalysis");
             if (model?.TopologyDivisionId == null)
                 return;
@@ -187,11 +188,12 @@ namespace BimPlusDemo
                 IntBase.ApiCore.Projects.ConvertGeometry(model.ProjectId);
 
             IntBase.EventHandlerCore.OnExportStarted(this,
-                new BimPlusEventArgs {Id = model.ProjectId, Value = "ModelChanged"});
+                new BimPlusEventArgs { Id = model.ProjectId, Value = "ModelChanged" });
         }
 
         private void CurveMember_OnClick_OnClick(object sender, RoutedEventArgs e)
         {
+            DisposeContentControl();
             var model = SelectModel("StructuralAnalysis");
             if (model?.TopologyDivisionId == null)
                 return;
@@ -525,12 +527,13 @@ namespace BimPlusDemo
             {
                 IntBase.ApiCore.Projects.ConvertGeometry(model.ProjectId);
                 IntBase.EventHandlerCore.OnExportStarted(this,
-                    new BimPlusEventArgs {Id = model.ProjectId, Value = "ModelChanged"});
+                    new BimPlusEventArgs { Id = model.ProjectId, Value = "ModelChanged" });
             }
         }
 
         private void SurfaceMember_OnClick(object sender, RoutedEventArgs e)
         {
+            DisposeContentControl();
             var model = SelectModel("StructuralAnalysis");
             if (model?.TopologyDivisionId == null)
                 return;
@@ -598,12 +601,13 @@ namespace BimPlusDemo
             {
                 IntBase.ApiCore.Projects.ConvertGeometry(model.ProjectId);
                 IntBase.EventHandlerCore.OnExportStarted(this,
-                    new BimPlusEventArgs {Id = model.ProjectId, Value = "ModelChanged"});
+                    new BimPlusEventArgs { Id = model.ProjectId, Value = "ModelChanged" });
             }
         }
 
         private void Loads_OnClick(object sender, RoutedEventArgs e)
         {
+            DisposeContentControl();
             var model = SelectModel("StructuralAnalysis");
             if (model?.TopologyDivisionId == null)
                 return;
@@ -651,7 +655,7 @@ namespace BimPlusDemo
                 }
             };
             if (constructionLc.HasValue)  // add reference to LoadCase 'construction'
-                cl1.AddProperty(TableNames.tabAttribConstObjInstObj, $"Connection-RelatedElement.1", constructionLc.Value);
+                cl1.AddProperty(TableNames.tabAttribConstObjInstObj, "Connection-RelatedElement.1", constructionLc.Value);
 
             var wy1 = new StructuralPointAction
             {
@@ -669,8 +673,8 @@ namespace BimPlusDemo
                     }
                 }
             };
-            if (windyLc.HasValue) // add reference to LoadCase Windy'
-                wy1.AddProperty(TableNames.tabAttribConstObjInstObj, $"Connection-RelatedElement.1", windyLc.Value);
+            if (windyLc.HasValue) // add reference to LoadCase 'Windy'
+                wy1.AddProperty(TableNames.tabAttribConstObjInstObj, "Connection-RelatedElement.1", windyLc.Value);
 
             var wx1 = new StructuralPointAction
             {
@@ -688,8 +692,8 @@ namespace BimPlusDemo
                     }
                 }
             };
-            if (windxLc.HasValue)   // add reference to LoadCase Windx'
-                wx1.AddProperty(TableNames.tabAttribConstObjInstObj, $"Connection-RelatedElement.1", windxLc.Value);
+            if (windxLc.HasValue)   // add reference to LoadCase 'WindX'
+                wx1.AddProperty(TableNames.tabAttribConstObjInstObj, "Connection-RelatedElement.1", windxLc.Value);
 
             var ta1 = new StructuralLinearAction
             {
@@ -699,12 +703,12 @@ namespace BimPlusDemo
                 LogParentID = model.ProjectId,
                 AppliedLoad = new StructuralLoadConfiguration
                 {
-                    Values = new List<StructuralLoadOrResult>(2)
-                    {
-                        new StructuralLoadLinearForce {LinearForceZ = -5000},
-                        new StructuralLoadLinearForce {LinearForceZ = -2000}
-                    },
-                    Locations = new List<double>(2) { 200, 4000 }
+                    Values =
+                    [
+                        new StructuralLoadLinearForce { LinearForceZ = -5000 },
+                        new StructuralLoadLinearForce { LinearForceZ = -2000 }
+                    ],
+                    Locations = [200, 4000]
                 },
                 AssignedToStructuralItem = new List<RelConnectsStructuralActivity>(1)
                 {
@@ -716,7 +720,7 @@ namespace BimPlusDemo
                 }
             };
             if (trafficLc.HasValue) // add back reference to LoadCase 'traffic'
-                ta1.AddProperty(TableNames.tabAttribConstObjInstObj, $"Connection-RelatedElement.1", trafficLc.Value);
+                ta1.AddProperty(TableNames.tabAttribConstObjInstObj, "Connection-RelatedElement.1", trafficLc.Value);
 
             var wx2 = new StructuralLinearAction
             {
@@ -735,7 +739,7 @@ namespace BimPlusDemo
                 }
             };
             if (windxLc.HasValue)   // add reference to LoadCase 'windX'
-                wx2.AddProperty(TableNames.tabAttribConstObjInstObj, $"Connection-RelatedElement.2", windxLc.Value);
+                wx2.AddProperty(TableNames.tabAttribConstObjInstObj, "Connection-RelatedElement.2", windxLc.Value);
 
             var wy2 = new StructuralLinearAction
             {
@@ -754,7 +758,7 @@ namespace BimPlusDemo
                 }
             };
             if (windyLc.HasValue)
-                wy2.AddProperty(TableNames.tabAttribConstObjInstObj, $"Connection-RelatedElement.2", windyLc.Value);
+                wy2.AddProperty(TableNames.tabAttribConstObjInstObj, "Connection-RelatedElement.2", windyLc.Value);
 
             var sl = new StructuralLinearAction
             {
@@ -773,7 +777,7 @@ namespace BimPlusDemo
                 }
             };
             if (windyLc.HasValue) // add back reference to LoadCase 'own windY'
-                sl.AddProperty(TableNames.tabAttribConstObjInstObj, $"Connection-RelatedElement.3", windyLc.Value);
+                sl.AddProperty(TableNames.tabAttribConstObjInstObj, "Connection-RelatedElement.3", windyLc.Value);
 
             var wy3 = new StructuralLinearAction
             {
@@ -792,7 +796,7 @@ namespace BimPlusDemo
                 }
             };
             if (snowLc.HasValue)    // add back reference to LoadCase 'Snow'
-                wy3.AddProperty(TableNames.tabAttribConstObjInstObj, $"Connection-RelatedElement.1", snowLc.Value);
+                wy3.AddProperty(TableNames.tabAttribConstObjInstObj, "Connection-RelatedElement.1", snowLc.Value);
 
             // create some StructuralPointConnection objects 
             var topologyDivision = new TopologyItem
@@ -832,8 +836,8 @@ namespace BimPlusDemo
                         }
                     }
                 };
-                if (ownWeightLc.HasValue)  // add back reference to Loadcase 'own weight'
-                    ow.AddProperty(TableNames.tabAttribConstObjInstObj, $"Connection-RelatedElement.1",
+                if (ownWeightLc.HasValue)  // add back reference to LoadCase 'own weight'
+                    ow.AddProperty(TableNames.tabAttribConstObjInstObj, "Connection-RelatedElement.1",
                         ownWeightLc.Value);
 
                 topologyDivision.AddChild(ow);
@@ -977,7 +981,7 @@ namespace BimPlusDemo
                             new RelAssignsToGroup
                             {
                                 Name = "O+C",
-                                RelatedObjects = new List<Guid>(2) { ow, cl}
+                                RelatedObjects = [ow, cl]
                             }
                         }
                     },
@@ -993,7 +997,7 @@ namespace BimPlusDemo
                             new RelAssignsToGroup
                             {
                                 Name = "O+C+T",
-                                RelatedObjects = new List<Guid>(3) { ow, cl, tl}
+                                RelatedObjects = [ow, cl, tl]
                             }
                         }
                     },
@@ -1009,8 +1013,7 @@ namespace BimPlusDemo
                             new RelAssignsToGroup
                             {
                                 Name = "O+C+T+Wx",
-                                RelatedObjects = new List<Guid>(3)
-                                    {ow, cl, tl, wlx}
+                                RelatedObjects = [ow, cl, tl, wlx]
                             }
                         }
                     },
@@ -1026,8 +1029,7 @@ namespace BimPlusDemo
                             new RelAssignsToGroup
                             {
                                 Name = "O+C+T+Wy",
-                                RelatedObjects = new List<Guid>(3)
-                                    {ow, cl, tl, wly}
+                                RelatedObjects = [ow, cl, tl, wly]
                             }
                         }
                     },
@@ -1043,10 +1045,7 @@ namespace BimPlusDemo
                             new RelAssignsToGroup
                             {
                                 Name = "UL",
-                                RelatedObjects = new List<Guid>(3)
-                                {
-                                    ow, cl, tl, wlx, wly,sl
-                                }
+                                RelatedObjects = [ow, cl, tl, wlx, wly, sl]
                             }
                         }
                     }
@@ -1068,6 +1067,7 @@ namespace BimPlusDemo
 
         private void Results_OnClick(object sender, RoutedEventArgs e)
         {
+            DisposeContentControl();
             var model = SelectModel("StructuralAnalysis");
             if (model?.TopologyDivisionId == null)
                 return;
@@ -1087,9 +1087,6 @@ namespace BimPlusDemo
                 MessageBox.Show("Please create at first Beam objects (StructuralCurveMember)");
                 return;
             }
-
-            if (nodes == null)
-                return;
 
             // create some StructuralPointReaction objects 
             var topologyDivision = new TopologyItem
@@ -1195,12 +1192,12 @@ namespace BimPlusDemo
                         LogParentID = model.ProjectId,
                         AppliedLoad = new StructuralLoadConfiguration
                         {
-                            Values = new List<StructuralLoadOrResult>(2)
-                            {
-                                new StructuralLoadLinearForce {LinearForceX = -3000},
-                                new StructuralLoadLinearForce {LinearForceX = 3000}
-                            },
-                            Locations = new List<double>(2) { 0, 4200 }
+                            Values =
+                            [
+                                new StructuralLoadLinearForce { LinearForceX = -3000 },
+                                new StructuralLoadLinearForce { LinearForceX = 3000 }
+                            ],
+                            Locations = [0, 4200]
                         },
                         AssignedToStructuralItem = new List<RelConnectsStructuralActivity>(1)
                         {
@@ -1219,12 +1216,12 @@ namespace BimPlusDemo
                         LogParentID = model.ProjectId,
                         AppliedLoad = new StructuralLoadConfiguration
                         {
-                            Values = new List<StructuralLoadOrResult>(2)
-                            {
-                                new StructuralLoadLinearForce {LinearForceX = -3000, LinearForceY = -500},
-                                new StructuralLoadLinearForce {LinearForceX = 3000, LinearForceY = 500}
-                            },
-                            Locations = new List<double>(2) { 0, 4200 }
+                            Values =
+                            [
+                                new StructuralLoadLinearForce { LinearForceX = -3000, LinearForceY = -500 },
+                                new StructuralLoadLinearForce { LinearForceX = 3000, LinearForceY = 500 }
+                            ],
+                            Locations = [0, 4200]
                         },
                         AssignedToStructuralItem = new List<RelConnectsStructuralActivity>(1)
                         {
@@ -1271,6 +1268,7 @@ namespace BimPlusDemo
         }
         private void Assemblies_OnClick(object sender, RoutedEventArgs e)
         {
+            DisposeContentControl();
             var model = SelectModel("StructuralAnalysis");
             if (model?.TopologyDivisionId == null)
                 return;
@@ -1331,11 +1329,27 @@ namespace BimPlusDemo
 
             assembly1.CsgTree.Elements.Add(new Path
             {
-                Geometry = new List<CsgGeoElement>
-                {
-                    new StartPolygon {Point = new List<double> {node3.X.GetValueOrDefault()*1000, node3.Y.GetValueOrDefault() * 1000, node3.Z.GetValueOrDefault()*1000}},
-                    new Line {Point = new List<double> {node9.X.GetValueOrDefault() * 1000, node9.Y.GetValueOrDefault() * 1000, node9.Z.GetValueOrDefault()*1000}}
-                },
+                Geometry =
+                [
+                    new StartPolygon
+                    {
+                        Point =
+                        [
+                            node3.X.GetValueOrDefault() * 1000, node3.Y.GetValueOrDefault() * 1000,
+                            node3.Z.GetValueOrDefault() * 1000
+                        ]
+                    },
+
+                    new Line
+                    {
+                        Point =
+                        [
+                            node9.X.GetValueOrDefault() * 1000,
+                            node9.Y.GetValueOrDefault() * 1000,
+                            node9.Z.GetValueOrDefault() * 1000
+                        ]
+                    }
+                ],
                 CrossSection = "HEB120"
             });
             topologyDivision.AddChild(assembly1);
@@ -1362,11 +1376,27 @@ namespace BimPlusDemo
             assembly2.CsgTree.Elements.Add(new Path
             {
                 Rotation = Math.PI / 2,
-                Geometry = new List<CsgGeoElement>
-                {
-                    new StartPolygon {Point = new List<double> {node6.X.GetValueOrDefault() * 1000, node6.Y.GetValueOrDefault() * 1000, node6.Z.GetValueOrDefault()*1000}},
-                    new Line {Point = new List<double> {node12.X.GetValueOrDefault() * 1000, node12.Y.GetValueOrDefault() * 1000, node12.Z.GetValueOrDefault()*1000}}
-                },
+                Geometry =
+                [
+                    new StartPolygon
+                    {
+                        Point =
+                        [
+                            node6.X.GetValueOrDefault() * 1000, 
+                            node6.Y.GetValueOrDefault() * 1000,
+                            node6.Z.GetValueOrDefault() * 1000
+                        ]
+                    },
+                    new Line
+                    {
+                        Point =
+                        [
+                            node12.X.GetValueOrDefault() * 1000, 
+                            node12.Y.GetValueOrDefault() * 1000,
+                            node12.Z.GetValueOrDefault() * 1000
+                        ]
+                    }
+                ],
                 CrossSection = "HEB120"
             });
             topologyDivision.AddChild(assembly2);
@@ -1394,11 +1424,27 @@ namespace BimPlusDemo
             {
                 OffsetX = 30,
                 OffsetY = -50,
-                Geometry = new List<CsgGeoElement>
-                {
-                    new StartPolygon {Point = new List<double> {node9.X.GetValueOrDefault() * 1000, node9.Y.GetValueOrDefault() * 1000, node9.Z.GetValueOrDefault()*1000}},
-                    new Line {Point = new List<double> {node12.X.GetValueOrDefault() * 1000, node12.Y.GetValueOrDefault() * 1000, node12.Z.GetValueOrDefault()*1000}}
-                },
+                Geometry =
+                [
+                    new StartPolygon
+                    {
+                        Point =
+                        [
+                            node9.X.GetValueOrDefault() * 1000, 
+                            node9.Y.GetValueOrDefault() * 1000,
+                            node9.Z.GetValueOrDefault() * 1000
+                        ]
+                    },
+                    new Line
+                    {
+                        Point =
+                        [
+                            node12.X.GetValueOrDefault() * 1000, 
+                            node12.Y.GetValueOrDefault() * 1000,
+                            node12.Z.GetValueOrDefault() * 1000
+                        ]
+                    }
+                ],
                 CrossSection = "UPE100"
             });
             topologyDivision.AddChild(assembly3);
@@ -1427,14 +1473,32 @@ namespace BimPlusDemo
                 Rotation = Math.PI,
                 OffsetX = 30,
                 OffsetY = 50,
-                Geometry = new List<CsgGeoElement>
-                {
-                    new StartPolygon {Point = new List<double> {node9.X.GetValueOrDefault() * 1000, node9.Y.GetValueOrDefault() * 1000, node9.Z.GetValueOrDefault()*1000}},
-                    new Line {Point = new List<double> {node12.X.GetValueOrDefault() * 1000, node12.Y.GetValueOrDefault() * 1000, node12.Z.GetValueOrDefault()*1000}}
-                },
+                Geometry =
+                [
+                    new StartPolygon
+                    {
+                        Point =
+                        [
+                            node9.X.GetValueOrDefault() * 1000,
+                            node9.Y.GetValueOrDefault() * 1000,
+                            node9.Z.GetValueOrDefault() * 1000
+                        ]
+                    },
+
+                    new Line
+                    {
+                        Point =
+                        [
+                            node12.X.GetValueOrDefault() * 1000,
+                            node12.Y.GetValueOrDefault() * 1000,
+                            node12.Z.GetValueOrDefault() * 1000
+                        ]
+                    }
+                ],
                 CrossSection = "UPE100"
             });
             topologyDivision.AddChild(assembly4);
+            // ReSharper disable once UnusedVariable
             var json = Newtonsoft.Json.JsonConvert.SerializeObject(topologyDivision);
             if (IntBase.ApiCore.DtObjects.PostObject(topologyDivision) == null)
                 MessageBox.Show("could not create geometry object.");
@@ -1448,4 +1512,3 @@ namespace BimPlusDemo
         }
     }
 }
-

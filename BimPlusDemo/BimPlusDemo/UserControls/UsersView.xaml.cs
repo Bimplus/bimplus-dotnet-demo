@@ -107,7 +107,7 @@ namespace BimPlusDemo.UserControls
                 return;
 
             var serviceUrl = $"{IntBase.ServerName}/v2/users/exist?email={newMember.EMail.Text}";
-            DtoUser user = null;
+            DtoUser? user = null;
             try
             {
                 user = IntBase.ClientConnection.RestGet<DtoUser>(serviceUrl);
@@ -178,10 +178,10 @@ namespace BimPlusDemo.UserControls
         }
 
 
-        public event PropertyChangedEventHandler PropertyChanged;
+        public event PropertyChangedEventHandler? PropertyChanged;
 
         [NotifyPropertyChangedInvocator]
-        protected virtual void OnPropertyChanged([CallerMemberName] string propertyName = null)
+        protected virtual void OnPropertyChanged([CallerMemberName] string? propertyName = null)
         {
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
         }

@@ -1,8 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
+﻿
 using System.ComponentModel;
 using System.Data;
-using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Windows;
 using System.Windows.Controls;
@@ -11,6 +9,7 @@ using BimPlus.Client.Integration;
 using BimPlus.Sdk.Data.Content;
 using BimPlus.Sdk.Data.TenantDto;
 using BimPlusDemo.Annotations;
+#pragma warning disable CS8618 // Non-nullable field must contain a non-null value when exiting constructor. Consider declaring as nullable.
 
 namespace BimPlusDemo.UserControls
 {
@@ -19,16 +18,15 @@ namespace BimPlusDemo.UserControls
     /// </summary>
     public partial class BaseQuantitiesView : INotifyPropertyChanged
     {
-        private IntegrationBase IntBase { get; set; }
+        private IntegrationBase IntBase => MainWindow.IntBase;
         public List<DtoDivision> Divisions { get; set; }
         public DataTable Results { get; set; }
 
 
-        public BaseQuantitiesView(IntegrationBase integrationBase)
+        public BaseQuantitiesView()
         {
             DataContext = this;
             InitializeComponent();
-            IntBase = integrationBase;
             Initialize();
         }
 
@@ -96,14 +94,7 @@ namespace BimPlusDemo.UserControls
                     return;
                 }
 
-                if (Results == null)
-                {
-                    Results = new DataTable("calulated quantities");
-                    Results.Columns.Add("Id", typeof(Guid));
-                    Results.PrimaryKey = new[] { Results.Columns["Id"] };
-                }
-                else
-                    Results.Clear();
+                Results.Clear();
                 foreach (var kvp in results)
                 {
                     var attribute = IntBase.ApiCore.Attributes.Get(kvp.Key);
@@ -174,14 +165,7 @@ namespace BimPlusDemo.UserControls
                     return;
                 }
 
-                if (Results == null)
-                {
-                    Results = new DataTable("calulated quantities");
-                    Results.Columns.Add("Id", typeof(Guid));
-                    Results.PrimaryKey = new[] { Results.Columns["Id"] };
-                }
-                else
-                    Results.Clear();
+                Results.Clear();
                 foreach (var kvp in results)
                 {
                     var attribute = IntBase.ApiCore.Attributes.Get(kvp.Key);
@@ -227,10 +211,10 @@ namespace BimPlusDemo.UserControls
                 IntBase.EventHandlerCore.OnModelModified(this, new BimPlusEventArgs { Value = "SelectObject", Id = id});
         }
 
-        public event PropertyChangedEventHandler PropertyChanged;
+        public event PropertyChangedEventHandler? PropertyChanged;
 
         [NotifyPropertyChangedInvocator]
-        protected virtual void OnPropertyChanged([CallerMemberName] string propertyName = null)
+        protected virtual void OnPropertyChanged([CallerMemberName] string? propertyName = null)
         {
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
         }

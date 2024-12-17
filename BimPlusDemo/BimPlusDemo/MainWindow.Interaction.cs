@@ -1,14 +1,11 @@
-﻿using System;
-using System.ComponentModel;
-using System.Windows;
-using System.Windows.Controls.Ribbon;
-using BimPlus.Sdk.Data.DbCore.Structure;
+﻿using BimPlus.Sdk.Data.DbCore.Structure;
 using BimPlus.Sdk.Data.TenantDto;
 using BimPlusDemo.UserControls;
+using System.Windows;
 
 namespace BimPlusDemo
 {
-    public partial class MainWindow : RibbonWindow, INotifyPropertyChanged
+    public partial class MainWindow
     {
         /// <summary>
         /// search requested model.
@@ -16,20 +13,21 @@ namespace BimPlusDemo
         /// </summary>
         /// <param name="modelName"></param>
         /// <returns>DtoDivision</returns>
-        private DtoDivision SelectModel(string modelName) //, string topologyNode=null, out Guid? topologyId=null)
+        private DtoDivision? SelectModel(string modelName) //, string topologyNode=null, out Guid? topologyId=null)
         {
-            var model = _intBase.ApiCore.Divisions.GetProjectDivisions(ProjectId)?.Find(x => x.Name == modelName);
+            var model = IntBase.ApiCore.Divisions.GetProjectDivisions(ProjectId)?.Find(x => x.Name == modelName);
             if (model == null)
             {
                 // create a new model.
-                model = _intBase.ApiCore.Divisions.CreateModel(ProjectId, new DtoDivision {Name = modelName});
+                model = IntBase.ApiCore.Divisions.CreateModel(ProjectId, new DtoDivision { Name = modelName });
                 if (model == null)
                 {
                     MessageBox.Show("Could not create Model.");
                     return null;
                 }
+
                 // create model root node.
-                var td = _intBase.ApiCore.DtObjects.PostObject(new TopologyDivision
+                var td = IntBase.ApiCore.DtObjects.PostObject(new TopologyDivision
                 {
                     Parent = ProjectId,
                     Division = model.Id,
@@ -40,8 +38,10 @@ namespace BimPlusDemo
                     MessageBox.Show("Could not create TopologyDivision object.");
                     return null;
                 }
+
                 model.TopologyDivisionId = td.Id;
             }
+
             return model;
         }
 
@@ -65,7 +65,7 @@ namespace BimPlusDemo
                 return;
 
             DisposeContentControl();
-            var geometryView = new GeometryView( model, "Profile", "IPE200");
+            var geometryView = new GeometryView(model, "Profile", "IPE200");
             ContentControl.Content = geometryView;
             EnabledContent = "Geometry";
         }
@@ -77,10 +77,11 @@ namespace BimPlusDemo
                 return;
 
             DisposeContentControl();
-            var geometryView = new GeometryView( model, "Contour", "ParametricObject");
+            var geometryView = new GeometryView(model, "Contour", "ParametricObject");
             ContentControl.Content = geometryView;
             EnabledContent = "Geometry";
         }
+
         private void CreateMesh(object sender, RoutedEventArgs e)
         {
             var model = SelectModel("Geometry Stuff");
@@ -88,7 +89,7 @@ namespace BimPlusDemo
                 return;
 
             DisposeContentControl();
-            var geometryView = new GeometryView(model, "Mesh",  "Building A");
+            var geometryView = new GeometryView(model, "Mesh", "Building A");
             ContentControl.Content = geometryView;
             EnabledContent = "Geometry";
         }
@@ -100,7 +101,7 @@ namespace BimPlusDemo
                 return;
 
             DisposeContentControl();
-            var properties = new AttributeView(_intBase);
+            var properties = new AttributeView();
             if (SelectedObjects.Count > 0)
                 properties.AssignObject(SelectedObjects[0]);
             ContentControl.Content = properties;
@@ -113,7 +114,7 @@ namespace BimPlusDemo
                 return;
 
             DisposeContentControl();
-            var qto = new BaseQuantitiesView(_intBase);
+            var qto = new BaseQuantitiesView();
             ContentControl.Content = qto;
             EnabledContent = "Quantities";
         }
@@ -125,8 +126,8 @@ namespace BimPlusDemo
         /// <param name="e"></param>
         private void Catalogs_OnClick(object sender, RoutedEventArgs e)
         {
+            DisposeContentControl();
             var catalogsControl = new BimPlusCatalogs();
-            catalogsControl.LoadContent(_intBase, this);
 
             catalogsControl.Show();
         }

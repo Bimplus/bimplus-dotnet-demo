@@ -1,8 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
+﻿
 using System.ComponentModel;
 using System.Diagnostics;
-using System.Linq;
 using System.Net;
 using System.Reflection;
 using System.Runtime.CompilerServices;
@@ -25,7 +23,7 @@ namespace BimPlusDemo.UserControls
     /// </summary>
     public partial class UpdateAttributeValues : IDisposable, INotifyPropertyChanged
     {
-        public UpdateAttributeValues(IntegrationBase integrationBase)
+        public UpdateAttributeValues()
         {
             InitializeComponent();
             DataContext = this;
@@ -34,172 +32,169 @@ namespace BimPlusDemo.UserControls
             _dtoAttributeDefinitionProperties =
                 type.GetProperties(BindingFlags.Public | BindingFlags.Instance).ToList();
 
-            _focusableControls = new List<Control>();
-
-            _integrationBase = integrationBase;
+            _focusableControls = new List<Control?>();
         }
 
         public void InitTreeView(Guid objectId)
         {
-            DtObject = _integrationBase.ApiCore.DtObjects.GetObject(objectId, ObjectRequestProperties.AttributDefinition);
+            DtObject = IntBase.ApiCore.DtObjects.GetObject(objectId, ObjectRequestProperties.AttributDefinition);
             _inputProperties = CloneProperties(DtObject);
             FillTreeView(DtObject);
         }
 
         #region private member
-        private readonly IntegrationBase _integrationBase;
-        private DtObject DtObject { get; set; }
+        private IntegrationBase IntBase => MainWindow.IntBase;
+        private DtObject? DtObject { get; set; }
 
         private int _dataTemplatesCount;
         private readonly List<PropertyInfo> _dtoAttributeDefinitionProperties;
         private readonly List<TreeViewItem> _treeViewItems = new List<TreeViewItem>();
 
-        private readonly List<Control> _focusableControls;
-        private Control _lastFocusedControl;
-        private List<TreeViewItem> _notStringHeaders;
-        private Dictionary<string, DtoAttributesGroup> _inputProperties;
+        private readonly List<Control?> _focusableControls;
+        private Control? _lastFocusedControl;
+        private List<TreeViewItem>? _notStringHeaders;
+        private Dictionary<string, DtoAttributesGroup>? _inputProperties;
         #endregion
 
         #region UserControl events
 
-        private void FillTreeView(DtObject dtObject)
+        private void FillTreeView(DtObject? dtObject)
         {
             //UnloadContent();
 
             AttributeTreeView.Items.Clear();
             _treeViewItems.Clear();
 
-            TreeViewItem rootTreeViewItem = new TreeViewItem {Header = dtObject.GetType().Name};
+            TreeViewItem rootTreeViewItem = new TreeViewItem {Header = dtObject?.GetType().Name};
 
             AttributeTreeView.Items.Add(rootTreeViewItem);
 
             _treeViewItems.Add(rootTreeViewItem);
 
-            foreach (KeyValuePair<string, DtoAttributesGroup> kvpGroup in dtObject.AttributeGroups)
-            {
-                var groupTreeViewItem = new TreeViewItem();
-                if (dtObject.LocalizedAttributeGroups != null &&
-                    dtObject.LocalizedAttributeGroups.ContainsKey(kvpGroup.Key))
-                    groupTreeViewItem.Header = dtObject.LocalizedAttributeGroups[kvpGroup.Key];
-                else
-                    groupTreeViewItem.Header = kvpGroup.Key;
-
-                groupTreeViewItem.Background = null;
-                rootTreeViewItem.Items.Add(groupTreeViewItem);
-
-                _treeViewItems.Add(groupTreeViewItem);
-
-                foreach (KeyValuePair<string, object> kvpAttribute in kvpGroup.Value)
+            if (dtObject?.AttributeGroups != null)
+                foreach (KeyValuePair<string, DtoAttributesGroup> kvpGroup in dtObject.AttributeGroups)
                 {
-                    // Can not set in TreeView.ItemTemplate.
-                    var attributeTreeViewItem = new TreeViewItem();
-
-                    //object value = null;
-
-                    DataTemplate dataTemplate = null;
-                    DtoAttributDefinitionWrapper dtoAttributeDefinitionWrapper = null;
-                    DoubleWrapper doubleWrapper = null;
-                    IntWrapper intWrapper = null;
-                    DateTimeWrapper dataTimeWrapper = null;
-
-                    DtoAttributDefinition dtoAttributeDefinition = null;
-                    if (kvpAttribute.Value == null)
-                        continue;
-                    if (kvpAttribute.Value is DtoAttributDefinition dto)
-                        dtoAttributeDefinition = dto;
-                    else if (kvpAttribute.Value is JObject o)
-                        dtoAttributeDefinition = o.ToObject<DtoAttributDefinition>();
-                    if (dtoAttributeDefinition == null)
-                        continue;
-
-                    if ((dtoAttributeDefinition.DataType == typeof(string) ||
-                         dtoAttributeDefinition.DataType == typeof(Guid)) &&
-                        dtoAttributeDefinition.EnumDefinition == null)
-                    {
-                        if (Resources.Contains("HeaderTextBoxTemplate"))
-                        {
-                            dataTemplate = Resources["HeaderTextBoxTemplate"] as DataTemplate;
-                        }
-                    }
-                    else if (dtoAttributeDefinition.DataType == typeof(DateTime))
-                    {
-                        dataTimeWrapper = new DateTimeWrapper(attributeTreeViewItem, dtoAttributeDefinition);
-                        if (Resources.Contains("DateTimeTextBoxTemplate"))
-                        {
-                            dataTemplate = Resources["DateTimeTextBoxTemplate"] as DataTemplate;
-                        }
-                    }
-                    else if (dtoAttributeDefinition.DataType == typeof(double))
-                    {
-                        doubleWrapper = new DoubleWrapper(attributeTreeViewItem, dtoAttributeDefinition);
-                        if (Resources.Contains("DoubleTextBoxTemplate"))
-                        {
-                            dataTemplate = Resources["DoubleTextBoxTemplate"] as DataTemplate;
-                        }
-                    }
-                    else if (dtoAttributeDefinition.DataType == typeof(Int32) &&
-                             dtoAttributeDefinition.EnumDefinition == null)
-                    {
-                        intWrapper = new IntWrapper(attributeTreeViewItem, dtoAttributeDefinition);
-                        if (Resources.Contains("Int32TextBoxTemplate"))
-                        {
-                            dataTemplate = Resources["Int32TextBoxTemplate"] as DataTemplate;
-                        }
-                    }
-                    else if (dtoAttributeDefinition.DataType == typeof(bool) &&
-                             dtoAttributeDefinition.EnumDefinition == null)
-                    {
-                        if (Resources.Contains("BooleanTemplate"))
-                        {
-                            dataTemplate = Resources["BooleanTemplate"] as DataTemplate;
-                        }
-                    }
-                    else if (dtoAttributeDefinition.EnumDefinition != null)
-                    {
-                        dtoAttributeDefinitionWrapper =
-                            new DtoAttributDefinitionWrapper(attributeTreeViewItem, dtoAttributeDefinition);
-                        if (Resources.Contains("EnumComboBoxTemplate"))
-                        {
-                            dataTemplate = Resources["EnumComboBoxTemplate"] as DataTemplate;
-                        }
-                    }
+                    var groupTreeViewItem = new TreeViewItem();
+                    if (dtObject.LocalizedAttributeGroups != null &&
+                        dtObject.LocalizedAttributeGroups.TryGetValue(kvpGroup.Key, out var group))
+                        groupTreeViewItem.Header = group;
                     else
+                        groupTreeViewItem.Header = kvpGroup.Key;
+
+                    groupTreeViewItem.Background = null;
+                    rootTreeViewItem.Items.Add(groupTreeViewItem);
+
+                    _treeViewItems.Add(groupTreeViewItem);
+
+                    foreach (KeyValuePair<string, object> kvpAttribute in kvpGroup.Value)
                     {
+                        // Can not set in TreeView.ItemTemplate.
+                        var attributeTreeViewItem = new TreeViewItem();
+
+                        //object value = null;
+
+                        DataTemplate? dataTemplate = null;
+                        DtoAttributDefinitionWrapper? dtoAttributeDefinitionWrapper = null;
+                        DoubleWrapper? doubleWrapper = null;
+                        IntWrapper? intWrapper = null;
+                        DateTimeWrapper? dataTimeWrapper = null;
+
+                        DtoAttributDefinition? dtoAttributeDefinition = null;
+                        if (kvpAttribute.Value is DtoAttributDefinition dto)
+                            dtoAttributeDefinition = dto;
+                        else if (kvpAttribute.Value is JObject o)
+                            dtoAttributeDefinition = o.ToObject<DtoAttributDefinition>();
+                        if (dtoAttributeDefinition == null)
+                            continue;
+
+                        if ((dtoAttributeDefinition.DataType == typeof(string) ||
+                             dtoAttributeDefinition.DataType == typeof(Guid)) &&
+                            dtoAttributeDefinition.EnumDefinition == null)
+                        {
+                            if (Resources.Contains("HeaderTextBoxTemplate"))
+                            {
+                                dataTemplate = Resources["HeaderTextBoxTemplate"] as DataTemplate;
+                            }
+                        }
+                        else if (dtoAttributeDefinition.DataType == typeof(DateTime))
+                        {
+                            dataTimeWrapper = new DateTimeWrapper(attributeTreeViewItem, dtoAttributeDefinition);
+                            if (Resources.Contains("DateTimeTextBoxTemplate"))
+                            {
+                                dataTemplate = Resources["DateTimeTextBoxTemplate"] as DataTemplate;
+                            }
+                        }
+                        else if (dtoAttributeDefinition.DataType == typeof(double))
+                        {
+                            doubleWrapper = new DoubleWrapper(attributeTreeViewItem, dtoAttributeDefinition);
+                            if (Resources.Contains("DoubleTextBoxTemplate"))
+                            {
+                                dataTemplate = Resources["DoubleTextBoxTemplate"] as DataTemplate;
+                            }
+                        }
+                        else if (dtoAttributeDefinition.DataType == typeof(Int32) &&
+                                 dtoAttributeDefinition.EnumDefinition == null)
+                        {
+                            intWrapper = new IntWrapper(attributeTreeViewItem, dtoAttributeDefinition);
+                            if (Resources.Contains("Int32TextBoxTemplate"))
+                            {
+                                dataTemplate = Resources["Int32TextBoxTemplate"] as DataTemplate;
+                            }
+                        }
+                        else if (dtoAttributeDefinition.DataType == typeof(bool) &&
+                                 dtoAttributeDefinition.EnumDefinition == null)
+                        {
+                            if (Resources.Contains("BooleanTemplate"))
+                            {
+                                dataTemplate = Resources["BooleanTemplate"] as DataTemplate;
+                            }
+                        }
+                        else if (dtoAttributeDefinition.EnumDefinition != null)
+                        {
+                            dtoAttributeDefinitionWrapper =
+                                new DtoAttributDefinitionWrapper(attributeTreeViewItem, dtoAttributeDefinition);
+                            if (Resources.Contains("EnumComboBoxTemplate"))
+                            {
+                                dataTemplate = Resources["EnumComboBoxTemplate"] as DataTemplate;
+                            }
+                        }
+                        else
+                        {
 #if DEBUG
-                        Trace.WriteLine("FillTreeView - Unexpected branch");
+                            Trace.WriteLine("FillTreeView - Unexpected branch");
 #endif
-                    }
+                        }
 
-                    attributeTreeViewItem.DataContext = dtoAttributeDefinition;
+                        attributeTreeViewItem.DataContext = dtoAttributeDefinition;
 
-                    // Read the DtoAttributDefinition properties.
-                    var definitionValue = ExtensionsClass.DtoAttributDefinitionToString(dtoAttributeDefinition,
-                        _dtoAttributeDefinitionProperties);
-                    
+                        // Read the DtoAttributDefinition properties.
+                        var definitionValue = ExtensionsClass.DtoAttributDefinitionToString(dtoAttributeDefinition,
+                            _dtoAttributeDefinitionProperties);
 
-                    if (dtoAttributeDefinitionWrapper != null)
-                        attributeTreeViewItem.Header = dtoAttributeDefinitionWrapper;
-                    else if (doubleWrapper != null)
-                        attributeTreeViewItem.Header = doubleWrapper;
-                    else if (intWrapper != null)
-                        attributeTreeViewItem.Header = intWrapper;
-                    else if (dataTimeWrapper != null)
-                        attributeTreeViewItem.Header = dataTimeWrapper;
-                    else
-                        attributeTreeViewItem.Header = dtoAttributeDefinition;
 
-                    attributeTreeViewItem.HeaderTemplate = dataTemplate;
+                        if (dtoAttributeDefinitionWrapper != null)
+                            attributeTreeViewItem.Header = dtoAttributeDefinitionWrapper;
+                        else if (doubleWrapper != null)
+                            attributeTreeViewItem.Header = doubleWrapper;
+                        else if (intWrapper != null)
+                            attributeTreeViewItem.Header = intWrapper;
+                        else if (dataTimeWrapper != null)
+                            attributeTreeViewItem.Header = dataTimeWrapper;
+                        else
+                            attributeTreeViewItem.Header = dtoAttributeDefinition;
 
-                    if (!string.IsNullOrEmpty(definitionValue))
-                        attributeTreeViewItem.ToolTip = definitionValue;
+                        attributeTreeViewItem.HeaderTemplate = dataTemplate;
 
-                    if ((dtoAttributeDefinition.IsInternal != true))
-                    {
-                        groupTreeViewItem.Items.Add(attributeTreeViewItem);
-                        _treeViewItems.Add(attributeTreeViewItem);
+                        if (!string.IsNullOrEmpty(definitionValue))
+                            attributeTreeViewItem.ToolTip = definitionValue;
+
+                        if ((dtoAttributeDefinition.IsInternal != true))
+                        {
+                            groupTreeViewItem.Items.Add(attributeTreeViewItem);
+                            _treeViewItems.Add(attributeTreeViewItem);
+                        }
                     }
                 }
-            }
 
             ExtensionsClass.ExpandTreeViewItem(rootTreeViewItem);
             AttributeTreeView.InvalidateVisual();
@@ -215,13 +210,13 @@ namespace BimPlusDemo.UserControls
                 .Where(tvi => (tvi.Header != null && tvi.Header.GetType() != typeof(string))).ToList();
         }
 
-        private static DtoAttributDefinition GetAttributeDefinitionFromJObject(JObject jObject)
+        private static DtoAttributDefinition? GetAttributeDefinitionFromJObject(JObject jObject)
         {
-            DtoAttributDefinition definition = null;
+            DtoAttributDefinition? definition = null;
             try
             {
                 definition = jObject.ToObject<DtoAttributDefinition>();
-                if (definition.Value != null)
+                if (definition?.Value != null)
                 {
                     if (definition.DataType == typeof(double))
                     {
@@ -264,10 +259,11 @@ namespace BimPlusDemo.UserControls
             return definition;
         }
 
-        private static Dictionary<string, DtoAttributesGroup> CloneAttributeGroups(Dictionary<string, DtoAttributesGroup> attributeGroups)
+        private static Dictionary<string, DtoAttributesGroup>? CloneAttributeGroups(Dictionary<string, DtoAttributesGroup>? attributeGroups)
         {
-            Dictionary<string, DtoAttributesGroup> clonedGroups = new Dictionary<string, DtoAttributesGroup>();
+            Dictionary<string, DtoAttributesGroup>? clonedGroups = new Dictionary<string, DtoAttributesGroup>();
 
+            if (attributeGroups == null) return clonedGroups;
             foreach (KeyValuePair<string, DtoAttributesGroup> kvpGroup in attributeGroups)
             {
                 DtoAttributesGroup newGroup = new DtoAttributesGroup();
@@ -276,20 +272,16 @@ namespace BimPlusDemo.UserControls
                 {
                     if (kvp.Value is DtoAttributDefinition orgDef)
                     {
-                        DtoAttributDefinition newDefinition = orgDef.Clone() as DtoAttributDefinition;
+                        DtoAttributDefinition? newDefinition = orgDef.Clone() as DtoAttributDefinition;
 
                         if (newDefinition?.DataType == typeof(int))
                         {
-                            if (newDefinition.Value != null && newDefinition.Value is long)
-                                newDefinition.Value = Convert.ToInt32(newDefinition.Value);
+                            if (newDefinition.Value is long l)
+                                newDefinition.Value = l;
                         }
 
                         newGroup.Add(kvp.Key, newDefinition);
                     }
-                    //else
-                    //{
-                    //    object value = kvp.Value;
-                    //}
                 }
 
                 clonedGroups.Add(kvpGroup.Key, newGroup);
@@ -298,9 +290,9 @@ namespace BimPlusDemo.UserControls
             return clonedGroups;
         }
 
-        private Dictionary<string, DtoAttributesGroup> CloneProperties(DtObject dtObject)
+        private Dictionary<string, DtoAttributesGroup>? CloneProperties(DtObject? dtObject)
         {
-            Dictionary<string, DtoAttributesGroup> attributeGroups = dtObject.AttributeGroups as Dictionary<string, DtoAttributesGroup>;
+            Dictionary<string, DtoAttributesGroup>? attributeGroups = dtObject?.AttributeGroups as Dictionary<string, DtoAttributesGroup>;
 
             if (attributeGroups != null)
             {
@@ -309,13 +301,13 @@ namespace BimPlusDemo.UserControls
                     DtoAttributesGroup attributeGroup = groupKvp.Value;
 
                     bool hasDefinition = true;
-                    List<KeyValuePair<string, object>> kvpList = attributeGroup.ToList();
+                    List<KeyValuePair<string, object?>> kvpList = attributeGroup.ToList();
 
                     for (int i = 0; i < kvpList.Count; i++)
                     {
-                        KeyValuePair<string, object> kvp = kvpList[i];
+                        KeyValuePair<string, object?> kvp = kvpList[i];
 
-                        DtoAttributDefinition definition = kvp.Value as DtoAttributDefinition;
+                        DtoAttributDefinition? definition = kvp.Value as DtoAttributDefinition;
 
                         if (definition == null)
                         {
@@ -333,7 +325,7 @@ namespace BimPlusDemo.UserControls
                                             definition.Value = Convert.ToInt32(definition.Value);
                                     }
 
-                                    KeyValuePair<string, object> newKvp = new KeyValuePair<string, object>(kvp.Key, definition);
+                                    KeyValuePair<string, object?> newKvp = new KeyValuePair<string, object?>(kvp.Key, definition);
                                     kvpList.Remove(kvp);
                                     kvpList.Insert(i, newKvp);
                                 }
@@ -345,7 +337,7 @@ namespace BimPlusDemo.UserControls
                     if (!hasDefinition)
                     {
                         attributeGroup.Clear();
-                        foreach (KeyValuePair<string, object> kvp in kvpList)
+                        foreach (KeyValuePair<string, object?> kvp in kvpList)
                         {
                             attributeGroup.Add(kvp.Key, kvp.Value);
                         }
@@ -355,24 +347,26 @@ namespace BimPlusDemo.UserControls
             return CloneAttributeGroups(attributeGroups);
         }
 
-        private Dictionary<DtoAttributDefinition, object> GetChangedAttributes(DtObject dtObject)
+        private Dictionary<DtoAttributDefinition, object> GetChangedAttributes(DtObject? dtObject)
         {
             Dictionary<DtoAttributDefinition, object> changedAttributes =
                 new Dictionary<DtoAttributDefinition, object>();
 
+            if (dtObject?.AttributeGroups == null) return changedAttributes;
             foreach (KeyValuePair<string, DtoAttributesGroup> kvpGroup in dtObject.AttributeGroups)
             {
-                _inputProperties.TryGetValue(kvpGroup.Key, out var orgGroup);
-
+                DtoAttributesGroup? orgGroup = null;
+                if (_inputProperties?.TryGetValue(kvpGroup.Key, out orgGroup) == false)
+                    continue;
+                if(orgGroup == null)
+                    continue;
                 foreach (KeyValuePair<string, object> kvpAttribute in kvpGroup.Value)
                 {
-                    DtoAttributDefinition orgDefinition = null;
+                    DtoAttributDefinition? orgDefinition = null;
 
-                    if (orgGroup != null)
-                    {
-                        orgGroup.TryGetValue(kvpAttribute.Key, out var orgValue);
-                        orgDefinition = orgValue as DtoAttributDefinition;
-                    }
+                    orgGroup.TryGetValue(kvpAttribute.Key, out var orgValue);
+                    orgDefinition = orgValue as DtoAttributDefinition;
+
 
                     if (orgDefinition != null && kvpAttribute.Value is DtoAttributDefinition actDefinition)
                     {
@@ -386,7 +380,8 @@ namespace BimPlusDemo.UserControls
                         {
                             changedAttributes.Remove(actDefinition);
                             changedAttributes.Add(actDefinition, actDefinition.Value);
-                        }}
+                        }
+                    }
                     else
                     {
 #if DEBUG
@@ -395,6 +390,7 @@ namespace BimPlusDemo.UserControls
                     }
                 }
             }
+
             return changedAttributes;
         }
 
@@ -405,7 +401,7 @@ namespace BimPlusDemo.UserControls
         /// <param name="actDefinition"></param>
         /// <param name="orgDefinition"></param>
         /// <returns>Returns true if the value has changed.</returns>
-        private bool IsEqualValue(DtoAttributDefinition actDefinition, DtoAttributDefinition orgDefinition)
+        private bool IsEqualValue(DtoAttributDefinition actDefinition, DtoAttributDefinition? orgDefinition)
         {
             double TOLERANCE = 1E-4;
             if (actDefinition.IsChangeable == false)
@@ -414,9 +410,9 @@ namespace BimPlusDemo.UserControls
             bool isEqual;
 
 
-            if (actDefinition.Value == null && orgDefinition.Value != null || actDefinition.Value != null && orgDefinition.Value == null)
+            if (actDefinition.Value == null && orgDefinition?.Value != null || actDefinition.Value != null && orgDefinition?.Value == null)
                 return false;
-            if (actDefinition.Value == null || orgDefinition.Value == null)
+            if (actDefinition.Value == null || orgDefinition?.Value == null)
                 return true;
 
             Type type = actDefinition.DataType;
@@ -467,19 +463,23 @@ namespace BimPlusDemo.UserControls
         public HttpStatusCode SaveProperties(object sender, RoutedEventArgs e)
         {
             var changedAttributes = GetChangedAttributes(DtObject);
-            if (changedAttributes==null || changedAttributes.Count == 0)
+            if (changedAttributes is not { Count: not 0 })
                 return HttpStatusCode.NotFound;
 
             //ProgressWindow.Text = "Save changed attributes.";
             //ProgressWindow.Show();
-            var update = (DtObject) DbObjectList.Create(DtObject.Elementtyp);
+            if (DtObject == null)
+                return HttpStatusCode.NotFound;
+
+
+            var update = (DtObject)DbObjectList.Create(DtObject.Elementtyp);
             update.Id = DtObject.Id;
             foreach (KeyValuePair<DtoAttributDefinition, object> set in changedAttributes)
             {
                 update.AddProperty(TableNames.contentAttributes, set.Key.Id.ToString(), set.Value);
             }
 
-            return _integrationBase.ApiCore.DtObjects.PutObject(update);
+            return IntBase.ApiCore.DtObjects.PutObject(update);
         }
 
         /// <summary>
@@ -508,15 +508,13 @@ namespace BimPlusDemo.UserControls
         /// <param name="isExpanded"></param>
         private void SetIsExpandedValue(bool isExpanded)
         {
-            if (AttributeTreeView.Items.Count > 0)
+            if (AttributeTreeView.Items.Count <= 0) return;
+            TreeViewItem? rootItem = AttributeTreeView.Items[0] as TreeViewItem;
+            if (rootItem == null) return;
+            foreach (object item in rootItem.Items)
             {
-                TreeViewItem rootItem = AttributeTreeView.Items[0] as TreeViewItem;
-                if (rootItem == null) return;
-                foreach (object item in rootItem.Items)
-                {
-                    if (item is TreeViewItem treeViewItem)
-                        treeViewItem.IsExpanded = isExpanded;
-                }
+                if (item is TreeViewItem treeViewItem)
+                    treeViewItem.IsExpanded = isExpanded;
             }
         }
 
@@ -528,13 +526,13 @@ namespace BimPlusDemo.UserControls
         {
             if (e.Key != Key.Delete) 
                 return;
-            ComboBox comboBox = sender as ComboBox;
+            ComboBox? comboBox = sender as ComboBox;
             if (!(comboBox?.DataContext is DtoAttributDefinitionWrapper wrapper)) 
                 return;
             bool canSetToNull = true;
-            if (wrapper.DtoAttributDefinition.EnumDefinition is JObject jObjectDefinition)
+            if (wrapper.DtoAttributDefinition?.EnumDefinition is JObject jObjectDefinition)
             {
-                Dictionary<object, string> jObjectAttributes = JsonConvert.DeserializeObject(jObjectDefinition.ToString(), typeof(Dictionary<object, string>)) as Dictionary<object, string>;
+                Dictionary<object, string>? jObjectAttributes = JsonConvert.DeserializeObject(jObjectDefinition.ToString(), typeof(Dictionary<object, string>)) as Dictionary<object, string>;
                 if (jObjectAttributes != null)
                 {
                     KeyValuePair<object, string> kvp = jObjectAttributes.FirstOrDefault();
@@ -550,11 +548,9 @@ namespace BimPlusDemo.UserControls
 
             if (canSetToNull)
             {
-                JArray jArrayDefinition = wrapper.DtoAttributDefinition.EnumDefinition as JArray;
-                if (jArrayDefinition != null)
+                if (wrapper.DtoAttributDefinition?.EnumDefinition is JArray jArrayDefinition)
                 {
-                    object[] array = JsonConvert.DeserializeObject(jArrayDefinition.ToString(), typeof(object[])) as object[];
-                    if (array != null)
+                    if (JsonConvert.DeserializeObject(jArrayDefinition.ToString(), typeof(object[])) is object[] array)
                         canSetToNull = false;
                 }
             }
@@ -576,11 +572,11 @@ namespace BimPlusDemo.UserControls
             if (e.Key != Key.Tab || !(sender is TreeView)) 
                 return;
 
-            object dataContext = (e.OriginalSource as FrameworkElement)?.DataContext;
+            object? dataContext = (e.OriginalSource as FrameworkElement)?.DataContext;
             if (dataContext == null) 
                 return;
 
-            TreeViewItem treeViewItem = _treeViewItems.FirstOrDefault(tvi => tvi.DataContext == dataContext);
+            var treeViewItem = _treeViewItems.FirstOrDefault(tvi => tvi.DataContext == dataContext);
             if (treeViewItem == null)
             {
                 if (dataContext is ValueWrapper)
@@ -602,7 +598,7 @@ namespace BimPlusDemo.UserControls
                 if (treeViewItem.DataContext is DtoAttributDefinition)
                 {
                     // Getting the ContentPresenter.
-                    ContentPresenter contentPresenter = ExtensionsClass.FindVisualChild<ContentPresenter>(treeViewItem);
+                    ContentPresenter? contentPresenter = ExtensionsClass.FindVisualChild<ContentPresenter>(treeViewItem);
                     _lastFocusedControl = SetEditControl(contentPresenter, treeViewItem);
 
                     if (_lastFocusedControl != null)
@@ -614,60 +610,60 @@ namespace BimPlusDemo.UserControls
             }
         }
 
-        private Control GetControl(ContentPresenter contentPresenter, TreeViewItem treeViewItem)
+        private Control? GetControl(ContentPresenter? contentPresenter, TreeViewItem treeViewItem)
         {
             if (!(treeViewItem.DataContext is DtoAttributDefinition dtoAttributDefinition)) 
                 return null;
             if (dtoAttributDefinition.IsChangeable != true || dtoAttributDefinition.IsInternal) 
                 return null;
+            if (contentPresenter == null) 
+                return null;
 
-            DataTemplate dataTemplate = contentPresenter.ContentTemplate;
-            if (dataTemplate != null)
+            var dataTemplate = contentPresenter.ContentTemplate;
+            if (dataTemplate == null) return null;
+            var control = dataTemplate.FindName("TextBox", contentPresenter) as Control;
+            if (control is TextBox textBox)
             {
-                Control control = dataTemplate.FindName("TextBox", contentPresenter) as Control;
-                if (control is TextBox textBox)
-                {
-                    return textBox;
-                }
+                return textBox;
+            }
 
-                control = dataTemplate.FindName("DateTimeTextBox", contentPresenter) as Control;
-                if (control is DateTimeTextBox dateTimeTextBox)
-                {
-                    return dateTimeTextBox;
-                }
+            control = dataTemplate.FindName("DateTimeTextBox", contentPresenter) as Control;
+            if (control is DateTimeTextBox dateTimeTextBox)
+            {
+                return dateTimeTextBox;
+            }
 
-                control = dataTemplate.FindName("DoubleTextBox", contentPresenter) as Control;
-                if (control is DoubleTextBox doubleTextBox)
-                {
-                    return doubleTextBox;
-                }
+            control = dataTemplate.FindName("DoubleTextBox", contentPresenter) as Control;
+            if (control is DoubleTextBox doubleTextBox)
+            {
+                return doubleTextBox;
+            }
 
-                control = dataTemplate.FindName("IntegerTextBox", contentPresenter) as Control;
-                if (control is IntegerTextBox integerTextBox)
-                {
-                    return integerTextBox;
-                }
+            control = dataTemplate.FindName("IntegerTextBox", contentPresenter) as Control;
+            if (control is IntegerTextBox integerTextBox)
+            {
+                return integerTextBox;
+            }
 
-                control = dataTemplate.FindName("CheckBox", contentPresenter) as Control;
-                if (control is CheckBox checkBox)
-                {
-                    return checkBox;
-                }
+            control = dataTemplate.FindName("CheckBox", contentPresenter) as Control;
+            if (control is CheckBox checkBox)
+            {
+                return checkBox;
+            }
 
-                control = dataTemplate.FindName("EnumComboBox", contentPresenter) as Control;
-                if (control is ComboBox comboBox)
-                {
-                    return comboBox;
-                }
+            control = dataTemplate.FindName("EnumComboBox", contentPresenter) as Control;
+            if (control is ComboBox comboBox)
+            {
+                return comboBox;
             }
             return null;
         }
 
-        private Control SetEditControl(ContentPresenter contentPresenter, TreeViewItem treeViewItem)
+        private Control? SetEditControl(ContentPresenter? contentPresenter, TreeViewItem treeViewItem)
         {
             if (contentPresenter == null) 
                 return null;
-            Control control = GetControl(contentPresenter, treeViewItem);
+            Control? control = GetControl(contentPresenter, treeViewItem);
             if (control == null) 
                 return null;
             control.Focus();
@@ -681,14 +677,13 @@ namespace BimPlusDemo.UserControls
         private void DataTemplate_Loaded(object sender, RoutedEventArgs e)
         {
             _dataTemplatesCount++;
-            var ct = _notStringHeaders.Count;
+            var ct = _notStringHeaders?.Count ?? 0;
             if (_dataTemplatesCount == ct)
             {
-                for (int i = 0; i < _treeViewItems.Count; i++)
+                foreach (var treeViewItem in _treeViewItems)
                 {
-                    TreeViewItem treeViewItem = _treeViewItems[i];
                     // Getting the ContentPresenter.
-                    ContentPresenter contentPresenter = ExtensionsClass.FindVisualChild<ContentPresenter>(treeViewItem);
+                    ContentPresenter? contentPresenter = ExtensionsClass.FindVisualChild<ContentPresenter>(treeViewItem);
                     _lastFocusedControl = SetEditControl(contentPresenter, treeViewItem);
 
                     if (_lastFocusedControl != null)
@@ -698,11 +693,13 @@ namespace BimPlusDemo.UserControls
                 }
 
                 // Set GotFocus event.
-                for (int i = 0; i < _notStringHeaders.Count; i++)
+                if (_notStringHeaders == null) return;
+
+                foreach (var treeViewItem in _notStringHeaders)
                 {
-                    TreeViewItem treeViewItem = _notStringHeaders[i];
-                    ContentPresenter contentPresenter = ExtensionsClass.FindVisualChild<ContentPresenter>(treeViewItem);
-                    Control control = GetControl(contentPresenter, treeViewItem);
+                    ContentPresenter? contentPresenter =
+                        ExtensionsClass.FindVisualChild<ContentPresenter>(treeViewItem);
+                    Control? control = GetControl(contentPresenter, treeViewItem);
                     if (control != null)
                     {
                         _focusableControls.Add(control);
@@ -721,15 +718,15 @@ namespace BimPlusDemo.UserControls
 
         public void Dispose()
         {
-            foreach (Control control in _focusableControls)
+            foreach (Control? control in _focusableControls)
             {
-                control.GotFocus -= Control_GotFocus;
+                if (control != null) control.GotFocus -= Control_GotFocus;
             }
         }
 
-        public event PropertyChangedEventHandler PropertyChanged;
+        public event PropertyChangedEventHandler? PropertyChanged;
         [NotifyPropertyChangedInvocator]
-        protected virtual void OnPropertyChanged([CallerMemberName] string propertyName = null)
+        protected virtual void OnPropertyChanged([CallerMemberName] string? propertyName = null)
         {
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
         }
@@ -738,16 +735,11 @@ namespace BimPlusDemo.UserControls
 
     #region inner classes
 
-    internal abstract class ValueWrapper : INotifyPropertyChanged
+    internal abstract class ValueWrapper(TreeViewItem treeViewItem) : INotifyPropertyChanged
     {
-        protected ValueWrapper(TreeViewItem treeViewItem)
-        {
-            TreeViewItem = treeViewItem;
-        }
-
         #region INotifyPropertyChanged
 
-        public event PropertyChangedEventHandler PropertyChanged;
+        public event PropertyChangedEventHandler? PropertyChanged;
 
         protected void NotifyPropertyChanged([CallerMemberName] string propertyName = "")
         {
@@ -756,13 +748,13 @@ namespace BimPlusDemo.UserControls
 
         #endregion INotifyPropertyChanged
 
-        public TreeViewItem TreeViewItem { get; set; }
+        public TreeViewItem TreeViewItem { get; set; } = treeViewItem;
 
-        public DtoAttributDefinition DtoAttributDefinition;
+        public DtoAttributDefinition? DtoAttributDefinition;
 
-        private string _unit;
+        private string? _unit;
 
-        public string Unit
+        public string? Unit
         {
             get => _unit;
 
@@ -776,15 +768,15 @@ namespace BimPlusDemo.UserControls
 
     internal class DtoAttributDefinitionWrapper : ValueWrapper
     {
-        public DtoAttributDefinitionWrapper(TreeViewItem treeViewItem, DtoAttributDefinition dtoAttributDefinition) :
+        public DtoAttributDefinitionWrapper(TreeViewItem treeViewItem, DtoAttributDefinition? dtoAttributDefinition) :
             base(treeViewItem)
         {
             DtoAttributDefinition = dtoAttributDefinition;
 
-            Name = DtoAttributDefinition.Name;
-            IsChangeable = DtoAttributDefinition.IsChangeable;
+            Name = DtoAttributDefinition?.Name;
+            IsChangeable = DtoAttributDefinition?.IsChangeable ?? false;
 
-            if (DtoAttributDefinition.EnumDefinition is JObject jObject)
+            if (DtoAttributDefinition?.EnumDefinition is JObject jObject)
             {
                 _jObjectAttributes =
                     JsonConvert.DeserializeObject(jObject.ToString(), typeof(Dictionary<object, string>)) as
@@ -794,15 +786,15 @@ namespace BimPlusDemo.UserControls
                     Items = _jObjectAttributes.Values.ToList();
                     if (DtoAttributDefinition.Value != null)
                     {
-                        object value = DtoAttributDefinition.Value;
+                        object? value = DtoAttributDefinition.Value;
                         Type type = value.GetType();
 
                         if (type == typeof(int) || type == typeof(long))
                         {
                             value = value.ToString();
 
-                            if (_jObjectAttributes.ContainsKey(value))
-                                Value = _jObjectAttributes[value];
+                            if (value != null && _jObjectAttributes.TryGetValue(value, out var attribute))
+                                Value = attribute;
                         }
                         else if (type == typeof(bool))
                         {
@@ -842,24 +834,24 @@ namespace BimPlusDemo.UserControls
             }
             else
             {
-                if (DtoAttributDefinition.EnumDefinition is JArray jArray)
+                if (DtoAttributDefinition?.EnumDefinition is JArray jArray)
                 {
                     var jArrayAttributes = JsonConvert.DeserializeObject(jArray.ToString(), typeof(List<string>)) as List<string>;
                     Items = jArrayAttributes;
                     Value = DtoAttributDefinition.Value;
                 }
             }
-            Unit = dtoAttributDefinition.Unit;
+            Unit = dtoAttributDefinition?.Unit;
         }
 
         #region private member
 
-        private readonly Dictionary<object, string> _jObjectAttributes;
+        private readonly Dictionary<object, string>? _jObjectAttributes;
 
         #endregion private member
 
         #region properties
-        public List<string> Items
+        public List<string>? Items
         {
             get => _items;
             set
@@ -868,10 +860,10 @@ namespace BimPlusDemo.UserControls
                 NotifyPropertyChanged();
             }
         }
-        private List<string> _items;
+        private List<string>? _items;
 
 
-        public object Value
+        public object? Value
         {
             get { return _value; }
             set
@@ -879,62 +871,69 @@ namespace BimPlusDemo.UserControls
                 if (value == _value) 
                     return;
                 _value = value;
-                if (DtoAttributDefinition.DataType == typeof(bool))
+                if (DtoAttributDefinition?.DataType == typeof(bool))
                 {
-                    KeyValuePair<object, string> foundKvp =
-                        _jObjectAttributes.FirstOrDefault(kvp =>
-                            kvp.Value.ToUpper() == _value as string);
-                    if (foundKvp.Key != null)
-                    {
-                        if (DtoAttributDefinition.EnumDefinition != null)
-                        {
-                            if (int.TryParse(foundKvp.Key as string, out var intValue))
-                            {
-                                if (DtoAttributDefinition.EnumDefinition != null)
-                                    DtoAttributDefinition.Value = intValue; // != 0;
-                            }
-                        }
-                        else
-                            DtoAttributDefinition.Value = _value;
-                    }
-                    else
-                        DtoAttributDefinition.Value = null;
-                }
-                else if (DtoAttributDefinition.DataType == typeof(int) ||
-                         DtoAttributDefinition.DataType == typeof(long))
-                {
-                    string stringValue = _value as string;
-                    if (!string.IsNullOrEmpty(stringValue))
+                    if (_jObjectAttributes != null)
                     {
                         KeyValuePair<object, string> foundKvp =
                             _jObjectAttributes.FirstOrDefault(kvp =>
-                                kvp.Value == stringValue);
+                                kvp.Value.ToUpper() == _value as string);
                         if (foundKvp.Key != null)
                         {
-                            if (int.TryParse(foundKvp.Key as string, out var intValue))
+                            if (DtoAttributDefinition.EnumDefinition != null)
                             {
-                                DtoAttributDefinition.Value = intValue;
+                                if (int.TryParse(foundKvp.Key as string, out var intValue))
+                                {
+                                    if (DtoAttributDefinition.EnumDefinition != null)
+                                        DtoAttributDefinition.Value = intValue; // != 0;
+                                }
+                            }
+                            else
+                                DtoAttributDefinition.Value = _value;
+                        }
+                        else
+                            DtoAttributDefinition.Value = null;
+                    }
+                }
+                else if (DtoAttributDefinition?.DataType == typeof(int) ||
+                         DtoAttributDefinition?.DataType == typeof(long))
+                {
+                    if (_value is string stringValue)
+                    {
+                        if (_jObjectAttributes != null)
+                        {
+                            KeyValuePair<object, string> foundKvp =
+                                _jObjectAttributes.FirstOrDefault(kvp =>
+                                    kvp.Value == stringValue);
+                            if (foundKvp.Key != null)
+                            {
+                                if (int.TryParse(foundKvp.Key as string, out var intValue))
+                                {
+                                    DtoAttributDefinition.Value = intValue;
+                                }
                             }
                         }
                     }
                     else
                         DtoAttributDefinition.Value = null;
                 }
-                else if (DtoAttributDefinition.DataType == typeof(string))
+                else if (DtoAttributDefinition?.DataType == typeof(string))
                 {
                     DtoAttributDefinition.Value = value;
                 }
-                else if (DtoAttributDefinition.DataType == typeof(Guid))
+                else if (DtoAttributDefinition?.DataType == typeof(Guid))
                 {
-                    string stringValue = value as string;
-                    if (Guid.TryParse(stringValue, out var _))
+                    if (value is string stringValue && Guid.TryParse(stringValue, out var _))
                     {
-                        KeyValuePair<object, string> foundKvp =
-                            _jObjectAttributes.FirstOrDefault(kvp =>
-                                kvp.Value == stringValue);
-                        if (foundKvp.Key != null)
+                        if (_jObjectAttributes != null)
                         {
-                            DtoAttributDefinition.Value = foundKvp.Key;
+                            KeyValuePair<object, string> foundKvp =
+                                _jObjectAttributes.FirstOrDefault(kvp =>
+                                    kvp.Value == stringValue);
+                            if (foundKvp.Key != null)
+                            {
+                                DtoAttributDefinition.Value = foundKvp.Key;
+                            }
                         }
                     }
                 }
@@ -947,9 +946,9 @@ namespace BimPlusDemo.UserControls
                 NotifyPropertyChanged();
             }
         }
-        private object _value;
+        private object? _value;
 
-        public string Name
+        public string? Name
         {
             get => _name;
             set
@@ -958,7 +957,7 @@ namespace BimPlusDemo.UserControls
                 NotifyPropertyChanged();
             }
         }
-        private string _name;
+        private string? _name;
 
         public bool IsChangeable
         {
@@ -977,23 +976,23 @@ namespace BimPlusDemo.UserControls
 
     internal class DoubleWrapper : ValueWrapper
     {
-        public DoubleWrapper(TreeViewItem treeViewItem, DtoAttributDefinition dtoAttributDefinition) : base(
+        public DoubleWrapper(TreeViewItem treeViewItem, DtoAttributDefinition? dtoAttributDefinition) : base(
             treeViewItem)
         {
             DtoAttributDefinition = dtoAttributDefinition;
-            if (DtoAttributDefinition.Value == null)
+            if (DtoAttributDefinition?.Value == null)
                 Double = null;
             else
             {
-                if (DtoAttributDefinition.Value is double)
+                if (DtoAttributDefinition.Value is double d)
                 {
-                    Double = (double) dtoAttributDefinition.Value;
+                    Double = d;
                 }
             }
 
-            Name = dtoAttributDefinition.Name;
-            IsChangeable = dtoAttributDefinition.IsChangeable;
-            Unit = dtoAttributDefinition.Unit;
+            Name = dtoAttributDefinition?.Name ?? string.Empty;
+            IsChangeable = dtoAttributDefinition?.IsChangeable ?? false;
+            Unit = dtoAttributDefinition?.Unit;
         }
 
         #region properties
@@ -1009,14 +1008,14 @@ namespace BimPlusDemo.UserControls
                 if (_double == value) 
                     return;
                 _double = value;
-                DtoAttributDefinition.Value = value;
+                if (DtoAttributDefinition != null) DtoAttributDefinition.Value = value;
                 NotifyPropertyChanged();
             }
         }
         private double? _double;
 
 
-        public string Name
+        public string? Name
         {
             get => _name;
             set
@@ -1025,7 +1024,7 @@ namespace BimPlusDemo.UserControls
                 NotifyPropertyChanged();
             }
         }
-        private string _name;
+        private string? _name;
 
 
         public bool IsChangeable
@@ -1043,22 +1042,22 @@ namespace BimPlusDemo.UserControls
 
     internal class IntWrapper : ValueWrapper
     {
-        public IntWrapper(TreeViewItem treeViewItem, DtoAttributDefinition dtoAttributDefinition) : base(treeViewItem)
+        public IntWrapper(TreeViewItem treeViewItem, DtoAttributDefinition? dtoAttributDefinition) : base(treeViewItem)
         {
             DtoAttributDefinition = dtoAttributDefinition;
-            if (DtoAttributDefinition.Value == null)
+            if (DtoAttributDefinition?.Value == null)
                 Int = null;
             else
             {
-                if (DtoAttributDefinition.Value is int)
+                if (DtoAttributDefinition.Value is int i)
                 {
-                    Int = (int) dtoAttributDefinition.Value;
+                    Int = i;
                 }
             }
 
-            Name = dtoAttributDefinition.Name;
-            IsChangeable = dtoAttributDefinition.IsChangeable;
-            Unit = dtoAttributDefinition.Unit;
+            Name = dtoAttributDefinition?.Name ?? string.Empty;
+            IsChangeable = dtoAttributDefinition?.IsChangeable ?? false;
+            Unit = dtoAttributDefinition?.Unit;
         }
 
         #region properties
@@ -1073,14 +1072,14 @@ namespace BimPlusDemo.UserControls
                 if (_int != value)
                 {
                     _int = value;
-                    DtoAttributDefinition.Value = value;
+                    if (DtoAttributDefinition != null) DtoAttributDefinition.Value = value;
                     NotifyPropertyChanged();
                 }
             }
         }
         private int? _int;
 
-        public string Name
+        public string? Name
         {
             get => _name;
 
@@ -1090,7 +1089,7 @@ namespace BimPlusDemo.UserControls
                 NotifyPropertyChanged();
             }
         }
-        private string _name;
+        private string? _name;
 
         public bool IsChangeable
         {
@@ -1107,23 +1106,23 @@ namespace BimPlusDemo.UserControls
 
     internal class DateTimeWrapper : ValueWrapper
     {
-        public DateTimeWrapper(TreeViewItem treeViewItem, DtoAttributDefinition dtoAttributDefinition) : base(
+        public DateTimeWrapper(TreeViewItem treeViewItem, DtoAttributDefinition? dtoAttributDefinition) : base(
             treeViewItem)
         {
             DtoAttributDefinition = dtoAttributDefinition;
-            if (DtoAttributDefinition.Value == null)
+            if (DtoAttributDefinition?.Value == null)
                 DateTime = null;
             else
             {
-                if (DtoAttributDefinition.Value is DateTime)
+                if (DtoAttributDefinition.Value is DateTime d)
                 {
-                    DateTime = (DateTime) dtoAttributDefinition.Value;
+                    DateTime = d;
                 }
             }
 
-            Name = dtoAttributDefinition.Name;
-            IsChangeable = dtoAttributDefinition.IsChangeable;
-            Unit = dtoAttributDefinition.Unit;
+            Name = dtoAttributDefinition?.Name ?? string.Empty;
+            IsChangeable = dtoAttributDefinition?.IsChangeable ?? false;
+            Unit = dtoAttributDefinition?.Unit;
         }
 
         #region properties
@@ -1139,15 +1138,15 @@ namespace BimPlusDemo.UserControls
                 if (_dateTime != value)
                 {
                     _dateTime = value;
-                    DtoAttributDefinition.Value = value;
+                    if (DtoAttributDefinition != null) DtoAttributDefinition.Value = value;
                     NotifyPropertyChanged();
                 }
             }
         }
 
-        private string _name;
+        private string? _name;
 
-        public string Name
+        public string? Name
         {
             get => _name;
 

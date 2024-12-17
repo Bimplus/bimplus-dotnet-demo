@@ -24,7 +24,7 @@ namespace BimPlusDemo.Controls
             Trace.WriteLine("destructor DoubleTextBox");
         }
 
-        private string _numberDecimalSeparator;
+        private string _numberDecimalSeparator = string.Empty;
 
         private void DoubleTextBox_GotFocus(object sender, RoutedEventArgs e)
         {
@@ -38,8 +38,7 @@ namespace BimPlusDemo.Controls
             TextAlignment = TextAlignment.Right;
             if (!string.IsNullOrEmpty(Text))
             {
-                double value;
-                if (!double.TryParse(Text, out value))
+                if (!double.TryParse(Text, out var value))
                 {
                     Background = new SolidColorBrush { Color = Colors.Red };
                     return;
@@ -49,8 +48,7 @@ namespace BimPlusDemo.Controls
                     string valueString = value.ToString(CultureInfo.CurrentCulture);
                     Text = ToText(value, true);
 
-                    double newValue;
-                    if (double.TryParse(valueString, out newValue))
+                    if (double.TryParse(valueString, out var newValue))
                         DoubleValue = newValue;
                 }
             }
@@ -70,9 +68,9 @@ namespace BimPlusDemo.Controls
                     new PropertyChangedCallback(
                         (s, a) =>
                         {
-                            DoubleTextBox control = s as DoubleTextBox;
-                            if (a != null)
-                                control.Text = control.ToText(a.NewValue as double?, true);
+                            {
+                                if (s is DoubleTextBox control) control.Text = control.ToText(a.NewValue as double?, true);
+                            }
                         })));
 
         public double? DoubleValue
@@ -99,29 +97,22 @@ namespace BimPlusDemo.Controls
 
         private string ToText(double? doubleValue, bool withGroupSeparator)
         {
-            string result = null;
-
             if (doubleValue == null)
-                return result;
-            else
-            {
-                double value = (double)doubleValue;
-                if (withGroupSeparator)
-                    result = value.ToString("N10", CultureInfo);
-                else
-                    result = value.ToString("F10", CultureInfo);
-            }
+                return string.Empty;
 
-            int separatorIndex = result.IndexOf(_numberDecimalSeparator);
+            double value = (double)doubleValue;
+            string result = (withGroupSeparator)
+                ? value.ToString("N10", CultureInfo)
+                : value.ToString("F10", CultureInfo);
+
+
+            int separatorIndex = result.IndexOf(_numberDecimalSeparator, StringComparison.Ordinal);
 
             if (separatorIndex > -1)
             {
-                int lastNonZeroIndex = result.IndexOf("0", separatorIndex);
+                int lastNonZeroIndex = result.IndexOf("0", separatorIndex, StringComparison.Ordinal);
 
-                if (lastNonZeroIndex > separatorIndex + 1)
-                    result = result.Remove(lastNonZeroIndex);
-                else
-                    result = result.Remove(separatorIndex);
+                result = result.Remove(lastNonZeroIndex > separatorIndex + 1 ? lastNonZeroIndex : separatorIndex);
             }
 
             return result;

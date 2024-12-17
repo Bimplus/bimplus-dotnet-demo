@@ -1,7 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
+﻿
 using System.IO;
-using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
@@ -20,14 +18,13 @@ namespace BimPlusDemo.UserControls
     public partial class DocumentView
     {
         private DtoTopologyStructure DocumentStructure { get; set; }
-        private IntegrationBase IntBase { get; set; }
+        private IntegrationBase IntBase => MainWindow.IntBase;
 
-        public DocumentView(IntegrationBase intBase, DtoTopologyStructure structure)
+        public DocumentView(DtoTopologyStructure structure)
         {
             InitializeComponent();
             DataContext = this;
             DocumentStructure = structure;
-            IntBase = intBase;
             InitializeTreeView();
             //var att = IntBase.ApiCore.Attachments.GetAttachments(IntBase.CurrentProject.Id);
         }

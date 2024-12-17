@@ -1,4 +1,4 @@
-﻿using System;
+﻿
 using System.Windows;
 using BimPlus.Client.Integration;
 
@@ -14,14 +14,14 @@ namespace BimPlusDemo.UserControls
 
         public Guid SelectedObject => _propertyViewer.SelectedObject?.Id ?? Guid.Empty;
 
-        public AttributeView(IntegrationBase integrationBase)
+        public AttributeView()
         {
             InitializeComponent();
 
-            _propertyEditor = new UpdateAttributeValues(integrationBase);
+            _propertyEditor = new UpdateAttributeValues();
             EditView.Content = _propertyEditor;
 
-            _propertyViewer = new GetAttributeValues(integrationBase);
+            _propertyViewer = new GetAttributeValues();
             PropertyView.Content = _propertyViewer;
             
         }

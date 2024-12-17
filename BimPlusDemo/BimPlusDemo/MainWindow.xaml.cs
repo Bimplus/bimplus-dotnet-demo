@@ -1,18 +1,13 @@
-﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel;
+﻿using System.ComponentModel;
 using System.IO;
-using System.Net;
 using System.Runtime.CompilerServices;
-using System.Threading.Tasks;
-using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Media.Imaging;
 using System.Windows.Controls.Ribbon;
-using BimPlus.Client;
+using System.Windows.Media.Imaging;
 using BimPlus.Client.Integration;
 using BimPlus.Client.WebControls.WPF;
 using BimPlusDemo.UserControls;
+using Path = System.IO.Path;
 // ReSharper disable RedundantExtendsListEntry
 
 namespace BimPlusDemo
@@ -22,10 +17,12 @@ namespace BimPlusDemo
     /// </summary>
     public partial class MainWindow : RibbonWindow, INotifyPropertyChanged
     {
-        //private static readonly ILog Logger = LogManager.GetLogger(typeof(MainWindow));
-
+        #region BimPlus API Integration
+        /// Application ID for the BimPlus API
         private static readonly Guid TestApplicationId = new Guid("7B8E7315-7F69-40DB-B340-03782B8BCB12");
-        private static readonly IntegrationBase _intBase = new IntegrationBase(TestApplicationId, GetStreamWriter())
+
+        /// IntegrationBase object for the BimPlus API connection.
+        public static readonly IntegrationBase IntBase = new IntegrationBase(TestApplicationId, GetStreamWriter(), clientName:"BimPlusDemo", clientVersion:"1.0")
         {
             UseSignalRCore = true,
             SignalRAppCode = $"BimPlusClient-{TestApplicationId}.SignalRCore",
@@ -33,8 +30,41 @@ namespace BimPlusDemo
             SignalREnableUIMessages = true
         };
 
+         /// WebViewer object for the BimPlus API connection.
         private readonly WebViewer _webViewer;
-        private static readonly List<Guid> _selectedObjects = new List<Guid>();
+
+        /// List of selected objects in the WebViewer.
+        //private static readonly List<Guid> _selectedObjects = new List<Guid>();
+        public static List<Guid> SelectedObjects = new List<Guid>();
+
+        private bool _projectSelected;
+
+        /// enable/disable the ribbon buttons
+        public bool ProjectSelected
+        {
+            get => _projectSelected;
+            set => SetField(ref _projectSelected, value);
+        }
+
+        private BitmapImage _projectImage = new BitmapImage(new Uri("pack://application:,,,/Images/defaultImage.png"));
+        public BitmapImage Thumbnail
+        {
+            get => _projectImage;
+            set => SetField(ref _projectImage, value);
+        }
+
+        public bool IsLoggedIn => !string.IsNullOrEmpty(IntBase.ClientConnection.AuthorizationAccessToken);
+        public Guid ProjectId => IntBase.CurrentProject?.Id ?? Guid.Empty;
+
+        /// <summary>
+        /// update webViewer control.
+        /// </summary>
+        private void NavigateToControl()
+        {
+            //ButtonsEnabled = false;
+            _webViewer.NavigateToControl(IntBase.CurrentProject.Id);
+        }
+        #endregion
 
         public MainWindow()
         {
@@ -42,65 +72,114 @@ namespace BimPlusDemo
 
             DataContext = this;
 
-            if (_intBase.ConnectWithRememberMe())
+            if (IntBase.ConnectWithRememberMe())
             {
-                Login.SmallImageSource =
-                    new BitmapImage(new Uri(@"/BimPlusDemo;component/Images/logout.png", UriKind.Relative));
-                Login.Label = _intBase.UserName;
-                ButtonsEnabled = true;
-            }
-            else
-            {
-                ButtonsEnabled = false;
+                Login.SmallImageSource = new BitmapImage(new Uri("pack://application:,,,/Images/Logout.png"));
+                Login.Label = IntBase.UserName;
             }
 
-            _webViewer = new WebViewer(_intBase);
-            _webViewer.WebViewRecreated += (sender, args) =>
+            _webViewer = new WebViewer(IntBase);
+            _webViewer.WebViewRecreated += (sender, _) =>
             {
-                if (!(sender is WebViewer webViewer))
-                    return;
-                if (_intBase.CurrentProject != null)
-                    webViewer.NavigateToControl(_intBase.CurrentProject.Id);
+                if (sender is not WebViewer webViewer) return;
+                if (IntBase.CurrentProject != null)
+                    webViewer.NavigateToControl(IntBase.CurrentProject.Id);
             };
 
-            _intBase.EventHandlerCore.DataLoaded += (sender, args) =>
+            IntBase.EventHandlerCore.DataLoaded += (_, _) =>
             {
                 //ProgressWindow.Hide();
-                ButtonsEnabled = true;
+                //ButtonsEnabled = true;
             };
 
-            _intBase.EventHandlerCore.ExportStarted += (sender, args) =>
+            // Event handler for the export started event.
+            IntBase.EventHandlerCore.ExportStarted += (_, _) =>
             {
                 NavigateToControl();
             };
 
-            _intBase.EventHandlerCore.ModelModified += (sender, args) =>
+            // ModelModified event needs an update of WebViewer control.
+            IntBase.EventHandlerCore.ModelModified += (_, args) =>
             {
                 if (args?.Value == "ModelModified")
                     NavigateToControl();
                 else if (args?.Value == "SelectObject")
                 {
-                    _webViewer.HighlightObjectByID(args.Id, throwOnError:false, isolate:true, blockProperties:false);
+                    _webViewer.HighlightObjectByID(args.Id, throwOnError: false, isolate: true, blockProperties: false);
                     if (args.Selected.GetValueOrDefault(false))
                         _webViewer.ObjectZoomToFit(args.Id);
                 }
             };
 
+            // receive selected object from WebViewer.
+            IntBase.EventHandlerCore.ObjectSelected += (sender, e) =>
+            {
+                if (sender is not WebViewer || e == null || e.Id == Guid.Empty)
+                    return;
+                if (SelectedObjects.Contains(e.Id))
+                    return;
 
+                if (e.Multiselect == false)
+                    SelectedObjects.Clear();
 
-            _intBase.EventHandlerCore.ObjectSelected += EventHandlerCoreOnObjectSelected;
-            _intBase.EventHandlerCore.ObjectsSelected  += EventHandlerCoreOnObjectsSelected;            // set content control 
-            //_intBase.EventHandlerCore.SignalRImportProgress += EventHandlerCoreOnSignalRImportProgress;
+                SelectedObjects.Add(e.Id);
+            };
+
+            // receive selected objects from WebViewer.
+            IntBase.EventHandlerCore.ObjectsSelected += (_, e) =>
+            {
+                if (e?.Ids == null)
+                    return;
+                SelectedObjects.Clear();
+                SelectedObjects.AddRange(e.Ids);
+            };
 
             Viewer.Content = _webViewer;
+        }
 
-            // assign defaultImage
-            ThumbnailIcon.LargeImageSource = new BitmapImage(new Uri("/BimPlusDemo;component/images/defaultImage.png",
-                UriKind.RelativeOrAbsolute));
+        private string _enabledContent = string.Empty;
+        // ReSharper disable ExplicitCallerInfoArgument
+        public string EnabledContent
+        {
+            get => _enabledContent;
+            set
+            {
+                _enabledContent = value;
+                SetField(ref _enabledContent, value);
+            }
+        }
+
+        private void DisposeContentControl()
+        {
+            if (ContentControl.Content is UserControl userControl)
+            {
+                userControl.IsEnabled = false;
+            }
+
+            if (ContentControl.Content is IssueContentView issueContentView)
+            {
+                issueContentView.UnloadContent();
+            }
+            ContentControl.Content = null;
+        }
+
+        public event PropertyChangedEventHandler? PropertyChanged;
+
+        protected virtual void OnPropertyChanged([CallerMemberName] string? propertyName = null)
+        {
+            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
+        }
+
+        protected bool SetField<T>(ref T field, T value, [CallerMemberName] string? propertyName = null)
+        {
+            if (EqualityComparer<T>.Default.Equals(field, value)) return false;
+            field = value;
+            OnPropertyChanged(propertyName);
+            return true;
         }
 
         #region logging
-        static StreamWriter GetStreamWriter()
+        static StreamWriter? GetStreamWriter()
         {
             string loggingPath = $"{Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData)}//BimPlusDemo";
             if (!Directory.Exists(loggingPath))
@@ -120,203 +199,6 @@ namespace BimPlusDemo
         }
 
         #endregion
-
-#region GlobalEventHandler
-private void EventHandlerCoreOnObjectsSelected(object sender, BimPlusEventArgs e)
-        {
-            throw new NotImplementedException();
-        }
-
-        private void EventHandlerCoreOnObjectSelected(object sender, BimPlusEventArgs e)
-        {
-            if (e == null || e.Id == Guid.Empty)
-                return;
-            if (_selectedObjects.Contains(e.Id))
-                return;
-
-            if (e.Multiselect == false)
-                _selectedObjects.Clear();
-
-            _selectedObjects.Add(e.Id);
-        }
-
-        #endregion
-
-        public bool IsLoggedIn => !string.IsNullOrEmpty(_intBase.ClientConnection.AuthorizationAccessToken);
-
-        public Guid ProjectId => _intBase?.CurrentProject.Id ?? Guid.Empty;
-
-        #region EventsHandler
-
-        public event PropertyChangedEventHandler PropertyChanged;
-
-        private bool _buttonsEnabled;
-        public bool ButtonsEnabled
-        {
-            get => _buttonsEnabled;
-
-            set
-            {
-                if (_buttonsEnabled == value) return;
-                _buttonsEnabled = value;
-                NotifyPropertyChanged();
-            }
-        }
-
-        private bool _projectSelected;
-
-        public bool ProjectSelected
-        {
-            get => _projectSelected;
-            set
-            {
-                _projectSelected = value;
-                NotifyPropertyChanged();
-            }
-        }
-
-        private Image _imageOpenClose;
-
-        public Image Thumbnail
-        {
-            get => _imageOpenClose;
-            set
-            {
-                _imageOpenClose = value;
-                NotifyPropertyChanged();
-            }
-        }
-
-        private string _enabledContent;
-        // ReSharper disable ExplicitCallerInfoArgument
-        public string EnabledContent
-        {
-            get => _enabledContent;
-            set
-            {
-                _enabledContent = value;
-                NotifyPropertyChanged("UsersSelected");
-                NotifyPropertyChanged("IssuesSelected");
-                NotifyPropertyChanged("DocumentsSelected");
-                NotifyPropertyChanged("ModelsSelected");
-                NotifyPropertyChanged("AttributesSelected");
-            }
-        }
-
-        public bool UsersSelected => EnabledContent == "UsersView";
-        public bool IssuesSelected => EnabledContent == "Issues";
-        public bool DocumentsSelected => EnabledContent == "Documents";
-        public bool ModelsSelected => EnabledContent == "Models";
-        public bool AttributesSelected => EnabledContent == "Attributes";
-
-        private void NotifyPropertyChanged([CallerMemberName] string propertyName = "")
-        {
-            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
-            //Debug.WriteLine(propertyName);
-        }
-
-        #endregion EventsHandler
-
-
-        private async void Login_OnClick(object sender, RoutedEventArgs e)
-        {
-            if (!(sender is RibbonButton login)) return;
-
-            if (IsLoggedIn)
-            {
-                if (MessageBox.Show("Do you like to logout and login with a different account?", "",
-                        MessageBoxButton.YesNo, MessageBoxImage.Question) == MessageBoxResult.No)
-                    return;
-                if (_intBase.Disconnect() == HttpStatusCode.OK)
-                {
-                    DisposeContentControl();
-                    _intBase.CurrentProject = null;
-                    ButtonsEnabled = false;
-                    ProjectSelected = false;
-                    _webViewer.Reload();
-                }
-            }
-
-            var result = await _intBase.ConnectAsync(this);
-            if (IsLoggedIn)
-            {
-                login.Label = _intBase.UserName;
-                var uri = new Uri(@"/BimPlusDemo;component/Images/logout.png", UriKind.Relative);
-                login.SmallImageSource = new BitmapImage(uri);
-            }
-            else
-            {
-                login.Label = "Login";
-                var uri = new Uri(@"/BimPlusDemo;component/Images/login.png", UriKind.Relative);
-                login.SmallImageSource = new BitmapImage(uri);
-            }
-
-            ButtonsEnabled = IsLoggedIn;
-        }
-
-
-        private void ContentControl_SizeChanged(object sender, SizeChangedEventArgs e)
-        {
-            if (!(Viewer.Content is Control control))
-                return;
-            control.Width = Viewer.ActualWidth;
-            control.Height = Viewer.ActualHeight;
-        }
-
-        private void NavigateToControl()
-        {
-            ButtonsEnabled = false;
-            _webViewer.NavigateToControl(_intBase.CurrentProject.Id);
-        }
-
-        private void DisposeContentControl()
-        {
-            if (ContentControl.Content is DocumentView documentView)
-            {
-                //documentView.Dispose()
-                ContentControl.Content = null;
-                documentView.IsEnabled = false;
-            }
-            else if (ContentControl.Content is UsersView users)
-            {
-                ContentControl.Content = null;
-                users.IsEnabled = false;
-            }
-            else if (ContentControl.Content is IssueContentView tasks)
-            {
-                tasks.UnloadContent();
-                ContentControl.Content = null;
-                tasks.IsEnabled = false;
-            }
-            else if (ContentControl.Content is GeometryView geometry)
-            {
-                ContentControl.Content = null;
-                geometry.IsEnabled = false;
-            }
-            else if (ContentControl.Content is DivisionsView models)
-            {
-                models.Dispose();
-                ContentControl.Content = null;
-                models.IsEnabled = false;
-            }
-            else if (ContentControl.Content is GetAttributeValues attributeValues)
-            {
-                attributeValues.Dispose();
-                ContentControl.Content = null;
-                attributeValues.IsEnabled = false;
-            }
-            else if (ContentControl.Content is BaseQuantitiesView qto)
-            {
-                ContentControl.Content = null;
-                qto.IsEnabled = false;
-            }
-
-            EnabledContent = "";
-        }
-
- 
-        public static List<Guid> SelectedObjects => _selectedObjects;
-        public static IntegrationBase IntBase => _intBase;
 
     }
 }

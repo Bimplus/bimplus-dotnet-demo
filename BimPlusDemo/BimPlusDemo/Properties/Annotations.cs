@@ -22,6 +22,8 @@ SOFTWARE. */
 
 using System;
 // ReSharper disable UnusedType.Global
+// ReSharper disable ConvertToPrimaryConstructor
+#pragma warning disable CS8618 // Non-nullable field must contain a non-null value when exiting constructor. Consider declaring as nullable.
 
 #pragma warning disable 1591
 // ReSharper disable UnusedMember.Global

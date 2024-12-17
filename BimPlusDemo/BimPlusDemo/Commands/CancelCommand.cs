@@ -1,4 +1,4 @@
-﻿using System;
+﻿
 using System.Windows.Input;
 using BimPlusDemo.UserControls;
 
@@ -30,7 +30,7 @@ namespace BimPlusDemo.Commands
         /// <summary>
         /// Whether the CancelCommand is enabled.
         /// </summary>
-        public bool CanExecute(object parameter)
+        public bool CanExecute(object? parameter)
         {
             return true;
         }
@@ -38,7 +38,7 @@ namespace BimPlusDemo.Commands
         /// <summary>
         /// Actions to take when CanExecute() changes.
         /// </summary>
-        public event EventHandler CanExecuteChanged
+        public event EventHandler? CanExecuteChanged
         {
             add => CommandManager.RequerySuggested += value;
             remove => CommandManager.RequerySuggested -= value;
@@ -47,7 +47,7 @@ namespace BimPlusDemo.Commands
         /// <summary>
         /// Executes the CancelCommand
         /// </summary>
-        public void Execute(object parameter)
+        public void Execute(object? parameter)
         {
             /* The Cancel command is invoked by the Cancel button, and on the window
              * close (in case the user clicks the close box to cancel. The Cancel 
