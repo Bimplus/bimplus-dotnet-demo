@@ -54,8 +54,8 @@
             this.bimPlus.ControlId.ControlIdType = Microsoft.Office.Tools.Ribbon.RibbonControlIdType.Office;
             this.bimPlus.Groups.Add(this.LoginGroup);
             this.bimPlus.Groups.Add(this.Elements);
-            this.bimPlus.Label = "BimPlus";
-            this.bimPlus.Name = "bimPlus";
+            this.bimPlus.Label = "BimPlusDemo";
+            this.bimPlus.Name = "bimPlusDemo";
             // 
             // LoginGroup
             // 

@@ -13,8 +13,8 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="Allplan.BIF.Core" Version="2025.0.0.1" />
-    <PackageReference Include="Allplan.BIF.WebControls" Version="2025.0.0.1" />
+    <PackageReference Include="Allplan.BIF.Core" Version="2025.0.0.15" />
+    <PackageReference Include="Allplan.BIF.WebControls" Version="2025.0.0.15" />
   </ItemGroup>
 
   <ItemGroup>

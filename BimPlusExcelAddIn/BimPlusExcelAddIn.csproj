@@ -104,7 +104,7 @@
   <ItemGroup>
     <Reference Include="Accessibility" />
     <Reference Include="Allplan.Oidc, Version=1.1.52.0, Culture=neutral, PublicKeyToken=f8c5355fc4a4c88a, processorArchitecture=MSIL">
-      <HintPath>..\packages\Allplan.BIF.Core.2025.0.0.1\lib\net48\Allplan.Oidc.dll</HintPath>
+      <HintPath>..\packages\Allplan.BIF.Core.2025.0.0.15\lib\net48\Allplan.Oidc.dll</HintPath>
     </Reference>
     <Reference Include="Azure.Core, Version=1.44.1.0, Culture=neutral, PublicKeyToken=92742159e12e44c8, processorArchitecture=MSIL">
       <HintPath>..\packages\Azure.Core.1.44.1\lib\net472\Azure.Core.dll</HintPath>
@@ -112,38 +112,35 @@
     <Reference Include="Azure.Identity, Version=1.13.0.0, Culture=neutral, PublicKeyToken=92742159e12e44c8, processorArchitecture=MSIL">
       <HintPath>..\packages\Azure.Identity.1.13.0\lib\netstandard2.0\Azure.Identity.dll</HintPath>
     </Reference>
-    <Reference Include="BimPlus.Client, Version=2025.0.0.1, Culture=neutral, PublicKeyToken=f8c5355fc4a4c88a, processorArchitecture=MSIL">
-      <HintPath>..\packages\Allplan.BIF.Core.2025.0.0.1\lib\net48\BimPlus.Client.dll</HintPath>
+    <Reference Include="BimPlus.Client, Version=2025.0.0.15, Culture=neutral, PublicKeyToken=f8c5355fc4a4c88a, processorArchitecture=MSIL">
+      <HintPath>..\packages\Allplan.BIF.Core.2025.0.0.15\lib\net48\BimPlus.Client.dll</HintPath>
     </Reference>
-    <Reference Include="BimPlus.Client.Integration, Version=2025.0.0.1, Culture=neutral, PublicKeyToken=f8c5355fc4a4c88a, processorArchitecture=MSIL">
-      <HintPath>..\packages\Allplan.BIF.WebControls.2025.0.0.1\lib\net48\BimPlus.Client.Integration.dll</HintPath>
+    <Reference Include="BimPlus.Client.Integration, Version=2025.0.0.15, Culture=neutral, PublicKeyToken=f8c5355fc4a4c88a, processorArchitecture=MSIL">
+      <HintPath>..\packages\Allplan.BIF.WebControls.2025.0.0.15\lib\net48\BimPlus.Client.Integration.dll</HintPath>
     </Reference>
-    <Reference Include="BimPlus.Client.WebControls, Version=2025.0.0.1, Culture=neutral, PublicKeyToken=f8c5355fc4a4c88a, processorArchitecture=MSIL">
-      <HintPath>..\packages\Allplan.BIF.WebControls.2025.0.0.1\lib\net48\BimPlus.Client.WebControls.dll</HintPath>
+    <Reference Include="BimPlus.Client.WebControls, Version=2025.0.0.15, Culture=neutral, PublicKeyToken=f8c5355fc4a4c88a, processorArchitecture=MSIL">
+      <HintPath>..\packages\Allplan.BIF.WebControls.2025.0.0.15\lib\net48\BimPlus.Client.WebControls.dll</HintPath>
     </Reference>
-    <Reference Include="BimPlus.Jobs.Api, Version=2025.0.0.1, Culture=neutral, PublicKeyToken=f8c5355fc4a4c88a, processorArchitecture=MSIL">
-      <HintPath>..\packages\Allplan.BIF.Core.2025.0.0.1\lib\net48\BimPlus.Jobs.Api.dll</HintPath>
+    <Reference Include="BimPlus.Jobs.Api, Version=2025.0.0.15, Culture=neutral, PublicKeyToken=f8c5355fc4a4c88a, processorArchitecture=MSIL">
+      <HintPath>..\packages\Allplan.BIF.Core.2025.0.0.15\lib\net48\BimPlus.Jobs.Api.dll</HintPath>
     </Reference>
-    <Reference Include="BimPlus.Jobs.Remote.Runner, Version=2025.0.0.1, Culture=neutral, PublicKeyToken=f8c5355fc4a4c88a, processorArchitecture=MSIL">
-      <HintPath>..\packages\Allplan.BIF.Core.2025.0.0.1\lib\net48\BimPlus.Jobs.Remote.Runner.dll</HintPath>
+    <Reference Include="BimPlus.Jobs.Remote.Runner, Version=2025.0.0.15, Culture=neutral, PublicKeyToken=f8c5355fc4a4c88a, processorArchitecture=MSIL">
+      <HintPath>..\packages\Allplan.BIF.Core.2025.0.0.15\lib\net48\BimPlus.Jobs.Remote.Runner.dll</HintPath>
     </Reference>
-    <Reference Include="BimPlus.LightCaseClient, Version=2025.0.0.1, Culture=neutral, PublicKeyToken=f8c5355fc4a4c88a, processorArchitecture=MSIL">
-      <HintPath>..\packages\Allplan.BIF.Core.2025.0.0.1\lib\net48\BimPlus.LightCaseClient.dll</HintPath>
+    <Reference Include="BimPlus.LightCaseClient, Version=2025.0.0.15, Culture=neutral, PublicKeyToken=f8c5355fc4a4c88a, processorArchitecture=MSIL">
+      <HintPath>..\packages\Allplan.BIF.Core.2025.0.0.15\lib\net48\BimPlus.LightCaseClient.dll</HintPath>
     </Reference>
-    <Reference Include="BimPlus.Sdk.Api, Version=2025.0.0.1, Culture=neutral, PublicKeyToken=f8c5355fc4a4c88a, processorArchitecture=MSIL">
-      <HintPath>..\packages\Allplan.BIF.Core.2025.0.0.1\lib\net48\BimPlus.Sdk.Api.dll</HintPath>
+    <Reference Include="BimPlus.Sdk.Api, Version=2025.0.0.15, Culture=neutral, PublicKeyToken=f8c5355fc4a4c88a, processorArchitecture=MSIL">
+      <HintPath>..\packages\Allplan.BIF.Core.2025.0.0.15\lib\net48\BimPlus.Sdk.Api.dll</HintPath>
     </Reference>
-    <Reference Include="BimPlus.Sdk.Data, Version=2025.0.0.1, Culture=neutral, PublicKeyToken=f8c5355fc4a4c88a, processorArchitecture=MSIL">
-      <HintPath>..\packages\Allplan.BIF.Core.2025.0.0.1\lib\net48\BimPlus.Sdk.Data.dll</HintPath>
+    <Reference Include="BimPlus.Sdk.Data, Version=2025.0.0.15, Culture=neutral, PublicKeyToken=f8c5355fc4a4c88a, processorArchitecture=MSIL">
+      <HintPath>..\packages\Allplan.BIF.Core.2025.0.0.15\lib\net48\BimPlus.Sdk.Data.dll</HintPath>
     </Reference>
-    <Reference Include="BimPlus.Sdk.Data.Definitions, Version=2025.0.0.1, Culture=neutral, PublicKeyToken=f8c5355fc4a4c88a, processorArchitecture=MSIL">
-      <HintPath>..\packages\Allplan.BIF.Core.2025.0.0.1\lib\net48\BimPlus.Sdk.Data.Definitions.dll</HintPath>
+    <Reference Include="BimPlus.Sdk.IfcData, Version=2025.0.0.15, Culture=neutral, PublicKeyToken=f8c5355fc4a4c88a, processorArchitecture=MSIL">
+      <HintPath>..\packages\Allplan.BIF.Core.2025.0.0.15\lib\net48\BimPlus.Sdk.IfcData.dll</HintPath>
     </Reference>
-    <Reference Include="BimPlus.Sdk.IfcData, Version=2025.0.0.1, Culture=neutral, PublicKeyToken=f8c5355fc4a4c88a, processorArchitecture=MSIL">
-      <HintPath>..\packages\Allplan.BIF.Core.2025.0.0.1\lib\net48\BimPlus.Sdk.IfcData.dll</HintPath>
-    </Reference>
-    <Reference Include="BimPlus.Sdk.Utilities, Version=2025.0.0.1, Culture=neutral, PublicKeyToken=f8c5355fc4a4c88a, processorArchitecture=MSIL">
-      <HintPath>..\packages\Allplan.BIF.Core.2025.0.0.1\lib\net48\BimPlus.Sdk.Utilities.dll</HintPath>
+    <Reference Include="BimPlus.Sdk.Utilities, Version=2025.0.0.15, Culture=neutral, PublicKeyToken=f8c5355fc4a4c88a, processorArchitecture=MSIL">
+      <HintPath>..\packages\Allplan.BIF.Core.2025.0.0.15\lib\net48\BimPlus.Sdk.Utilities.dll</HintPath>
     </Reference>
     <Reference Include="IdentityModel, Version=5.2.0.0, Culture=neutral, PublicKeyToken=e7877f4675df049f, processorArchitecture=MSIL">
       <HintPath>..\packages\IdentityModel.5.2.0\lib\net472\IdentityModel.dll</HintPath>
@@ -205,14 +202,14 @@
     <Reference Include="Microsoft.IdentityModel.Tokens, Version=8.1.2.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
       <HintPath>..\packages\Microsoft.IdentityModel.Tokens.8.1.2\lib\net472\Microsoft.IdentityModel.Tokens.dll</HintPath>
     </Reference>
-    <Reference Include="Microsoft.Web.WebView2.Core, Version=1.0.2903.40, Culture=neutral, PublicKeyToken=2a8ab48044d2601e, processorArchitecture=MSIL">
-      <HintPath>..\packages\Microsoft.Web.WebView2.1.0.2903.40\lib\net462\Microsoft.Web.WebView2.Core.dll</HintPath>
+    <Reference Include="Microsoft.Web.WebView2.Core, Version=1.0.3240.44, Culture=neutral, PublicKeyToken=2a8ab48044d2601e, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.Web.WebView2.1.0.3240.44\lib\net462\Microsoft.Web.WebView2.Core.dll</HintPath>
     </Reference>
-    <Reference Include="Microsoft.Web.WebView2.WinForms, Version=1.0.2903.40, Culture=neutral, PublicKeyToken=2a8ab48044d2601e, processorArchitecture=MSIL">
-      <HintPath>..\packages\Microsoft.Web.WebView2.1.0.2903.40\lib\net462\Microsoft.Web.WebView2.WinForms.dll</HintPath>
+    <Reference Include="Microsoft.Web.WebView2.WinForms, Version=1.0.3240.44, Culture=neutral, PublicKeyToken=2a8ab48044d2601e, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.Web.WebView2.1.0.3240.44\lib\net462\Microsoft.Web.WebView2.WinForms.dll</HintPath>
     </Reference>
-    <Reference Include="Microsoft.Web.WebView2.Wpf, Version=1.0.2903.40, Culture=neutral, PublicKeyToken=2a8ab48044d2601e, processorArchitecture=MSIL">
-      <HintPath>..\packages\Microsoft.Web.WebView2.1.0.2903.40\lib\net462\Microsoft.Web.WebView2.Wpf.dll</HintPath>
+    <Reference Include="Microsoft.Web.WebView2.Wpf, Version=1.0.3240.44, Culture=neutral, PublicKeyToken=2a8ab48044d2601e, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.Web.WebView2.1.0.3240.44\lib\net462\Microsoft.Web.WebView2.Wpf.dll</HintPath>
     </Reference>
     <Reference Include="Microsoft.Win32.Registry, Version=5.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
       <HintPath>..\packages\Microsoft.Win32.Registry.5.0.0\lib\net461\Microsoft.Win32.Registry.dll</HintPath>
@@ -220,11 +217,11 @@
     <Reference Include="Newtonsoft.Json, Version=13.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
       <HintPath>..\packages\Newtonsoft.Json.13.0.3\lib\net45\Newtonsoft.Json.dll</HintPath>
     </Reference>
-    <Reference Include="PPAttribPictureType3, Version=2025.0.0.1, Culture=neutral, PublicKeyToken=f8c5355fc4a4c88a, processorArchitecture=MSIL">
-      <HintPath>..\packages\Allplan.BIF.Core.2025.0.0.1\lib\net48\PPAttribPictureType3.dll</HintPath>
+    <Reference Include="PPAttribPictureType3, Version=2025.0.0.15, Culture=neutral, PublicKeyToken=f8c5355fc4a4c88a, processorArchitecture=MSIL">
+      <HintPath>..\packages\Allplan.BIF.Core.2025.0.0.15\lib\net48\PPAttribPictureType3.dll</HintPath>
     </Reference>
-    <Reference Include="PPAttribPictureType7, Version=2025.0.0.1, Culture=neutral, PublicKeyToken=f8c5355fc4a4c88a, processorArchitecture=MSIL">
-      <HintPath>..\packages\Allplan.BIF.Core.2025.0.0.1\lib\net48\PPAttribPictureType7.dll</HintPath>
+    <Reference Include="PPAttribPictureType7, Version=2025.0.0.15, Culture=neutral, PublicKeyToken=f8c5355fc4a4c88a, processorArchitecture=MSIL">
+      <HintPath>..\packages\Allplan.BIF.Core.2025.0.0.15\lib\net48\PPAttribPictureType7.dll</HintPath>
     </Reference>
     <Reference Include="PresentationCore" />
     <Reference Include="PresentationFramework" />
@@ -477,8 +474,8 @@
     </PropertyGroup>
     <Error Condition="!Exists('..\packages\Microsoft.Data.SqlClient.SNI.5.2.0\build\net462\Microsoft.Data.SqlClient.SNI.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\Microsoft.Data.SqlClient.SNI.5.2.0\build\net462\Microsoft.Data.SqlClient.SNI.targets'))" />
     <Error Condition="!Exists('..\packages\Microsoft.Extensions.Logging.Abstractions.6.0.0\build\Microsoft.Extensions.Logging.Abstractions.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\Microsoft.Extensions.Logging.Abstractions.6.0.0\build\Microsoft.Extensions.Logging.Abstractions.targets'))" />
-    <Error Condition="!Exists('..\packages\Microsoft.Web.WebView2.1.0.2903.40\build\Microsoft.Web.WebView2.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\Microsoft.Web.WebView2.1.0.2903.40\build\Microsoft.Web.WebView2.targets'))" />
+    <Error Condition="!Exists('..\packages\Microsoft.Web.WebView2.1.0.3240.44\build\Microsoft.Web.WebView2.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\Microsoft.Web.WebView2.1.0.3240.44\build\Microsoft.Web.WebView2.targets'))" />
   </Target>
   <Import Project="..\packages\Microsoft.Extensions.Logging.Abstractions.6.0.0\build\Microsoft.Extensions.Logging.Abstractions.targets" Condition="Exists('..\packages\Microsoft.Extensions.Logging.Abstractions.6.0.0\build\Microsoft.Extensions.Logging.Abstractions.targets')" />
-  <Import Project="..\packages\Microsoft.Web.WebView2.1.0.2903.40\build\Microsoft.Web.WebView2.targets" Condition="Exists('..\packages\Microsoft.Web.WebView2.1.0.2903.40\build\Microsoft.Web.WebView2.targets')" />
+  <Import Project="..\packages\Microsoft.Web.WebView2.1.0.3240.44\build\Microsoft.Web.WebView2.targets" Condition="Exists('..\packages\Microsoft.Web.WebView2.1.0.3240.44\build\Microsoft.Web.WebView2.targets')" />
 </Project>

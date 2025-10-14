@@ -19,7 +19,7 @@ namespace BimPlusDemo
     {
         #region BimPlus API Integration
         /// Application ID for the BimPlus API
-        private static readonly Guid TestApplicationId = new Guid("7B8E7315-7F69-40DB-B340-03782B8BCB12");
+        private static readonly string TestApplicationId = "1e755168858f52529735827700adb216";
 
         /// IntegrationBase object for the BimPlus API connection.
         public static readonly IntegrationBase IntBase = new IntegrationBase(TestApplicationId, GetStreamWriter(), clientName:"BimPlusDemo", clientVersion:"1.0")

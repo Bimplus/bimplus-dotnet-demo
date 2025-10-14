@@ -128,7 +128,7 @@ namespace BimPlusDemo.UserControls
                         var catalogs = IntBase.ApiCore.Catalogs.GetAll(filter);
                         foreach (var item in catalogs)
                         {
-                            if (sender is TabItem)
+                            if (sender is TabItem && item.Norms != null)
                             {
                                 foreach (var norm in item.Norms.Where(norm => !CbxCrossSectionNorms.Items.Contains(norm.Name)))
                                 {
@@ -212,15 +212,29 @@ namespace BimPlusDemo.UserControls
                         {
                             if (sender is TabItem)
                             {
-                                foreach (var country in item.Countries.Where(country =>
-                                             !CbxMaterialCountries.Items.Contains(country.Name)))
+                                if (item.Countries != null)
                                 {
-                                    CbxMaterialCountries.Items.Add(country.Name);
+                                    foreach (var country in item.Countries.Where(country =>
+                                                 !CbxMaterialCountries.Items.Contains(country.Name)))
+                                    {
+                                        CbxMaterialCountries.Items.Add(country.Name);
+                                    }
+                                }
+                                if (item.NationalAnnexes != null)
+                                {
+                                    foreach (var annex in item.NationalAnnexes.Where(annex =>
+                                                 !CbxMaterialCountries.Items.Contains(annex.Name)))
+                                    {
+                                        CbxMaterialCountries.Items.Add(annex.Name);
+                                    }
                                 }
 
-                                foreach (var norm in item.Norms.Where(norm => !CbxMaterialNorms.Items.Contains(norm.Name)))
+                                if (item.Norms != null)
                                 {
-                                    CbxMaterialNorms.Items.Add(norm.Name);
+                                    foreach (var norm in item.Norms.Where(norm => !CbxMaterialNorms.Items.Contains(norm.Name)))
+                                    {
+                                        CbxMaterialNorms.Items.Add(norm.Name);
+                                    }
                                 }
                             }
 
